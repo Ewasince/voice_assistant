@@ -9,6 +9,30 @@ class Config(BaseModel):
     Основной класс конфига, выполняющий проверку всех полей
     """
 
+    def __new__(cls):
+        if hasattr(cls, "_instance"):
+            return cls._instance
+
+        # создание конфига
+        config_dict = {}
+
+        for param in cls.model_fields:
+            param: str
+            var = os.environ.get(param.upper())
+            if var is not None:
+                config_dict[param] = var
+
+        cls._instance = super(Config, cls).__new__(cls)
+        super(Config, cls._instance).__init__(**config_dict)
+
+        return cls._instance
+
+    # noinspection PyMissingConstructor
+    def __init__(self, *args, **kwargs):
+        pass
+
+    ####################
+
     # secrets
 
     # public config
@@ -30,16 +54,3 @@ class Config(BaseModel):
         frozen = True
 
     pass
-
-
-# создание конфига
-__config_dict = {}
-
-for param in Config.model_fields:
-    param: str
-    var = os.environ.get(param.upper())
-    if var is not None:
-        __config_dict[param] = var
-    pass
-
-config: Config = Config(**__config_dict)

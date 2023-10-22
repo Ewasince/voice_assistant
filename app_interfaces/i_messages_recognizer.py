@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
 
 
-class IMessagesSource(ABC):
-    """Определяет интерфейс класса, который выдаёт нормализованный текст, содержащий команду"""
+class IMessagesRecognizer(ABC):
+    """Определяет интерфейс класса, который выдаёт расшифрованный текст"""
 
     @abstractmethod
-    def wait_command(self) -> str:
+    def get_audio(self) -> str | None:
         """Вызывается для получения следующего текста с командами и возвращает его, когда таковой будет получен"""
         raise NotImplementedError

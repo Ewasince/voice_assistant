@@ -1,7 +1,8 @@
 import re
 
-from messages_local_mic.config import config
+from app_utils.config import Config
 
+config = Config()
 p = re.compile(config.regexp)
 
 

@@ -30,7 +30,7 @@ class MessageRecognizerLocalMic(IMessagesRecognizer):
         print("Микрофон настроен!")
         return
 
-    def get_audio(self) -> str | None:
+    async def get_audio(self) -> str | None:
         print("Слушаю...")
         with self.microphone as source:
             audio = self.recognizer.listen(source)

@@ -10,7 +10,7 @@ class CommandRecognizerSimple(ICommandRecognizer):
         self._command_dict[command_class.get_command_topic()] = command_class
         pass
 
-    def process_command(self, command_text: str) -> str | None:
+    async def process_command(self, command_text: str) -> str | None:
         for command_topic, command_performer in self._command_dict.items():
             if command_text != command_topic:
                 continue
@@ -19,6 +19,6 @@ class CommandRecognizerSimple(ICommandRecognizer):
             print(f"Не услышал команды: {command_text}")
             return
 
-        command_res = command_performer.perform_command(command_text)
+        command_res = await command_performer.perform_command(command_text)
 
         return command_res

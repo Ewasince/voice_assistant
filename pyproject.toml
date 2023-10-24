@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "voice_assistant"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 authors = ["ewasince <ewasince@gmail.com>"]
 readme = "README.md"

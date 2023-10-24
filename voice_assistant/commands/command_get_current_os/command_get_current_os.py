@@ -7,7 +7,7 @@ class CommandGetCurrentOS(ICommandPerformer):
     def get_command_topic(self) -> str:
         return "система"
 
-    def perform_command(self, command_context: str) -> str | None:
+    async def perform_command(self, command_context: str) -> str | None:
         # os_type = os.name
         # match os_type:
         #     case "nt"

@@ -37,9 +37,9 @@ class MessagesSourceLocalMic(IMessagesSource):
 
         return filtered_text
 
-    def wait_command(self) -> str:
+    async def wait_command(self) -> str:
         while True:
-            text = self.recognizer.get_audio()
+            text = await self.recognizer.get_audio()
 
             command = self._check_command_after_key_word(text)
 

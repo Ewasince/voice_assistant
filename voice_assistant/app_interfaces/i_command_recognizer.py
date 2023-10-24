@@ -11,5 +11,5 @@ class ICommandRecognizer(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def process_command(self, command_text: str) -> str | None:
+    async def process_command(self, command_text: str) -> str | None:
         raise NotImplementedError

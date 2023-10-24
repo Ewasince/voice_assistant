@@ -16,7 +16,7 @@ from voice_assistant.commands.command_get_current_os.command_get_current_os impo
 from voice_assistant.commands.command_get_current_time.command_get_current_time import (
     CommandGetCurrentTime,
 )
-from voice_assistant.massages_source.messages_source import MessagesSourceLocalMic
+from voice_assistant.massages_source.messages_source import MessagesSource
 from voice_assistant.message_recognizer.local_mic.message_recognizer_local_mic import (
     MessageRecognizerLocalMic,
 )
@@ -24,7 +24,7 @@ from voice_assistant.message_recognizer.local_mic.message_recognizer_local_mic i
 
 async def main() -> NoReturn:
     messages_recognizer: IMessagesRecognizer = MessageRecognizerLocalMic()
-    message_source: IMessagesSource = MessagesSourceLocalMic(messages_recognizer)
+    message_source: IMessagesSource = MessagesSource(messages_recognizer)
 
     command_recognizer: ICommandRecognizer = CommandRecognizerSimple()
 

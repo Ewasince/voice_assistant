@@ -4,7 +4,8 @@ from voice_assistant.app_utils.config import Config
 from voice_assistant.app_utils.utils import normalize_text, extract_text_after_command
 
 
-class MessagesSourceLocalMic(IMessagesSource):
+class MessagesSource(IMessagesSource):
+    """Обрабатывает полученный текст от распознавателя"""
     def __init__(self, recognizer: IMessagesRecognizer):
         self.recognizer = recognizer
         self.config = Config()

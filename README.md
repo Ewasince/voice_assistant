@@ -21,9 +21,9 @@ messages_recognizer: IMessagesRecognizer = MessageRecognizerLocalMic()
 
 # создаём объект источника команд, который будет предварительно обрабатывать команды
 from voice_assistant.app_interfaces.i_messages_source import IMessagesSource
-from voice_assistant.massages_source.messages_source import MessagesSourceLocalMic
+from voice_assistant.massages_source.messages_source import MessagesSource
 
-message_source: IMessagesSource = MessagesSourceLocalMic(messages_recognizer)
+message_source: IMessagesSource = MessagesSource(messages_recognizer)
 
 # создаём объект распознавания распознавателя команд
 # на данный момент реализован только простой распознаватель команд

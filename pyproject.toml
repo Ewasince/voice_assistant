@@ -1,9 +1,19 @@
 [tool.poetry]
-name = "voiceassistant"
+name = "voice_assistant"
 version = "0.1.0"
 description = ""
 authors = ["ewasince <ewasince@gmail.com>"]
 readme = "README.md"
+
+packages = [{ include = "voice_assistant" }]
+#include = [
+#    { path = "app_interfaces" },
+#    { path = "app_utils" },
+#    { path = "command_recognizer" },
+#    { path = "commands/command_get_current_time" },
+#    { path = "massages_source" },
+#    { path = "message_recognizer" }
+#]
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -14,7 +24,8 @@ pyaudio = "^0.2.13"
 
 [tool.poetry.group.dev.dependencies]
 setuptools = "^68.2.2"
+isort = "^5.12.0"
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=1.2.0"]
 build-backend = "poetry.core.masonry.api"

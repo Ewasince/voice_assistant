@@ -1,7 +1,7 @@
-from app_interfaces.i_messages_recognizer import IMessagesRecognizer
-from app_interfaces.i_messages_source import IMessagesSource
-from app_utils.config import Config
-from app_utils.utils import normalize_text, extract_text_after_command
+from voice_assistant.app_interfaces.i_messages_recognizer import IMessagesRecognizer
+from voice_assistant.app_interfaces.i_messages_source import IMessagesSource
+from voice_assistant.app_utils.config import Config
+from voice_assistant.app_utils.utils import normalize_text, extract_text_after_command
 
 
 class MessagesSourceLocalMic(IMessagesSource):

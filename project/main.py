@@ -1,15 +1,23 @@
 from typing import NoReturn
 
-from app_interfaces.i_command_performer import ICommandPerformer
-from app_interfaces.i_command_recognizer import ICommandRecognizer
-from app_interfaces.i_messages_recognizer import IMessagesRecognizer
-from app_interfaces.i_messages_source import IMessagesSource
+from voice_assistant.app_interfaces.i_command_performer import ICommandPerformer
+from voice_assistant.app_interfaces.i_command_recognizer import ICommandRecognizer
+from voice_assistant.app_interfaces.i_messages_recognizer import IMessagesRecognizer
+from voice_assistant.app_interfaces.i_messages_source import IMessagesSource
 ###
-from command_recognizer.command_recognizer_simple import CommandRecognizerSimple
-from commands.command_get_current_os.command_get_current_os import CommandGetCurrentOS
-from commands.command_get_current_time.command_get_current_time import CommandGetCurrentTime
-from massages_source.messages_source import MessagesSourceLocalMic
-from message_recognizer_local_mic.message_recognizer_local_mic import MessageRecognizerLocalMic
+from voice_assistant.command_recognizer.simple.command_recognizer_simple import (
+    CommandRecognizerSimple,
+)
+from voice_assistant.commands.command_get_current_os.command_get_current_os import (
+    CommandGetCurrentOS,
+)
+from voice_assistant.commands.command_get_current_time.command_get_current_time import (
+    CommandGetCurrentTime,
+)
+from voice_assistant.massages_source.messages_source import MessagesSourceLocalMic
+from voice_assistant.message_recognizer.local_mic.message_recognizer_local_mic import (
+    MessageRecognizerLocalMic,
+)
 
 
 def main() -> NoReturn:

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-class IMessagesRecognizer(ABC):
+class IMessageRecognizer(ABC):
     """Определяет интерфейс класса, который выдаёт расшифрованный текст"""
 
     @abstractmethod

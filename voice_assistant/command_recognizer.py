@@ -1,13 +1,13 @@
-from abc import ABC, abstractmethod
-from typing import final
-
 from voice_assistant.app_interfaces.i_command_performer import ICommandPerformer
+from voice_assistant.app_interfaces.i_topic_definer import ITopicDefiner
 
 
-class ICommandRecognizer(ABC):
+class CommandRecognizer:
     """Определяет интерфейс класса, который определяет к какой теме принадлежит команда"""
 
-    def __init__(self):
+    def __init__(self, topic_definer: ITopicDefiner):
+        self._topic_definer = topic_definer
+
         self._command_dict: dict[str, ICommandPerformer] = {}
         self._default_command: ICommandPerformer | None = None
 
@@ -18,17 +18,28 @@ class ICommandRecognizer(ABC):
             self._default_command = command_class
             return
         self._command_dict[topic] = command_class
-        pass
 
-    @abstractmethod
-    async def process_command_from_dict(self, command_text: str) -> str | None:
-        raise NotImplementedError
-
-    @final
     async def process_command(self, command_text: str) -> str | None:
-        res = self.process_command_from_dict(command_text)
+        res = await self._process_command_from_dict(command_text)
 
         if res is None and self._default_command:
             res = await self._default_command.perform_command(command_text)
 
         return res
+
+    async def _process_command_from_dict(self, command_text: str) -> str | None:
+        topics = list(self._command_dict.keys())
+
+        command_topic = await self._topic_definer.define_topic(topics, command_text)
+        assert command_topic in topics, "ITopicDefiner отработал неправильно"
+
+        if command_topic is None:
+            print(f"Не услышал команды: {command_text}")
+            return
+
+        command_performer = self._command_dict[command_topic]
+
+        command_text = command_text[len(command_topic) :].strip()
+        command_res = await command_performer.perform_command(command_text)
+
+        return command_res

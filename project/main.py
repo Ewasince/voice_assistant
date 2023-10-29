@@ -1,36 +1,38 @@
 import asyncio
 from typing import NoReturn
 
-from voice_assistant.app_interfaces.i_command_performer import ICommandPerformer
-from voice_assistant.app_interfaces.i_command_recognizer import ICommandRecognizer
-from voice_assistant.app_interfaces.i_messages_recognizer import IMessagesRecognizer
-from voice_assistant.app_interfaces.i_messages_source import IMessagesSource
-from voice_assistant.command_recognizer.gpt import IGPTModule, YaGPTModule
-from voice_assistant.command_recognizer.gpt.command_recognizer_gpt import CommandRecognizerGPT
-
-###
-from voice_assistant.commands.test_commands.command_get_current_os import (
-    CommandGetCurrentOS,
-)
-from voice_assistant.commands.test_commands.command_get_current_time import (
-    CommandGetCurrentTime,
-)
-from voice_assistant.massages_source.messages_source import MessagesSource
-from voice_assistant.message_recognizer.local_mic.message_recognizer_local_mic import (
-    MessageRecognizerLocalMic,
-)
-
 
 async def main() -> NoReturn:
-    messages_recognizer: IMessagesRecognizer = MessageRecognizerLocalMic()
-    message_source: IMessagesSource = MessagesSource(messages_recognizer)
+    # создаём объект распознавания голоса, который будет переводить наш голос в текст
+    from voice_assistant.app_interfaces import IMessageRecognizer
+    from voice_assistant import MessageRecognizerLocalMic
 
-    # command_recognizer: ICommandRecognizer = CommandRecognizerSimple()
+    messages_recognizer: IMessageRecognizer = MessageRecognizerLocalMic()
+
+    # создаём объект источника команд, который будет предварительно обрабатывать команды
+    from voice_assistant import MessageSource
+
+    message_source: MessageSource = MessageSource(messages_recognizer)
+
+    # создаём объект распознавателя команд
+    # и передаём в него модуль, который будет определять к какой теме относится команда
+    # так же передаём в модуль определния топика с помощью GPT объект GPT
+    from voice_assistant import CommandRecognizer
+    from voice_assistant.app_interfaces import ITopicDefiner
+    from voice_assistant.topic_definers import TopicDefinerGPT
+    from voice_assistant.topic_definers.gpt import IGPTModule
+    from voice_assistant.topic_definers.gpt import YaGPTModule
+
     gpt_module: IGPTModule = YaGPTModule()
-    # gpt_module: IGPTModule = GigaChatModule(input('> '))
-    command_recognizer: ICommandRecognizer = CommandRecognizerGPT(gpt_module)
+
+    topic_definer: ITopicDefiner = TopicDefinerGPT(gpt_module)
+    command_recognizer: CommandRecognizer = CommandRecognizer(topic_definer)
 
     ### commands
+    # так же добавляем команды. Каждая команда – это класс, который должен реализовывать интерфейс команды
+    from voice_assistant.app_interfaces import ICommandPerformer
+    from voice_assistant.commands import CommandGetCurrentOS
+    from voice_assistant.commands import CommandGetCurrentTime
 
     command_time: ICommandPerformer = CommandGetCurrentOS()
     command_recognizer.add_command(command_time)
@@ -39,7 +41,7 @@ async def main() -> NoReturn:
     command_recognizer.add_command(command_time)
 
     ### main process
-
+    # и, например, в цикле получаем от источника команд текстовые сообщения и обрабатываем их
     while True:
         command = await message_source.wait_command()
         res = await command_recognizer.process_command(command)
@@ -48,7 +50,48 @@ async def main() -> NoReturn:
             print(res)
 
 
-command_source: IMessagesSource = ...
+async def main2():
+    # создаём объект распознавания голоса, который будет переводить наш голос в текст
+    from voice_assistant.app_interfaces import IMessageRecognizer
+    from voice_assistant import MessageRecognizerLocalMic
+
+    messages_recognizer: IMessageRecognizer = MessageRecognizerLocalMic()
+
+    # создаём объект источника команд, который будет предварительно обрабатывать команды
+    from voice_assistant import MessageSource
+
+    message_source: MessageSource = MessageSource(messages_recognizer)
+
+    # создаём объект распознавателя команд
+    # и передаём в него модуль, который будет определять к какой теме относится команда
+    from voice_assistant import CommandRecognizer
+    from voice_assistant.app_interfaces import ITopicDefiner
+    from voice_assistant.topic_definers import TopicDefinerSimple
+
+    topic_definer: ITopicDefiner = TopicDefinerSimple()
+    command_recognizer: CommandRecognizer = CommandRecognizer(topic_definer)
+
+    ### commands
+    # так же добавляем команды. Каждая команда – это класс, который должен реализовывать интерфейс команды
+    from voice_assistant.app_interfaces import ICommandPerformer
+    from voice_assistant.commands import CommandGetCurrentOS
+    from voice_assistant.commands import CommandGetCurrentTime
+
+    command_time: ICommandPerformer = CommandGetCurrentOS()
+    command_recognizer.add_command(command_time)
+
+    command_time: ICommandPerformer = CommandGetCurrentTime()
+    command_recognizer.add_command(command_time)
+
+    ### main process
+    # и, например, в цикле получаем от источника команд текстовые сообщения и обрабатываем их
+    while True:
+        command = await message_source.wait_command()
+        res = await command_recognizer.process_command(command)
+
+        if res is not None:
+            print(res)
+
 
 if __name__ == "__main__":
     try:

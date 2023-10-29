@@ -1,12 +1,12 @@
-from voice_assistant.app_interfaces.i_messages_recognizer import IMessagesRecognizer
-from voice_assistant.app_interfaces.i_messages_source import IMessagesSource
+from voice_assistant.app_interfaces.i_message_recognizer import IMessageRecognizer
 from voice_assistant.app_utils.config import Config
 from voice_assistant.app_utils.utils import normalize_text, extract_text_after_command
 
 
-class MessagesSource(IMessagesSource):
+class MessageSource:
     """Обрабатывает полученный текст от распознавателя"""
-    def __init__(self, recognizer: IMessagesRecognizer):
+
+    def __init__(self, recognizer: IMessageRecognizer):
         self.recognizer = recognizer
         self.config = Config()
         return

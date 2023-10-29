@@ -1,3 +1,0 @@
-from voice_assistant.command_recognizer.gpt.gigachat_module import GigaChatModule
-from voice_assistant.command_recognizer.gpt.i_gpt_module import IGPTModule
-from voice_assistant.command_recognizer.gpt.yagpt_module import YaGPTModule

@@ -1,10 +1,9 @@
 from gigachat import GigaChat
 
-from voice_assistant.command_recognizer.gpt.i_gpt_module import IGPTModule
+from voice_assistant.topic_definers.gpt.gpt_modules.i_gpt_module import IGPTModule
 
 
 class GigaChatModule(IGPTModule):
-
     def __init__(self, credentials: str):
         self.credential = credentials
 
@@ -17,10 +16,8 @@ class GigaChatModule(IGPTModule):
             return text
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     gc = GigaChatModule(input())
-
-
 
     while True:
         print(gc.get_answer(input()))

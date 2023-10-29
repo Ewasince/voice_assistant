@@ -6,11 +6,11 @@ import pyaudio
 import speech_recognition as sr
 import typing_extensions
 
-from voice_assistant.app_interfaces.i_messages_recognizer import IMessagesRecognizer
+from voice_assistant.app_interfaces.i_message_recognizer import IMessageRecognizer
 from voice_assistant.app_utils.config import Config
 
 
-class MessageRecognizerLocalMic(IMessagesRecognizer):
+class MessageRecognizerLocalMic(IMessageRecognizer):
     # TODO: разделить класс на распознаватель и источник аудио
     def __init__(self, setup_micro=True):
         self.recognizer = sr.Recognizer()

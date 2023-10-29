@@ -35,8 +35,8 @@ command_recognizer: ICommandRecognizer = CommandRecognizerSimple()
 ### commands
 # так же добавляем команды. Каждая команда – это класс, котрый должен реализовывать интерфейс
 from voice_assistant.app_interfaces.i_command_performer import ICommandPerformer
-from voice_assistant.commands.command_get_current_os.command_get_current_os import CommandGetCurrentOS
-from voice_assistant.commands.command_get_current_time.command_get_current_time import CommandGetCurrentTime
+from voice_assistant.commands.test_commands.command_get_current_os import CommandGetCurrentOS
+from voice_assistant.commands.test_commands.command_get_current_time import CommandGetCurrentTime
 
 command_time: ICommandPerformer = CommandGetCurrentOS()
 command_recognizer.add_command(command_time)

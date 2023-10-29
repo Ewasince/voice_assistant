@@ -5,7 +5,7 @@ class ICommandPerformer(ABC):
     """Определяет класс, содержащий в себе команду"""
 
     @abstractmethod
-    def get_command_topic(self) -> str:
+    def get_command_topic(self) -> str | None:
         """Возвращает текст, при котором должна вызываться команда."""
         raise NotImplementedError
 

@@ -4,7 +4,7 @@ from voice_assistant.app_interfaces.i_command_recognizer import ICommandRecogniz
 
 class CommandRecognizerSimple(ICommandRecognizer):
 
-    async def process_command(self, command_text: str) -> str | None:
+    async def process_command_from_dict(self, command_text: str) -> str | None:
         for command_topic, command_performer in self._command_dict.items():
             if not command_text.startswith(command_topic):
                 continue

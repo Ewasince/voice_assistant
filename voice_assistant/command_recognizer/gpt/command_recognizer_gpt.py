@@ -27,7 +27,7 @@ class CommandRecognizerGPT(ICommandRecognizer):
         if promt: self._promt_define_topic = promt
         return
 
-    async def process_command(self, command_text: str) -> str | None:
+    async def process_command_from_dict(self, command_text: str) -> str | None:
 
         command_topics = list(self._command_dict.keys())
         command_topics = self._prepare_command_topics(command_topics)
@@ -55,10 +55,10 @@ class CommandRecognizerGPT(ICommandRecognizer):
                 elif binary_answer == 'нет':
                     continue
                 else:
-                    print(f'я спросил у gpt "{promt_reliable_topics}", а он ответил "{binary_answer}" и я не понял')
+                    print(f'Я спросил у gpt "{promt_reliable_topics}", а он ответил "{binary_answer}" и я не понял')
                     continue
             else:
-                print(f"Не услышал команды: {command_text}")
+                print(f"Не услышал известной команды: {command_text}")
                 return
 
         command_res = await command_performer.perform_command(command_text)

@@ -3,12 +3,6 @@ from voice_assistant.app_interfaces.i_command_recognizer import ICommandRecogniz
 
 
 class CommandRecognizerSimple(ICommandRecognizer):
-    def __init__(self):
-        self._command_dict: dict[str, ICommandPerformer] = {}
-
-    def add_command(self, command_class: ICommandPerformer):
-        self._command_dict[command_class.get_command_topic()] = command_class
-        pass
 
     async def process_command(self, command_text: str) -> str | None:
         for command_topic, command_performer in self._command_dict.items():

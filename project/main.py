@@ -5,6 +5,8 @@ from voice_assistant.app_interfaces.i_command_performer import ICommandPerformer
 from voice_assistant.app_interfaces.i_command_recognizer import ICommandRecognizer
 from voice_assistant.app_interfaces.i_messages_recognizer import IMessagesRecognizer
 from voice_assistant.app_interfaces.i_messages_source import IMessagesSource
+from voice_assistant.command_recognizer.gpt import IGPTModule, YaGPTModule, GigaChatModule
+from voice_assistant.command_recognizer.gpt.command_recognizer_gpt import CommandRecognizerGPT
 
 ###
 from voice_assistant.command_recognizer.simple.command_recognizer_simple import (
@@ -26,7 +28,10 @@ async def main() -> NoReturn:
     messages_recognizer: IMessagesRecognizer = MessageRecognizerLocalMic()
     message_source: IMessagesSource = MessagesSource(messages_recognizer)
 
-    command_recognizer: ICommandRecognizer = CommandRecognizerSimple()
+    # command_recognizer: ICommandRecognizer = CommandRecognizerSimple()
+    gpt_module: IGPTModule = YaGPTModule()
+    # gpt_module: IGPTModule = GigaChatModule(input('> '))
+    command_recognizer: ICommandRecognizer = CommandRecognizerGPT(gpt_module)
 
     ### commands
 

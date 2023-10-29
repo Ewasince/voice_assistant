@@ -24,4 +24,5 @@ def extract_text_after_command(text: str, key: str) -> str | None:
 def normalize_text(input_text: str) -> str:
     text = input_text.lower()
     text = p.sub("", text)
+    text = text.strip()
     return text

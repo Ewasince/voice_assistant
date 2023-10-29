@@ -31,11 +31,12 @@ class CommandRecognizer:
         topics = list(self._command_dict.keys())
 
         command_topic = await self._topic_definer.define_topic(topics, command_text)
-        assert command_topic in topics, "ITopicDefiner отработал неправильно"
 
         if command_topic is None:
-            print(f"Не услышал команды: {command_text}")
+            # print(f"Не услышал команд, которые я знаю: {command_text}")
             return
+
+        assert command_topic in topics, "ITopicDefiner отработал неправильно"
 
         command_performer = self._command_dict[command_topic]
 

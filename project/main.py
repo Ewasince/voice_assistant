@@ -1,6 +1,9 @@
 import asyncio
 from typing import NoReturn
 
+from voice_assistant.commands.gpt.default import CommandGPTDefault
+from voice_assistant.commands.gpt.notion import CommandGPTNotion
+
 
 async def main() -> NoReturn:
     # создаём объект распознавания голоса, который будет переводить наш голос в текст
@@ -39,6 +42,12 @@ async def main() -> NoReturn:
 
     command_time: ICommandPerformer = CommandGetCurrentTime()
     command_recognizer.add_command(command_time)
+
+    command_notion: ICommandPerformer = CommandGPTNotion(gpt_module, topic_definer)
+    command_recognizer.add_command(command_notion)
+
+    command_default: ICommandPerformer = CommandGPTDefault(gpt_module)
+    command_recognizer.add_command(command_default)
 
     ### main process
     # и, например, в цикле получаем от источника команд текстовые сообщения и обрабатываем их

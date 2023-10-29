@@ -26,3 +26,7 @@ def normalize_text(input_text: str) -> str:
     text = p.sub("", text)
     text = text.strip()
     return text
+
+
+def quote_list(entries: list[str]) -> str:
+    return '"' + '", "'.join(entries) + '"'

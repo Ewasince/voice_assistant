@@ -1,9 +1,9 @@
 from voice_assistant.app_interfaces.i_topic_definer import ITopicDefiner
-from voice_assistant.app_utils.utils import normalize_text
+from voice_assistant.app_utils.utils import normalize_text, quote_list
 from voice_assistant.topic_definers.gpt.gpt_modules.i_gpt_module import IGPTModule
 
 PROMPT_DEFINE_TOPIC = """\
-У меня есть предложение "{sentence}", к какой из следующих тем оно относится – {command_topics}? Отправь мне одну из перечисленных тем без изменений.\
+У меня есть предложение "{sentence}", к какой из следующих тем оно относится – {command_topics}? Отправь мне одну из перечисленных тем без изменений. Если предложение ни к одной из тем не относится, напиши просто "не знаю".\
 """
 
 PROMPT_RELIABLE_TOPICS = """\
@@ -20,7 +20,7 @@ class TopicDefinerGPT(ITopicDefiner):
         return
 
     async def define_topic(self, topics: list[str], guessable_topic: str) -> str | None:
-        command_topics_str = self._prepare_command_topics(topics)
+        command_topics_str = quote_list(topics)
         prompt = self._generate_prompt_define_topic(command_topics_str, guessable_topic)
 
         guessed_topic = self._gpt_module.get_answer(prompt)
@@ -30,7 +30,7 @@ class TopicDefinerGPT(ITopicDefiner):
             return guessed_topic
 
         print(
-            f'не нашёл к чему относится, пробую разобраться: "{guessed_topic}" ?= "{guessable_topic}"'
+            f'не нашёл к чему относится, пробую разобраться. Что я отгадал: "{guessed_topic}", что мне нужно отгадать: "{guessable_topic}"'
         )
         guessed_topic = self._define_reliable_topics(topics, guessed_topic)
 
@@ -62,9 +62,6 @@ class TopicDefinerGPT(ITopicDefiner):
                 continue
         else:
             return
-
-    def _prepare_command_topics(self, topics: list[str]) -> str:
-        return '"' + '", "'.join(topics) + '"'
 
     def _generate_prompt_define_topic(self, topics: str, command: str) -> str:
         prompt = self._prompt_define_topic.format(

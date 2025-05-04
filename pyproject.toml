@@ -1,36 +1,20 @@
-[tool.poetry]
-name = "voice_assistant"
-version = "0.2.0"
-description = ""
-authors = ["ewasince <ewasince@gmail.com>"]
+[project]
+name = "voice-assistant"
+version = "0.1.0"
+description = "Add your description here"
 readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pyaudio>=0.2.14",
+    "pydantic>=2.11.4",
+    "speechrecognition>=3.14.2",
+]
 
-packages = [{ include = "voice_assistant" }]
-#include = [
-#    { path = "app_interfaces" },
-#    { path = "app_utils" },
-#    { path = "command_recognizer" },
-#    { path = "commands/command_get_current_time" },
-#    { path = "massages_source" },
-#    { path = "message_recognizer" }
-#]
-
-[tool.poetry.dependencies]
-python = "^3.11"
-pydantic = "^2.4.2"
-speechrecognition = "^3.10.0"
-pyaudio = "^0.2.13"
-
-[tool.poetry.group.dev.dependencies]
-setuptools = "^68.2.2"
-isort = "^5.12.0"
-black = "^23.10.1"
-
-[tool.poetry.group.gpt.dependencies]
-selenium = "^4.14.0"
-gigachat = "^0.1.6"
-pytion = "^1.3.5"
-
-[build-system]
-requires = ["poetry-core>=1.2.0"]
-build-backend = "poetry.core.masonry.api"
+[dependency-groups]
+dev = [
+    "ruff>=0.11.8",
+]
+deepseek = [
+    "torch>=2.7.0",
+    "transformers>=4.51.3",
+]

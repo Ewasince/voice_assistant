@@ -46,4 +46,3 @@ class CommandRecognizer:
 
         command_text = command_text[len(command_topic) :].strip()
         return await command_performer.perform_command(command_text)
-

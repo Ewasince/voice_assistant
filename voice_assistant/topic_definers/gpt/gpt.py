@@ -31,7 +31,7 @@ class TopicDefinerGPT(ITopicDefiner):
             return guessed_topic
 
         print(
-            f'не нашёл к чему относится, пробую разобраться. '
+            f"не нашёл к чему относится, пробую разобраться. "
             f'Что я отгадал: "{guessed_topic}", что мне нужно отгадать: "{guessable_topic}"'
         )
         guessed_topic = self._define_reliable_topics(topics, guessed_topic)

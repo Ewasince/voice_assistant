@@ -60,7 +60,6 @@ class TextSourceLocalMic(TextSource):
             return self.recognize_speech(audio_data)
 
 
-
 @typing_extensions.deprecated("The `get_waw` is deprecated")
 def _get_waw(seconds=3) -> str:
     config = Settings()

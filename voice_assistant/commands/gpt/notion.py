@@ -24,7 +24,6 @@ class CommandGPTNotion(ICommandPerformer):
         self._no: Notion = Notion(token=os.environ.get("TOKEN"))
         self._main_page = self._no.pages.get("0aaa8ebc4ae64937be87533d951df04c")
 
-
     def get_command_topic(self) -> str:
         return "списки"
 

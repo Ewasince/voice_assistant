@@ -30,7 +30,7 @@ env_files = [".env.test"]
 [tool.coverage.run]
 branch = true
 omit = []
-source = ["scenario_converter"]
+source = ["voice_assistant"]
 
 [tool.coverage.report]
 exclude_lines = [
@@ -45,7 +45,7 @@ disallow_untyped_decorators = true
 disallow_untyped_defs = true
 explicit_package_bases = true
 extra_checks = true
-files = ["scenario_converter"]
+files = ["voice_assistant"]
 ignore_errors = false
 ignore_missing_imports = true
 namespace_packages = true

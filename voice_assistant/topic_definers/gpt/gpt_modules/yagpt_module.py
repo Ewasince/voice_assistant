@@ -1,3 +1,5 @@
+from typing import Self
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -6,17 +8,17 @@ from voice_assistant.topic_definers.gpt.gpt_modules.i_gpt_module import IGPTModu
 
 
 class YaGPTModule(IGPTModule):
-    def __init__(self):
+    def __init__(self) -> None:
         self.driver = webdriver.Chrome()
         self.driver.get("https://ya.ru/alisa_davay_pridumaem")
         # assert "Python" in driver.title
 
-    def __enter__(self):
+    def __enter__(self) -> Self:
         # sleep(1)
         self.driver.get("https://ya.ru/alisa_davay_pridumaem")
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         self.driver.close()
 
     def get_answer(self, text) -> str:

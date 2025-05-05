@@ -22,9 +22,9 @@ async def main() -> NoReturn:
     # так же передаём в модуль определния топика с помощью GPT объект GPT
     from voice_assistant import CommandRecognizer
     from voice_assistant.app_interfaces import ITopicDefiner
-    from voice_assistant.topic_definers import TopicDefinerGPT
-    from voice_assistant.topic_definers.gpt import IGPTModule
-    from voice_assistant.topic_definers.gpt import YaGPTModule
+    from voice_assistant.topic_definers.gpt.gpt import TopicDefinerGPT
+    from voice_assistant.topic_definers.gpt.gpt_modules.i_gpt_module import IGPTModule
+    from voice_assistant.topic_definers.gpt.gpt_modules.yagpt_module import YaGPTModule
 
     gpt_module: IGPTModule = YaGPTModule()
 

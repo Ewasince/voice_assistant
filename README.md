@@ -54,5 +54,5 @@ async def main():
         res = await command_recognizer.process_command(command)
 
         if res is not None:
-            print(res)
+            loguru.info(res)
 ```

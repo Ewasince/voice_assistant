@@ -55,10 +55,13 @@ async def main() -> NoReturn:
     # и, например, в цикле получаем от источника команд текстовые сообщения и обрабатываем их
     while True:
         command = await message_source.wait_command()
-        res = await command_recognizer.process_command(command)
+        command_result = await command_recognizer.process_command(command)
+        assistant_response = f"Ответ ассистента: {command_result}"
 
-        if res is not None:
-            print(res)
+        if command_result is not None:
+            print(assistant_response)
+        else:
+            print()
 
 
 # async def main2():
@@ -99,7 +102,7 @@ async def main() -> NoReturn:
 #         res = await command_recognizer.process_command(command)
 #
 #         if res is not None:
-#             print(res)
+#             loguru.info(res)
 
 
 if __name__ == "__main__":

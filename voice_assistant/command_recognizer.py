@@ -12,7 +12,11 @@ class CommandRecognizer:
         self._default_command: ICommandPerformer | None = None
 
     def add_command(self, command_class: ICommandPerformer):
-        """Добавляет команды для распознавания. Для задания команды по-умолчанию, нужно передать команду с текстом None"""
+        """
+        Добавляет команды для распознавания.
+        Для задания команды по-умолчанию, нужно передать команду с текстом None
+        """
+
         topic = command_class.get_command_topic()
         if not topic:
             self._default_command = command_class
@@ -34,13 +38,12 @@ class CommandRecognizer:
 
         if command_topic is None:
             # print(f"Не услышал команд, которые я знаю: {command_text}")
-            return
+            return None
 
         assert command_topic in topics, "ITopicDefiner отработал неправильно"
 
         command_performer = self._command_dict[command_topic]
 
         command_text = command_text[len(command_topic) :].strip()
-        command_res = await command_performer.perform_command(command_text)
+        return await command_performer.perform_command(command_text)
 
-        return command_res

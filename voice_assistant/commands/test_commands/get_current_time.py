@@ -7,7 +7,7 @@ class CommandGetCurrentTime(ICommandPerformer):
     def get_command_topic(self) -> str:
         return "время"
 
-    async def perform_command(self, command_context: str) -> str | None:
+    async def perform_command(self, _: str) -> str | None:
         # extract_text_after_command(command_context, self.get_command_text())
-        cur_time = datetime.now()
+        cur_time = datetime.now()  # noqa: DTZ005
         return f"Сейчас время: {cur_time}"

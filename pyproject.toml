@@ -113,6 +113,7 @@ ignore = [
   "PTH113",
   "PTH118",
   "PTH119",
+  "ERA001",
 ]
 # Enable rules, in addition to the defaults. https://docs.astral.sh/ruff/rules
 select = [

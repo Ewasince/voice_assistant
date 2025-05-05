@@ -1,3 +1,1 @@
-from voice_assistant.app_interfaces.command_performer import ICommandPerformer
-from voice_assistant.app_interfaces.message_recognizer import TextSource
-from voice_assistant.app_interfaces.topic_definer import ITopicDefiner
+

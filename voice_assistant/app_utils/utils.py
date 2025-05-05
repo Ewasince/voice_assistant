@@ -9,8 +9,7 @@ p = re.compile(config.regexp)
 def normalize_text(input_text: str) -> str:
     text = input_text.lower()
     text = p.sub("", text)
-    text = text.strip()
-    return text
+    return text.strip()
 
 
 def quote_list(entries: list[str]) -> str:

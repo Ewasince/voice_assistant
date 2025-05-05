@@ -9,7 +9,6 @@ class MessageSource:
     def __init__(self, recognizer: TextSource):
         self.recognizer = recognizer
         self.config = Settings()
-        return
 
     async def wait_command(self) -> str:
         while True:
@@ -25,7 +24,7 @@ class MessageSource:
     def _check_command_after_key_word(self, input_text: str | None) -> str | None:
         if input_text is None:
             print("Ничего не услышал, слушаю дальше...")
-            return
+            return None
 
         text = normalize_text(input_text)
 
@@ -33,7 +32,7 @@ class MessageSource:
 
         if not filtered_text:
             print(f"Не услышал ключевого слова: {text}")
-            return
+            return None
 
         return filtered_text
 

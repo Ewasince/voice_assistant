@@ -33,8 +33,7 @@ class YaGPTModule(IGPTModule):
 
         answers = self.driver.find_elements(by=By.CLASS_NAME, value="markdown-text")
         answer = answers[-1]
-        answer_text = answer.text
-        return answer_text
+        return answer.text
 
 
 if __name__ == "__main__":
@@ -47,4 +46,3 @@ if __name__ == "__main__":
 
         res3 = ym.get_answer("Сколько будет два плюс два?")
 
-        pass

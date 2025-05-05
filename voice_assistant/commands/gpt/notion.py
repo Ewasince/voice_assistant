@@ -24,7 +24,6 @@ class CommandGPTNotion(ICommandPerformer):
         self._no: Notion = Notion(token=os.environ.get("TOKEN"))
         self._main_page = self._no.pages.get("0aaa8ebc4ae64937be87533d951df04c")
 
-        return
 
     def get_command_topic(self) -> str:
         return "списки"
@@ -35,7 +34,7 @@ class CommandGPTNotion(ICommandPerformer):
 
         # command_context = command_context[len(self.get_command_topic()):]
         if command_context == "":
-            return
+            return None
         suggested_topic = await self.topic_definer.define_topic(list(inner_pages.keys()), command_context)
 
         if suggested_topic is None:
@@ -54,11 +53,10 @@ class CommandGPTNotion(ICommandPerformer):
         return f'Добавил "{command_context}" на страницу "{suggested_topic}"'
 
     def _generate_prompt_delete_topic_from_text(self, note: str, topic: str) -> str:
-        prompt = self._prompt_delete_topic_from_text.format(
+        return self._prompt_delete_topic_from_text.format(
             note=note,
             topic=topic,
         )
-        return prompt
 
 
 if __name__ == "__main__":

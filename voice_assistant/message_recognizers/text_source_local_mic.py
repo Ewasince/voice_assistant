@@ -27,15 +27,13 @@ class TextSourceLocalMic(TextSource):
 
         # print(f"{self.recognizer.energy_threshold}") # self.recognizer.energy_threshold
         print("Микрофон настроен!")
-        return
 
     async def next_text_command(self) -> str | None:
         print("Слушаю...")
         with self.microphone as source:
             audio = self.recognizer.listen(source)
         # print("Got it! Now to recognize it...")
-        text = self.recognize_speech(audio)
-        return text
+        return self.recognize_speech(audio)
 
     def recognize_speech(self, audio_data: sr.AudioData) -> str | None:
         # Распознаем речь из аудио
@@ -59,9 +57,8 @@ class TextSourceLocalMic(TextSource):
 
         with audio_file as source:
             audio_data = self.recognizer.record(source)
-            text = self.recognize_speech(audio_data)
+            return self.recognize_speech(audio_data)
 
-        return text
 
 
 @typing_extensions.deprecated("The `get_waw` is deprecated")
@@ -73,7 +70,7 @@ def _get_waw(seconds=3) -> str:
         # print('created temporary directory', tmpdirname)
         # filename = os.path.join(tmpdirname, str(time.time()), '.waw')
 
-        filename = os.path.join(config.data_dir, str(datetime.now()) + ".wav")
+        filename = os.path.join(config.data_dir, str(datetime.now()) + ".wav")  # noqa: DTZ005
         filename = filename.replace(":", ";")
         p = pyaudio.PyAudio()  # Создать интерфейс для PortAudio
 
@@ -91,7 +88,7 @@ def _get_waw(seconds=3) -> str:
         frames = []  # Инициализировать массив для хранения кадров
 
         # Хранить данные в блоках в течение 3 секунд
-        for i in range(0, int(config.rate / config.chunk * seconds)):
+        for _i in range(int(config.rate / config.chunk * seconds)):
             data = stream.read(config.chunk)
             frames.append(data)
 
@@ -104,12 +101,11 @@ def _get_waw(seconds=3) -> str:
         print("Finished recording!")
 
         # Сохранить записанные данные в виде файла WAV
-        wf = wave.open(filename, "wb")
-        wf.setnchannels(config.channels)
-        wf.setsampwidth(p.get_sample_size(config.sample_format))
-        wf.setframerate(config.rate)
-        wf.writeframes(b"".join(frames))
-        wf.close()
+        with wave.open(filename, "wb") as wf:
+            wf.setnchannels(config.channels)
+            wf.setsampwidth(p.get_sample_size(config.sample_format))
+            wf.setframerate(config.rate)
+            wf.writeframes(b"".join(frames))
 
         return filename
     except Exception as e:

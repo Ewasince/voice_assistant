@@ -1,4 +1,4 @@
-from voice_assistant.app_interfaces.i_command_performer import ICommandPerformer
+from voice_assistant.app_interfaces.command_performer import ICommandPerformer
 from voice_assistant.topic_definers.gpt.gpt_modules.i_gpt_module import IGPTModule
 
 

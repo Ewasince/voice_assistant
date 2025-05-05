@@ -1,5 +1,5 @@
-from voice_assistant.app_interfaces.i_command_performer import ICommandPerformer
-from voice_assistant.app_interfaces.i_topic_definer import ITopicDefiner
+from voice_assistant.app_interfaces.command_performer import ICommandPerformer
+from voice_assistant.app_interfaces.topic_definer import ITopicDefiner
 
 
 class CommandRecognizer:

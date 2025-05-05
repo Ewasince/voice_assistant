@@ -7,20 +7,20 @@ from voice_assistant.commands.gpt.notion import CommandGPTNotion
 
 async def main() -> NoReturn:
     # создаём объект распознавания голоса, который будет переводить наш голос в текст
-    from voice_assistant.app_interfaces import IMessageRecognizer
-    from voice_assistant import MessageRecognizerLocalMic
+    from voice_assistant.app_interfaces import TextSource
+    from voice_assistant.message_recognizers.text_source_local_mic import TextSourceLocalMic
 
-    messages_recognizer: IMessageRecognizer = MessageRecognizerLocalMic()
+    messages_recognizer: TextSource = TextSourceLocalMic()
 
     # создаём объект источника команд, который будет предварительно обрабатывать команды
-    from voice_assistant import MessageSource
+    from voice_assistant.message_source import MessageSource
 
-    message_source: MessageSource = MessageSource(messages_recognizer)
+    message_source = MessageSource(messages_recognizer)
 
     # создаём объект распознавателя команд
     # и передаём в него модуль, который будет определять к какой теме относится команда
     # так же передаём в модуль определния топика с помощью GPT объект GPT
-    from voice_assistant import CommandRecognizer
+    from voice_assistant.command_recognizer import CommandRecognizer
     from voice_assistant.app_interfaces import ITopicDefiner
     from voice_assistant.topic_definers.gpt.gpt import TopicDefinerGPT
     from voice_assistant.topic_definers.gpt.gpt_modules.i_gpt_module import IGPTModule
@@ -61,10 +61,9 @@ async def main() -> NoReturn:
 
 async def main2():
     # создаём объект распознавания голоса, который будет переводить наш голос в текст
-    from voice_assistant.app_interfaces import IMessageRecognizer
-    from voice_assistant import MessageRecognizerLocalMic
+    from voice_assistant.app_interfaces import TextSource
 
-    messages_recognizer: IMessageRecognizer = MessageRecognizerLocalMic()
+    messages_recognizer: TextSource = MessageRecognizerLocalMic()
 
     # создаём объект источника команд, который будет предварительно обрабатывать команды
     from voice_assistant import MessageSource

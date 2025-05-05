@@ -1,4 +1,4 @@
-from voice_assistant.app_interfaces.i_topic_definer import ITopicDefiner
+from voice_assistant.app_interfaces.topic_definer import ITopicDefiner
 
 
 class TopicDefinerSimple(ITopicDefiner):

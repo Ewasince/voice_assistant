@@ -1,4 +1,4 @@
-from voice_assistant.app_interfaces.i_topic_definer import ITopicDefiner
+from voice_assistant.app_interfaces.topic_definer import ITopicDefiner
 from voice_assistant.app_utils.utils import normalize_text, quote_list
 from voice_assistant.topic_definers.gpt.gpt_modules.i_gpt_module import IGPTModule
 

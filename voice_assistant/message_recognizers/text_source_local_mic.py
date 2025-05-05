@@ -6,11 +6,11 @@ import pyaudio
 import speech_recognition as sr
 import typing_extensions
 
-from voice_assistant.app_interfaces.i_message_recognizer import IMessageRecognizer
+from voice_assistant.app_interfaces.message_recognizer import TextSource
 from voice_assistant.app_utils.settings import Settings
 
 
-class MessageRecognizerLocalMic(IMessageRecognizer):
+class TextSourceLocalMic(TextSource):
     # TODO: разделить класс на распознаватель и источник аудио
     def __init__(self, setup_micro=True):
         self.recognizer = sr.Recognizer()
@@ -19,7 +19,6 @@ class MessageRecognizerLocalMic(IMessageRecognizer):
 
         if setup_micro:
             self.setup_microphone()
-        pass
 
     def setup_microphone(self):
         print("Момент тишины, микрофон настраивается...")
@@ -30,7 +29,7 @@ class MessageRecognizerLocalMic(IMessageRecognizer):
         print("Микрофон настроен!")
         return
 
-    async def get_audio(self) -> str | None:
+    async def next_text_command(self) -> str | None:
         print("Слушаю...")
         with self.microphone as source:
             audio = self.recognizer.listen(source)

@@ -16,10 +16,10 @@ pip install 'git+https://github.com/Ewasince/voice_assistant'
 async def main():
     # создаём объект распознавания голоса, который будет переводить наш голос в текст
     # создаём объект распознавания голоса, который будет переводить наш голос в текст
-    from voice_assistant.app_interfaces import IMessageRecognizer
+    from voice_assistant.app_interfaces import TextSource
     from voice_assistant import MessageRecognizerLocalMic
 
-    messages_recognizer: IMessageRecognizer = MessageRecognizerLocalMic()
+    messages_recognizer: TextSource = MessageRecognizerLocalMic()
 
     # создаём объект источника команд, который будет предварительно обрабатывать команды
     from voice_assistant import MessageSource

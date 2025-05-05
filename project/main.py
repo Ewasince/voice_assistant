@@ -1,8 +1,6 @@
 import asyncio
 from typing import NoReturn
 
-from voice_assistant.commands.gpt.default import CommandGPTDefault
-from voice_assistant.commands.gpt.notion import CommandGPTNotion
 
 
 async def main() -> NoReturn:
@@ -36,6 +34,8 @@ async def main() -> NoReturn:
     from voice_assistant.app_interfaces.command_performer import ICommandPerformer
     from voice_assistant.commands.test_commands.get_current_os import CommandGetCurrentOS
     from voice_assistant.commands.test_commands.get_current_time import CommandGetCurrentTime
+    from voice_assistant.commands.gpt.default import CommandGPTDefault
+    from voice_assistant.commands.gpt.notion import CommandGPTNotion
 
     command_time: ICommandPerformer = CommandGetCurrentOS()
     command_recognizer.add_command(command_time)

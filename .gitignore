@@ -166,3 +166,4 @@ poetry.lock
 *.env
 data/
 models/*
+.cache/

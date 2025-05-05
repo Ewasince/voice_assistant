@@ -4,7 +4,7 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_gigachat.chat_models import GigaChat
 
 from voice_assistant.app_utils.settings import Settings
-from voice_assistant.topic_definers.gpt.gpt_modules.i_gpt_module import IGPTModule
+from voice_assistant.app_interfaces.gpt_module import IGPTModule
 
 
 class GigaChatModule(IGPTModule):

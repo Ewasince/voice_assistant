@@ -2,13 +2,13 @@ import asyncio
 from typing import NoReturn
 
 
-
 async def main() -> NoReturn:
     # создаём объект распознавания голоса, который будет переводить наш голос в текст
     from voice_assistant.app_interfaces.message_recognizer import TextSource
-    from voice_assistant.message_recognizers.text_source_local_mic import TextSourceLocalMic
+    # from voice_assistant.message_recognizers.text_source_local_mic import TextSourceLocalMic
+    from voice_assistant.message_recognizers.text_source_cli import TextSourceCLI
 
-    messages_recognizer: TextSource = TextSourceLocalMic()
+    messages_recognizer: TextSource = TextSourceCLI()
 
     # создаём объект источника команд, который будет предварительно обрабатывать команды
     from voice_assistant.message_source import MessageSource
@@ -21,10 +21,12 @@ async def main() -> NoReturn:
     from voice_assistant.app_interfaces.topic_definer import ITopicDefiner
     from voice_assistant.command_recognizer import CommandRecognizer
     from voice_assistant.topic_definers.gpt.gpt import TopicDefinerGPT
-    from voice_assistant.topic_definers.gpt.gpt_modules.i_gpt_module import IGPTModule
-    from voice_assistant.topic_definers.gpt.gpt_modules.yagpt_module import YaGPTModule
+    from voice_assistant.app_interfaces.gpt_module import IGPTModule
+    from voice_assistant.topic_definers.gpt.gpt_modules.gigachat_module import GigaChatModule
 
-    gpt_module: IGPTModule = YaGPTModule()
+    from voice_assistant.app_utils.settings import Settings
+
+    gpt_module: IGPTModule = GigaChatModule(Settings())
 
     topic_definer: ITopicDefiner = TopicDefinerGPT(gpt_module)
     command_recognizer: CommandRecognizer = CommandRecognizer(topic_definer)
@@ -43,8 +45,8 @@ async def main() -> NoReturn:
     command_time: ICommandPerformer = CommandGetCurrentTime()
     command_recognizer.add_command(command_time)
 
-    command_notion: ICommandPerformer = CommandGPTNotion(gpt_module, topic_definer)
-    command_recognizer.add_command(command_notion)
+    # command_notion: ICommandPerformer = CommandGPTNotion(gpt_module, topic_definer)
+    # command_recognizer.add_command(command_notion)
 
     command_default: ICommandPerformer = CommandGPTDefault(gpt_module)
     command_recognizer.add_command(command_default)

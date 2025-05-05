@@ -1,6 +1,6 @@
 from voice_assistant.app_interfaces.topic_definer import ITopicDefiner
 from voice_assistant.app_utils.utils import normalize_text, quote_list
-from voice_assistant.topic_definers.gpt.gpt_modules.i_gpt_module import IGPTModule
+from voice_assistant.app_interfaces.gpt_module import IGPTModule
 
 PROMPT_DEFINE_TOPIC = """\
 У меня есть предложение "{sentence}", к какой из следующих тем оно относится \

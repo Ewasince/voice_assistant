@@ -6,9 +6,9 @@ from pytion import Notion
 from pytion.api import Element
 from pytion.models import Block
 
-from voice_assistant.app_interfaces import ITopicDefiner
 from voice_assistant.app_interfaces.command_performer import ICommandPerformer
-from voice_assistant.topic_definers.gpt.gpt_modules.i_gpt_module import IGPTModule
+from voice_assistant.app_interfaces.gpt_module import IGPTModule
+from voice_assistant.app_interfaces.topic_definer import ITopicDefiner
 
 PROMPT_DELETE_TOPIC_FROM_TEXT = """\
 Удали из предложения "{note}" упоминание о "{topic}" и вышли мне исправленный вариант.\

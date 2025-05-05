@@ -36,9 +36,7 @@ class CommandGPTNotion(ICommandPerformer):
         # command_context = command_context[len(self.get_command_topic()):]
         if command_context == "":
             return
-        suggested_topic = await self.topic_definer.define_topic(
-            list(inner_pages.keys()), command_context
-        )
+        suggested_topic = await self.topic_definer.define_topic(list(inner_pages.keys()), command_context)
 
         if suggested_topic is None:
             return f'Не знаю куда записать "{command_context}"'
@@ -48,9 +46,7 @@ class CommandGPTNotion(ICommandPerformer):
         # page = self._no.pages.get(page_block.id)
 
         note_text = command_context
-        note_text = self.gpt_module.get_answer(
-            self._generate_prompt_delete_topic_from_text(note_text, suggested_topic)
-        )
+        note_text = self.gpt_module.get_answer(self._generate_prompt_delete_topic_from_text(note_text, suggested_topic))
 
         my_text_block = Block.create(note_text)
         self._no.blocks.block_append(page_block.id, block=my_text_block)

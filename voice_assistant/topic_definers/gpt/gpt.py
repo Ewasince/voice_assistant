@@ -40,13 +40,9 @@ class TopicDefinerGPT(ITopicDefiner):
         print(f"Не услышал известной команды: {guessable_topic}")
         return None
 
-    def _define_reliable_topics(
-        self, topics: list[str], guess_topic: str
-    ) -> str | None:
+    def _define_reliable_topics(self, topics: list[str], guess_topic: str) -> str | None:
         for command_topic in topics:
-            prompt_reliable_topics = self._generate_prompt_reliable_topics(
-                guess_topic, command_topic
-            )
+            prompt_reliable_topics = self._generate_prompt_reliable_topics(guess_topic, command_topic)
 
             binary_answer = self._gpt_module.get_answer(prompt_reliable_topics)
             binary_answer = normalize_text(binary_answer)
@@ -56,9 +52,7 @@ class TopicDefinerGPT(ITopicDefiner):
             elif binary_answer == "нет":
                 continue
             else:
-                print(
-                    f'Я спросил у gpt "{prompt_reliable_topics}", а он ответил "{binary_answer}" и я не понял'
-                )
+                print(f'Я спросил у gpt "{prompt_reliable_topics}", а он ответил "{binary_answer}" и я не понял')
                 continue
         else:
             return

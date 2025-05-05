@@ -20,23 +20,13 @@ class YaGPTModule(IGPTModule):
         self.driver.close()
 
     def get_answer(self, text) -> str:
-        elem = self.driver.find_element(
-            by=By.XPATH, value="/html/body/div[1]/div/div[2]/div[2]/div/div[1]/div"
-        )
+        elem = self.driver.find_element(by=By.XPATH, value="/html/body/div[1]/div/div[2]/div[2]/div/div[1]/div")
         elem.send_keys(text)
         elem.send_keys(Keys.RETURN)
 
         while True:
-            is_thinking = len(
-                self.driver.find_elements(
-                    by=By.XPATH, value="//div[text()='Алиса думает...']"
-                )
-            )
-            is_writing = len(
-                self.driver.find_elements(
-                    by=By.XPATH, value="//div[text()='Алиса печатает...']"
-                )
-            )
+            is_thinking = len(self.driver.find_elements(by=By.XPATH, value="//div[text()='Алиса думает...']"))
+            is_writing = len(self.driver.find_elements(by=By.XPATH, value="//div[text()='Алиса печатает...']"))
 
             if not is_thinking and not is_writing:
                 break

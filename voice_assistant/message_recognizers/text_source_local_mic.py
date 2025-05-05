@@ -41,18 +41,14 @@ class TextSourceLocalMic(TextSource):
         # Распознаем речь из аудио
         try:
             # recognize speech using Google Speech Recognition
-            value = self.recognizer.recognize_google(
-                audio_data, language=self.config.language
-            )
+            value = self.recognizer.recognize_google(audio_data, language=self.config.language)
 
             # print("You said {}".format(value))
         except sr.UnknownValueError:
             # print("Oops! Didn't catch that")
             return None
         except sr.RequestError as e:
-            print(
-                f"Couldn't request results from Google Speech Recognition service; {e}"
-            )
+            print(f"Couldn't request results from Google Speech Recognition service; {e}")
             raise e
         else:
             return value

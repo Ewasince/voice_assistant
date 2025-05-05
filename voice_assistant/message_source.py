@@ -1,5 +1,5 @@
 from voice_assistant.app_interfaces.i_message_recognizer import IMessageRecognizer
-from voice_assistant.app_utils.config import Config
+from voice_assistant.app_utils.settings import Settings
 from voice_assistant.app_utils.utils import normalize_text, extract_text_after_command
 
 
@@ -8,7 +8,7 @@ class MessageSource:
 
     def __init__(self, recognizer: IMessageRecognizer):
         self.recognizer = recognizer
-        self.config = Config()
+        self.config = Settings()
         return
 
     def _prepare_text(self, input_text: str) -> str | None:

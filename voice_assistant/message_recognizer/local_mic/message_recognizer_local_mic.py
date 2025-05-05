@@ -7,7 +7,7 @@ import speech_recognition as sr
 import typing_extensions
 
 from voice_assistant.app_interfaces.i_message_recognizer import IMessageRecognizer
-from voice_assistant.app_utils.config import Config
+from voice_assistant.app_utils.settings import Settings
 
 
 class MessageRecognizerLocalMic(IMessageRecognizer):
@@ -15,7 +15,7 @@ class MessageRecognizerLocalMic(IMessageRecognizer):
     def __init__(self, setup_micro=True):
         self.recognizer = sr.Recognizer()
         self.microphone = sr.Microphone()
-        self.config = Config()
+        self.config = Settings()
 
         if setup_micro:
             self.setup_microphone()
@@ -71,7 +71,7 @@ class MessageRecognizerLocalMic(IMessageRecognizer):
 
 @typing_extensions.deprecated("The `get_waw` is deprecated")
 def _get_waw(seconds=3) -> str:
-    config = Config()
+    config = Settings()
 
     try:
         # tmpdirname = tempfile.TemporaryDirectory(dir=temp_dir)

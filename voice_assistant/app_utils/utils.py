@@ -1,8 +1,8 @@
 import re
 
-from voice_assistant.app_utils.config import Config
+from voice_assistant.app_utils.settings import Settings
 
-config = Config()
+config = Settings()
 p = re.compile(config.regexp)
 
 

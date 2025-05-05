@@ -1,13 +1,10 @@
-from typing import TYPE_CHECKING
+import pyaudio
 
 from pydantic import  Field
 from pydantic_settings import BaseSettings
 
-if TYPE_CHECKING:
-    import pyaudio
 
-
-class Config(BaseSettings):
+class Settings(BaseSettings):
     """
     Основной класс конфига, выполняющий проверку всех полей
     """

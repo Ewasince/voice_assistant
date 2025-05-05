@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "langchain-gigachat>=0.3.10",
     "pyaudio>=0.2.14",
     "pydantic>=2.11.4",
     "speechrecognition>=3.14.2",

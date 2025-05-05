@@ -7,7 +7,7 @@ from voice_assistant.commands.gpt.notion import CommandGPTNotion
 
 async def main() -> NoReturn:
     # создаём объект распознавания голоса, который будет переводить наш голос в текст
-    from voice_assistant.app_interfaces import TextSource
+    from voice_assistant.app_interfaces.message_recognizer import TextSource
     from voice_assistant.message_recognizers.text_source_local_mic import TextSourceLocalMic
 
     messages_recognizer: TextSource = TextSourceLocalMic()
@@ -20,7 +20,7 @@ async def main() -> NoReturn:
     # создаём объект распознавателя команд
     # и передаём в него модуль, который будет определять к какой теме относится команда
     # так же передаём в модуль определния топика с помощью GPT объект GPT
-    from voice_assistant.app_interfaces import ITopicDefiner
+    from voice_assistant.app_interfaces.topic_definer import ITopicDefiner
     from voice_assistant.command_recognizer import CommandRecognizer
     from voice_assistant.topic_definers.gpt.gpt import TopicDefinerGPT
     from voice_assistant.topic_definers.gpt.gpt_modules.i_gpt_module import IGPTModule
@@ -33,8 +33,9 @@ async def main() -> NoReturn:
 
     ### commands
     # так же добавляем команды. Каждая команда – это класс, который должен реализовывать интерфейс команды
-    from voice_assistant.app_interfaces import ICommandPerformer
-    from voice_assistant.commands import CommandGetCurrentOS, CommandGetCurrentTime
+    from voice_assistant.app_interfaces.command_performer import ICommandPerformer
+    from voice_assistant.commands.test_commands.get_current_os import CommandGetCurrentOS
+    from voice_assistant.commands.test_commands.get_current_time import CommandGetCurrentTime
 
     command_time: ICommandPerformer = CommandGetCurrentOS()
     command_recognizer.add_command(command_time)

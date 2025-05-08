@@ -9,6 +9,7 @@ from pytion.models import Block
 from voice_assistant.app_interfaces.command_performer import CommandPerformer
 from voice_assistant.app_interfaces.llm_module import LLMClient
 from voice_assistant.app_interfaces.topic_definer import TopicDefiner
+from voice_assistant.assistant_core.context import Context
 
 PROMPT_DELETE_TOPIC_FROM_TEXT = """\
 Удали из предложения "{note}" упоминание о "{topic}" и вышли мне исправленный вариант.\
@@ -25,7 +26,7 @@ class CommandGPTNotion(CommandPerformer):
         self._no: Notion = Notion(token=os.environ.get("TOKEN"))
         self._main_page = self._no.pages.get("0aaa8ebc4ae64937be87533d951df04c")
 
-    async def perform_command(self, command_text: str) -> str | None:
+    async def perform_command(self, command_text: str, _: Context) -> str | None:
         pages: Element = self._main_page.get_block_children()
         inner_pages = {p.text: p for p in pages.obj if p.type == "child_page"}
 

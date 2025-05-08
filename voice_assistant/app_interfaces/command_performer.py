@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import ClassVar
 
+from voice_assistant.assistant_core.context import Context
+
 
 class CommandPerformer(ABC):
     """Определяет класс, содержащий в себе команду"""
@@ -17,7 +19,7 @@ class CommandPerformer(ABC):
         return self._command_topic
 
     @abstractmethod
-    async def perform_command(self, command_text: str) -> str | None:
+    async def perform_command(self, command_text: str, context: Context) -> str | None:
         """Метод выполняющий команду. Может менять своё поведение, в зависимости от переданного контекста.
         Возвращает текст и/или делает какие-либо изменения в системе.
         """

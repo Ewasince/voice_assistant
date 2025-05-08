@@ -32,7 +32,7 @@ class CommandRecognizer:
     async def process_command_from_text(self, command_text: str) -> str | None:
         command_performer = await self._ques_command(command_text)
 
-        return await command_performer.perform_command(command_text)
+        return await command_performer.perform_command(command_text, self._context)
 
     async def _ques_command(self, command_text: str) -> CommandPerformer:
         topics = list(self._command_dict.keys())

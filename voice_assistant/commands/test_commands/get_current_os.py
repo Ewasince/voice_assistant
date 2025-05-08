@@ -1,5 +1,5 @@
 import platform
-from typing import ClassVar
+from typing import Any, ClassVar
 
 from voice_assistant.app_interfaces.command_performer import CommandPerformer
 
@@ -7,7 +7,7 @@ from voice_assistant.app_interfaces.command_performer import CommandPerformer
 class CommandGetCurrentOS(CommandPerformer):
     _command_topic: ClassVar[str] = "система"
 
-    async def perform_command(self, _: str) -> str | None:
+    async def perform_command(self, *args: Any) -> str | None:
         # os_type = os.name
         # match os_type:
         #     case "nt"

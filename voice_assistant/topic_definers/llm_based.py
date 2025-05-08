@@ -1,6 +1,6 @@
 from typing import ClassVar, Final
 
-from voice_assistant.app_interfaces.llm_module import LLMModule
+from voice_assistant.app_interfaces.llm_module import LLMClient
 from voice_assistant.app_interfaces.topic_definer import TopicDefiner
 from voice_assistant.app_utils.utils import normalize_text
 
@@ -20,13 +20,13 @@ class TopicDefinerGPT(TopicDefiner):
     _define_topic_prompt_template: ClassVar[str] = _DEFINE_TOPIC_PROMPT_TEMPLATE
     _define_reliable_topics_prompt_template: ClassVar[str] = _PROMPT_RELIABLE_TOPICS_TEMPLATE
 
-    def __init__(self, gpt_module: LLMModule):
-        self._gpt_module = gpt_module
+    def __init__(self, llm_client: LLMClient):
+        self._llm_client = llm_client
 
     async def define_topic(self, topics: list[str], guessable_topic: str) -> str | None:
         prompt = self._generate_define_topic_prompt(topics, guessable_topic)
 
-        guessed_topic = self._gpt_module.get_answer(prompt)
+        guessed_topic = self._llm_client.get_answer(prompt)
         guessed_topic = normalize_text(guessed_topic)
 
         if guessed_topic in topics:
@@ -51,7 +51,7 @@ class TopicDefinerGPT(TopicDefiner):
         for command_topic in topics:
             prompt_reliable_topics = self._generate_prompt_reliable_topics(guess_topic, command_topic)
 
-            binary_answer = self._gpt_module.get_answer(prompt_reliable_topics)
+            binary_answer = self._llm_client.get_answer(prompt_reliable_topics)
             binary_answer = normalize_text(binary_answer)
 
             if binary_answer == "да":

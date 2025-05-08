@@ -8,7 +8,7 @@ from pytion.api import Element
 from pytion.models import Block
 
 from voice_assistant.app_interfaces.command_performer import CommandPerformer
-from voice_assistant.app_interfaces.llm_module import LLMModule
+from voice_assistant.app_interfaces.llm_module import LLMClient
 from voice_assistant.app_interfaces.topic_definer import TopicDefiner
 
 PROMPT_DELETE_TOPIC_FROM_TEXT = """\
@@ -20,7 +20,7 @@ class CommandGPTNotion(CommandPerformer):
     _command_topic: ClassVar[str] = "списки"
     _prompt_delete_topic_from_text = PROMPT_DELETE_TOPIC_FROM_TEXT
 
-    def __init__(self, gpt_module: LLMModule, topic_definer: TopicDefiner):
+    def __init__(self, gpt_module: LLMClient, topic_definer: TopicDefiner):
         self.gpt_module = gpt_module
         self.topic_definer = topic_definer
         self._no: Notion = Notion(token=os.environ.get("TOKEN"))

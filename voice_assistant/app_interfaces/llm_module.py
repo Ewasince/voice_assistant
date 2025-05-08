@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-class LLMModule(ABC):
+class LLMClient(ABC):
     @abstractmethod
     def get_answer(self, text: str) -> str:
         raise NotImplementedError

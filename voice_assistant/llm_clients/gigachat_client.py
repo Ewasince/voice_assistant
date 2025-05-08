@@ -3,11 +3,11 @@ from typing import ClassVar
 from langchain_core.messages import HumanMessage
 from langchain_gigachat.chat_models import GigaChat
 
-from voice_assistant.app_interfaces.llm_module import LLMModule
+from voice_assistant.app_interfaces.llm_module import LLMClient
 from voice_assistant.app_utils.settings import Settings
 
 
-class GigaChatModule(LLMModule):
+class GigaChatClient(LLMClient):
     SCOPE: ClassVar[str] = "GIGACHAT_API_PERS"
     MODEL: ClassVar[str] = "GigaChat-2"
     # SYSTEM_PROMPT: ClassVar[str] = (
@@ -32,7 +32,7 @@ class GigaChatModule(LLMModule):
 
 
 if __name__ == "__main__":
-    gc = GigaChatModule(Settings())
+    gc = GigaChatClient(Settings())
 
     while True:
         print(gc.get_answer(input()))

@@ -48,6 +48,7 @@ async def main() -> NoReturn:
     ### main process
     # и, например, в цикле получаем от источника команд текстовые сообщения и обрабатываем их
     async for command in command_iterator:
+        command: str
         command_result = await command_recognizer.process_command(command)
         assistant_response = f"Ответ ассистента: {command_result}"
 

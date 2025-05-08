@@ -32,17 +32,20 @@ class TopicDefinerGPT(ITopicDefiner):
         if guessed_topic in topics:
             return guessed_topic
 
-        print(
-            f"не нашёл к чему относится, пробую разобраться. "
-            f'Что я отгадал: "{guessed_topic}", что мне нужно отгадать: "{guessable_topic}"'
-        )
-        guessed_topic = self._define_reliable_topics(topics, guessed_topic)
-
-        if guessed_topic in topics:
-            return guessed_topic
-
-        print(f"Не услышал известной команды: {guessable_topic}")
         return None
+
+        # TODO: хз пока оставлять ли логику усиленной проверки
+        # print(
+        #     f"не нашёл к чему относится, пробую разобраться. "
+        #     f'Что я отгадал: "{guessed_topic}", что мне нужно отгадать: "{guessable_topic}"'
+        # )
+        # guessed_topic = self._define_reliable_topics(topics, guessed_topic)
+        #
+        # if guessed_topic in topics:
+        #     return guessed_topic
+        #
+        # print(f"Не услышал известной команды: {guessable_topic}")
+        # return None
 
     def _define_reliable_topics(self, topics: list[str], guess_topic: str) -> str | None:
         for command_topic in topics:

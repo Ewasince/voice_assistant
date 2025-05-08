@@ -1,5 +1,6 @@
 from voice_assistant.app_interfaces.command_performer import ICommandPerformer
 from voice_assistant.app_interfaces.topic_definer import ITopicDefiner
+from voice_assistant.app_utils.utils import is_forbidden_chars
 
 
 class CommandRecognizer:
@@ -21,6 +22,9 @@ class CommandRecognizer:
         if not topic:
             self._default_command = command_class
             return
+        if is_forbidden_chars(topic):
+            msg = f"topic cant contain forbidden characters: {topic}"
+            raise ValueError(msg)
         self._command_dict[topic] = command_class
 
     async def process_command_from_text(self, command_text: str) -> str | None:

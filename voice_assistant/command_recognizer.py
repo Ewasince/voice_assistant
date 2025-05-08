@@ -36,6 +36,9 @@ class CommandRecognizer:
         command_topic = await self._topic_definer.define_topic(topics, command_text)
 
         if command_topic is None:
+            if not self._default_command:
+                msg = "default command not defined"
+                raise ValueError(msg)
             # print(f"Не услышал команд, которые я знаю: {command_text}")
             return self._default_command
 
@@ -46,5 +49,5 @@ class CommandRecognizer:
         return self._command_dict[command_topic]
 
 
-def _delete_topic_from_command(command_text, command_topic) -> str:
+def _delete_topic_from_command(command_text: str, command_topic: str) -> str:
     return command_text[len(command_topic) :].strip()

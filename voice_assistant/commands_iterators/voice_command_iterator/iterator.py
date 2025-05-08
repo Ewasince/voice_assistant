@@ -6,7 +6,7 @@ from voice_assistant.commands_iterators.voice_command_iterator.stt_module import
 
 class VoiceCommandIterator(CommandIterator):
     # TODO: разделить класс на распознаватель и источник аудио
-    def __init__(self, settings: Settings, *, setup_micro=True):
+    def __init__(self, settings: Settings, *, setup_micro: bool = True):
         self.config = settings
 
         self._sst_module = STTModule(settings, setup_micro=setup_micro)

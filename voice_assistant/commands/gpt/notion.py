@@ -1,4 +1,3 @@
-import asyncio
 import os
 from typing import ClassVar
 
@@ -55,13 +54,3 @@ class CommandGPTNotion(CommandPerformer):
             note=note,
             topic=topic,
         )
-
-
-if __name__ == "__main__":
-
-    async def main():
-        t = CommandGPTNotion(None, None)
-
-        await t.perform_command("a")
-
-    asyncio.run(main())

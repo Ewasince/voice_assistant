@@ -47,21 +47,22 @@ class TopicDefinerGPT(TopicDefiner):
         # print(f"Не услышал известной команды: {guessable_topic}")
         # return None
 
-    def _define_reliable_topics(self, topics: list[str], guess_topic: str) -> str | None:
-        for command_topic in topics:
-            prompt_reliable_topics = self._generate_prompt_reliable_topics(guess_topic, command_topic)
-
-            binary_answer = self._llm_client.get_answer(prompt_reliable_topics)
-            binary_answer = normalize_text(binary_answer)
-
-            if binary_answer == "да":
-                break
-            if binary_answer == "нет":
-                continue
-            print(f'Я спросил у gpt "{prompt_reliable_topics}", а он ответил "{binary_answer}" и я не понял')
-            continue
-        else:
-            return
+    #
+    # def _define_reliable_topics(self, topics: list[str], guess_topic: str) -> str | None:
+    #     for command_topic in topics:
+    #         prompt_reliable_topics = self._generate_prompt_reliable_topics(guess_topic, command_topic)
+    #
+    #         binary_answer = self._llm_client.get_answer(prompt_reliable_topics)
+    #         binary_answer = normalize_text(binary_answer)
+    #
+    #         if binary_answer == "да":
+    #             break
+    #         if binary_answer == "нет":
+    #             continue
+    #         print(f'Я спросил у gpt "{prompt_reliable_topics}", а он ответил "{binary_answer}" и я не понял')
+    #         continue
+    #     else:
+    #         return
 
     def _generate_define_topic_prompt(self, topics: list[str], command: str) -> str:
         topics_str = _make_bullet_list_from_str_list(topics)

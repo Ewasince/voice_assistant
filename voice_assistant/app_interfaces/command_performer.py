@@ -9,7 +9,7 @@ class CommandPerformer(ABC):
     _command_topic: ClassVar[str] = ""
 
     @property
-    def command_topic(self):
+    def command_topic(self) -> str:
         if self._command_topic is None:
             msg = f"command topic not set for {self.__class__.__name__}"
             raise ValueError(msg)

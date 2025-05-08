@@ -4,7 +4,7 @@ from voice_assistant.app_utils.settings import Settings
 
 
 class STTModule:
-    def __init__(self, settings: Settings, *, setup_micro=True):
+    def __init__(self, settings: Settings, *, setup_micro: bool = True):
         self.recognizer = sr.Recognizer()
         self.microphone = sr.Microphone()
         self.config = settings
@@ -19,7 +19,7 @@ class STTModule:
         # print("Got it! Now to recognize it...")
         return self._recognize_speech(audio)
 
-    def _setup_microphone(self):
+    def _setup_microphone(self) -> None:
         print("Момент тишины, микрофон настраивается...")
         with self.microphone as source:
             self.recognizer.adjust_for_ambient_noise(source)
@@ -43,7 +43,7 @@ class STTModule:
         else:
             return value
 
-    def recognize_from_file(self, audio_filename: str) -> str:
+    def recognize_from_file(self, audio_filename: str) -> str | None:
         # Загружаем аудио файл
         audio_file = sr.AudioFile(audio_filename)
 

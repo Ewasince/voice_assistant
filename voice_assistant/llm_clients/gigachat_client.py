@@ -26,9 +26,13 @@ class GigaChatClient(LLMClient):
             profanity_check=True,
         )
 
-    def get_answer(self, text) -> str:
+    def get_answer(self, text: str) -> str:
         resp = self._giga.invoke([HumanMessage(content=text)])
-        return resp.content
+        content = resp.content
+        if not isinstance(content, str):
+            msg = f"cant process: {content}"
+            raise ValueError(msg)
+        return content
 
 
 if __name__ == "__main__":

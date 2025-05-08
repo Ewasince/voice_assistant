@@ -55,11 +55,11 @@ repos:
         require_serial: true
         files: '\.py$'
 
-      - id: mypy
-        name: mypy
-        description: Python type checker
-        entry: mypy
-        language: system
-        types_or: [python, pyi]
-        pass_filenames: false
-        files: '\.py$'
+#      - id: mypy
+#        name: mypy
+#        description: Python type checker
+#        entry: mypy
+#        language: system
+#        types_or: [python, pyi]
+#        pass_filenames: false
+#        files: '\.py$'

@@ -3,28 +3,23 @@ from typing import NoReturn
 
 
 async def main() -> NoReturn:
-    # создаём объект распознавания голоса, который будет переводить наш голос в текст
-    from voice_assistant.app_interfaces.message_recognizer import TextSource
-    # from voice_assistant.message_recognizers.text_source_local_mic import TextSourceLocalMic
-    from voice_assistant.message_recognizers.text_source_cli import TextSourceCLI
+    from voice_assistant.app_utils.settings import Settings
 
-    messages_recognizer: TextSource = TextSourceCLI()
+    settings = Settings()
 
-    # создаём объект источника команд, который будет предварительно обрабатывать команды
-    from voice_assistant.message_source import MessageSource
+    from voice_assistant.app_interfaces.command_iterator import CommandIterator
+    from voice_assistant.commands_iterators.cli_command_iterator import CLICommandIterator
 
-    message_source = MessageSource(messages_recognizer)
+    command_iterator: CommandIterator = CLICommandIterator(settings=settings)
 
     # создаём объект распознавателя команд
     # и передаём в него модуль, который будет определять к какой теме относится команда
     # так же передаём в модуль определния топика с помощью GPT объект GPT
+    from voice_assistant.app_interfaces.gpt_module import IGPTModule
     from voice_assistant.app_interfaces.topic_definer import ITopicDefiner
     from voice_assistant.command_recognizer import CommandRecognizer
     from voice_assistant.topic_definers.gpt.gpt import TopicDefinerGPT
-    from voice_assistant.app_interfaces.gpt_module import IGPTModule
     from voice_assistant.topic_definers.gpt.gpt_modules.gigachat_module import GigaChatModule
-
-    from voice_assistant.app_utils.settings import Settings
 
     gpt_module: IGPTModule = GigaChatModule(Settings())
 
@@ -34,10 +29,9 @@ async def main() -> NoReturn:
     ### commands
     # так же добавляем команды. Каждая команда – это класс, который должен реализовывать интерфейс команды
     from voice_assistant.app_interfaces.command_performer import ICommandPerformer
+    from voice_assistant.commands.gpt.default import CommandGPTDefault
     from voice_assistant.commands.test_commands.get_current_os import CommandGetCurrentOS
     from voice_assistant.commands.test_commands.get_current_time import CommandGetCurrentTime
-    from voice_assistant.commands.gpt.default import CommandGPTDefault
-    from voice_assistant.commands.gpt.notion import CommandGPTNotion
 
     command_time: ICommandPerformer = CommandGetCurrentOS()
     command_recognizer.add_command(command_time)
@@ -53,8 +47,7 @@ async def main() -> NoReturn:
 
     ### main process
     # и, например, в цикле получаем от источника команд текстовые сообщения и обрабатываем их
-    while True:
-        command = await message_source.wait_command()
+    async for command in command_iterator:
         command_result = await command_recognizer.process_command(command)
         assistant_response = f"Ответ ассистента: {command_result}"
 

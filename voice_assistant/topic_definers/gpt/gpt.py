@@ -1,28 +1,30 @@
+from typing import ClassVar, Final
+
 from voice_assistant.app_interfaces.gpt_module import LLMModule
 from voice_assistant.app_interfaces.topic_definer import ITopicDefiner
-from voice_assistant.app_utils.utils import normalize_text, quote_list
+from voice_assistant.app_utils.utils import normalize_text
 
-PROMPT_DEFINE_TOPIC = """\
-У меня есть предложение "{sentence}", к какой из следующих тем оно относится \
-– {command_topics}? Отправь мне одну из перечисленных тем без изменений. \
-Если предложение ни к одной из тем не относится, напиши просто "не знаю".\
+_DEFINE_TOPIC_PROMPT_TEMPLATE: Final[str] = """\
+Укажи, к какой из следующих тем относится предложение: "{sentence}".
+Темы: {command_topics}
+Ответь точно ОДНОЙ из этих тем БЕЗ ИЗМЕНЕНИЙ, если она подходит.
+Если ни одна тема не подходит, просто напиши: "не знаю".
 """
 
-PROMPT_RELIABLE_TOPICS = """\
+_PROMPT_RELIABLE_TOPICS_TEMPLATE: Final[str] = """\
 "{topic1}" и "{topic2}" это схожие по смыслу предложения? Ответь "да" или "нет"\
 """
 
 
 class TopicDefinerGPT(ITopicDefiner):
-    _prompt_define_topic = PROMPT_DEFINE_TOPIC
-    _prompt_define_reliable_topics = PROMPT_RELIABLE_TOPICS
+    _define_topic_prompt_template: ClassVar[str] = _DEFINE_TOPIC_PROMPT_TEMPLATE
+    _define_reliable_topics_prompt_template: ClassVar[str] = _PROMPT_RELIABLE_TOPICS_TEMPLATE
 
     def __init__(self, gpt_module: LLMModule):
         self._gpt_module = gpt_module
 
     async def define_topic(self, topics: list[str], guessable_topic: str) -> str | None:
-        command_topics_str = quote_list(topics)
-        prompt = self._generate_prompt_define_topic(command_topics_str, guessable_topic)
+        prompt = self._generate_define_topic_prompt(topics, guessable_topic)
 
         guessed_topic = self._gpt_module.get_answer(prompt)
         guessed_topic = normalize_text(guessed_topic)
@@ -58,14 +60,21 @@ class TopicDefinerGPT(ITopicDefiner):
         else:
             return
 
-    def _generate_prompt_define_topic(self, topics: str, command: str) -> str:
-        return self._prompt_define_topic.format(
-            command_topics=topics,
+    def _generate_define_topic_prompt(self, topics: list[str], command: str) -> str:
+        topics_str = _make_bullet_list_from_str_list(topics)
+        topics_str = f"\n{topics_str}"
+
+        return self._define_topic_prompt_template.format(
+            command_topics=topics_str,
             sentence=command,
         )
 
     def _generate_prompt_reliable_topics(self, topic1: str, topic2: str) -> str:
-        return self._prompt_define_reliable_topics.format(
+        return self._define_reliable_topics_prompt_template.format(
             topic1=topic1,
             topic2=topic2,
         )
+
+
+def _make_bullet_list_from_str_list(items: list[str]) -> str:
+    return "".join(f" * {item}\n" for item in items)

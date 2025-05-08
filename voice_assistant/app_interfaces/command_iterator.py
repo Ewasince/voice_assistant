@@ -3,7 +3,7 @@ from typing import Self
 
 
 class CommandIterator(ABC):
-    async def __aiter__(self) -> Self:
+    def __aiter__(self) -> Self:
         return self
 
     @abstractmethod

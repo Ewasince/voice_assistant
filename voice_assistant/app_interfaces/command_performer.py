@@ -1,13 +1,20 @@
 from abc import ABC, abstractmethod
+from typing import ClassVar
 
 
 class ICommandPerformer(ABC):
     """Определяет класс, содержащий в себе команду"""
 
-    @abstractmethod
-    def get_command_topic(self) -> str | None:
-        """Возвращает текст, при котором должна вызываться команда."""
-        raise NotImplementedError
+    # command topic defines how llm will see this command
+    _command_topic: ClassVar[str] = ""
+
+    @property
+    def command_topic(self):
+        if self._command_topic is None:
+            msg = f"command topic not set for {self.__class__.__name__}"
+            raise ValueError(msg)
+
+        return self._command_topic
 
     @abstractmethod
     async def perform_command(self, command_context: str) -> str | None:

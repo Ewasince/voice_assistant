@@ -34,21 +34,21 @@ async def main() -> NoReturn:
     from voice_assistant.app_interfaces.command_performer import ICommandPerformer
 
     # так же добавляем команды. Каждая команда – это класс, который должен реализовывать интерфейс команды
-    from voice_assistant.commands.gpt.default import CommandGPTDefault
+    from voice_assistant.commands.gpt.default import CommandLLMQuestion
     from voice_assistant.commands.test_commands.get_current_os import CommandGetCurrentOS
     from voice_assistant.commands.test_commands.get_current_time import CommandGetCurrentTime
 
     command_time: ICommandPerformer = CommandGetCurrentOS()
-    command_recognizer.add_command(command_time)
+    command_recognizer.add_command(command_time.command_topic, command_time)
 
     command_time: ICommandPerformer = CommandGetCurrentTime()
-    command_recognizer.add_command(command_time)
+    command_recognizer.add_command(command_time.command_topic, command_time)
 
     # command_notion: ICommandPerformer = CommandGPTNotion(gpt_module, topic_definer)
     # command_recognizer.add_command(command_notion)
 
-    command_default: ICommandPerformer = CommandGPTDefault(gpt_module)
-    command_recognizer.add_command(command_default)
+    command_default: ICommandPerformer = CommandLLMQuestion(gpt_module)
+    command_recognizer.add_command(None, command_default)
 
     ### main process
     # и, например, в цикле получаем от источника команд текстовые сообщения и обрабатываем их

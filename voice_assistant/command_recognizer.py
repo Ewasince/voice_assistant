@@ -12,13 +12,12 @@ class CommandRecognizer:
         self._command_dict: dict[str, ICommandPerformer] = {}
         self._default_command: ICommandPerformer | None = None
 
-    def add_command(self, command_class: ICommandPerformer) -> None:
+    def add_command(self, topic: str | None, command_class: ICommandPerformer) -> None:
         """
         Добавляет команды для распознавания.
         Для задания команды по-умолчанию, нужно передать команду с текстом None
         """
 
-        topic = command_class.get_command_topic()
         if not topic:
             self._default_command = command_class
             return

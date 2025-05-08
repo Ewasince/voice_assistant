@@ -1,5 +1,6 @@
 import asyncio
 import os
+from typing import ClassVar
 
 # from notion.client import NotionClient
 from pytion import Notion
@@ -16,6 +17,7 @@ PROMPT_DELETE_TOPIC_FROM_TEXT = """\
 
 
 class CommandGPTNotion(ICommandPerformer):
+    _command_topic: ClassVar[str] = "списки"
     _prompt_delete_topic_from_text = PROMPT_DELETE_TOPIC_FROM_TEXT
 
     def __init__(self, gpt_module: LLMModule, topic_definer: ITopicDefiner):
@@ -23,9 +25,6 @@ class CommandGPTNotion(ICommandPerformer):
         self.topic_definer = topic_definer
         self._no: Notion = Notion(token=os.environ.get("TOKEN"))
         self._main_page = self._no.pages.get("0aaa8ebc4ae64937be87533d951df04c")
-
-    def get_command_topic(self) -> str:
-        return "списки"
 
     async def perform_command(self, command_context: str) -> str | None:
         pages: Element = self._main_page.get_block_children()

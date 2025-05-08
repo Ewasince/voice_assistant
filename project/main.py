@@ -34,7 +34,7 @@ async def main() -> NoReturn:
     from voice_assistant.app_interfaces.command_performer import CommandPerformer
 
     # так же добавляем команды. Каждая команда – это класс, который должен реализовывать интерфейс команды
-    from voice_assistant.commands.gpt.default import CommandLLMQuestion
+    from voice_assistant.commands.gpt.llm_question import CommandLLMQuestion
     from voice_assistant.commands.test_commands.get_current_os import CommandGetCurrentOS
     from voice_assistant.commands.test_commands.get_current_time import CommandGetCurrentTime
 

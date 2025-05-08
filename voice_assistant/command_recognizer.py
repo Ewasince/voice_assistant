@@ -2,7 +2,6 @@ from voice_assistant.app_interfaces.command_performer import ICommandPerformer
 from voice_assistant.app_interfaces.topic_definer import ITopicDefiner
 
 
-
 class CommandRecognizer:
     """Определяет интерфейс класса, который определяет к какой теме принадлежит команда"""
 
@@ -24,8 +23,7 @@ class CommandRecognizer:
             return
         self._command_dict[topic] = command_class
 
-    async def process_command(self, command_text: str) -> str | None:
-
+    async def process_command_from_text(self, command_text: str) -> str | None:
         command_performer = await self._ques_command(command_text)
 
         return await command_performer.perform_command(command_text)
@@ -39,12 +37,10 @@ class CommandRecognizer:
             return self._default_command
 
         if command_topic not in topics:
-            msg = f"ITopicDefiner отработал неправильно"
+            msg = "ITopicDefiner отработал неправильно"
             raise ValueError(msg)
 
-        command_performer = self._command_dict[command_topic]
-
-        return command_performer
+        return self._command_dict[command_topic]
 
 
 def _delete_topic_from_command(command_text, command_topic) -> str:

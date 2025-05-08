@@ -51,7 +51,7 @@ async def main():
     # и, например, в цикле получаем от источника команд текстовые сообщения и обрабатываем их
     while True:
         command = await message_source.wait_command()
-        res = await command_recognizer.process_command(command)
+        res = await command_recognizer.process_command_from_text(command)
 
         if res is not None:
             loguru.info(res)

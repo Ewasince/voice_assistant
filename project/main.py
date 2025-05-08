@@ -52,9 +52,9 @@ async def main() -> NoReturn:
 
     ### main process
     # и, например, в цикле получаем от источника команд текстовые сообщения и обрабатываем их
-    command: str
-    async for command in command_iterator:
-        command_result = await command_recognizer.process_command(command)
+    command_text: str
+    async for command_text in command_iterator:
+        command_result = await command_recognizer.process_command_from_text(command_text)
         assistant_response = f"Ответ ассистента: {command_result}"
 
         if command_result is not None:

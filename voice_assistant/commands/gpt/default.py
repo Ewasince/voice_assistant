@@ -1,9 +1,9 @@
 from voice_assistant.app_interfaces.command_performer import ICommandPerformer
-from voice_assistant.app_interfaces.gpt_module import IGPTModule
+from voice_assistant.app_interfaces.gpt_module import LLMModule
 
 
 class CommandGPTDefault(ICommandPerformer):
-    def __init__(self, gpt_module: IGPTModule):
+    def __init__(self, gpt_module: LLMModule):
         self.gpt_module = gpt_module
 
     def get_command_topic(self) -> None:

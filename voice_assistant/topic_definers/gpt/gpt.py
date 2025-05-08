@@ -1,6 +1,6 @@
+from voice_assistant.app_interfaces.gpt_module import LLMModule
 from voice_assistant.app_interfaces.topic_definer import ITopicDefiner
 from voice_assistant.app_utils.utils import normalize_text, quote_list
-from voice_assistant.app_interfaces.gpt_module import IGPTModule
 
 PROMPT_DEFINE_TOPIC = """\
 У меня есть предложение "{sentence}", к какой из следующих тем оно относится \
@@ -17,7 +17,7 @@ class TopicDefinerGPT(ITopicDefiner):
     _prompt_define_topic = PROMPT_DEFINE_TOPIC
     _prompt_define_reliable_topics = PROMPT_RELIABLE_TOPICS
 
-    def __init__(self, gpt_module: IGPTModule):
+    def __init__(self, gpt_module: LLMModule):
         self._gpt_module = gpt_module
 
     async def define_topic(self, topics: list[str], guessable_topic: str) -> str | None:

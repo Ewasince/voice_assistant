@@ -7,28 +7,33 @@ async def main() -> NoReturn:
 
     settings = Settings()
 
+    # create commands source iterator
     from voice_assistant.app_interfaces.command_iterator import CommandIterator
     from voice_assistant.commands_iterators.cli_command_iterator import CLICommandIterator
 
     command_iterator: CommandIterator = CLICommandIterator(settings=settings)
 
-    # создаём объект распознавателя команд
-    # и передаём в него модуль, который будет определять к какой теме относится команда
-    # так же передаём в модуль определния топика с помощью GPT объект GPT
-    from voice_assistant.app_interfaces.gpt_module import IGPTModule
-    from voice_assistant.app_interfaces.topic_definer import ITopicDefiner
-    from voice_assistant.command_recognizer import CommandRecognizer
-    from voice_assistant.topic_definers.gpt.gpt import TopicDefinerGPT
+    # create llm module
+    from voice_assistant.app_interfaces.gpt_module import LLMModule
     from voice_assistant.topic_definers.gpt.gpt_modules.gigachat_module import GigaChatModule
 
-    gpt_module: IGPTModule = GigaChatModule(Settings())
+    gpt_module: LLMModule = GigaChatModule(Settings())
+
+    # topic definer, which determines which command need to activate
+    from voice_assistant.app_interfaces.topic_definer import ITopicDefiner
+    from voice_assistant.topic_definers.gpt.gpt import TopicDefinerGPT
 
     topic_definer: ITopicDefiner = TopicDefinerGPT(gpt_module)
+
+    # create command recognizer, which recognize command by using topic definer
+    from voice_assistant.command_recognizer import CommandRecognizer
+
     command_recognizer: CommandRecognizer = CommandRecognizer(topic_definer)
 
     ### commands
-    # так же добавляем команды. Каждая команда – это класс, который должен реализовывать интерфейс команды
     from voice_assistant.app_interfaces.command_performer import ICommandPerformer
+
+    # так же добавляем команды. Каждая команда – это класс, который должен реализовывать интерфейс команды
     from voice_assistant.commands.gpt.default import CommandGPTDefault
     from voice_assistant.commands.test_commands.get_current_os import CommandGetCurrentOS
     from voice_assistant.commands.test_commands.get_current_time import CommandGetCurrentTime

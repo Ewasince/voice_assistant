@@ -25,29 +25,29 @@ class CommandGPTNotion(CommandPerformer):
         self._no: Notion = Notion(token=os.environ.get("TOKEN"))
         self._main_page = self._no.pages.get("0aaa8ebc4ae64937be87533d951df04c")
 
-    async def perform_command(self, command_context: str) -> str | None:
+    async def perform_command(self, command_text: str) -> str | None:
         pages: Element = self._main_page.get_block_children()
         inner_pages = {p.text: p for p in pages.obj if p.type == "child_page"}
 
-        # command_context = command_context[len(self.get_command_topic()):]
-        if command_context == "":
+        # command_text = command_text[len(self.get_command_topic()):]
+        if command_text == "":
             return None
-        suggested_topic = await self.topic_definer.define_topic(list(inner_pages.keys()), command_context)
+        suggested_topic = await self.topic_definer.define_topic(list(inner_pages.keys()), command_text)
 
         if suggested_topic is None:
-            return f'Не знаю куда записать "{command_context}"'
+            return f'Не знаю куда записать "{command_text}"'
 
         page_block: Block = inner_pages[suggested_topic]
 
         # page = self._no.pages.get(page_block.id)
 
-        note_text = command_context
+        note_text = command_text
         note_text = self.gpt_module.get_answer(self._generate_prompt_delete_topic_from_text(note_text, suggested_topic))
 
         my_text_block = Block.create(note_text)
         self._no.blocks.block_append(page_block.id, block=my_text_block)
 
-        return f'Добавил "{command_context}" на страницу "{suggested_topic}"'
+        return f'Добавил "{command_text}" на страницу "{suggested_topic}"'
 
     def _generate_prompt_delete_topic_from_text(self, note: str, topic: str) -> str:
         return self._prompt_delete_topic_from_text.format(

@@ -1,6 +1,7 @@
 from voice_assistant.app_interfaces.command_performer import CommandPerformer
 from voice_assistant.app_interfaces.topic_definer import TopicDefiner
 from voice_assistant.app_utils.utils import is_forbidden_chars
+from voice_assistant.assistant_core.context import Context
 
 
 class CommandRecognizer:
@@ -11,6 +12,8 @@ class CommandRecognizer:
 
         self._command_dict: dict[str, CommandPerformer] = {}
         self._default_command: CommandPerformer | None = None
+
+        self._context: Context = Context()
 
     def add_command(self, topic: str | None, command_class: CommandPerformer) -> None:
         """

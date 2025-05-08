@@ -26,7 +26,7 @@ async def main() -> NoReturn:
     topic_definer: TopicDefiner = TopicDefinerGPT(gpt_module)
 
     # create command recognizer, which recognize command by using topic definer
-    from voice_assistant.command_recognizer import CommandRecognizer
+    from voice_assistant.assistant_core.command_recognizer import CommandRecognizer
 
     command_recognizer: CommandRecognizer = CommandRecognizer(topic_definer)
 

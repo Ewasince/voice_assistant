@@ -17,7 +17,7 @@ class CommandPerformer(ABC):
         return self._command_topic
 
     @abstractmethod
-    async def perform_command(self, command_context: str) -> str | None:
+    async def perform_command(self, command_text: str) -> str | None:
         """Метод выполняющий команду. Может менять своё поведение, в зависимости от переданного контекста.
         Возвращает текст и/или делает какие-либо изменения в системе.
         """

@@ -13,6 +13,6 @@ class CommandGetCurrentOS(CommandPerformer):
         #     case "nt"
         #         os_name = "Windows"
         #     case ""
-        # extract_text_after_command(command_context, self.get_command_text())
+        # extract_text_after_command(command_text, self.get_command_text())
         os_name = platform.system()
         return f"Твоя система – {os_name}"

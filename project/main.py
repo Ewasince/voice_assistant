@@ -21,7 +21,7 @@ async def main() -> NoReturn:
 
     # topic definer, which determines which command need to activate
     from voice_assistant.app_interfaces.topic_definer import TopicDefiner
-    from voice_assistant.topic_definers.gpt import TopicDefinerGPT
+    from voice_assistant.topic_definers.llm_based import TopicDefinerGPT
 
     topic_definer: TopicDefiner = TopicDefinerGPT(gpt_module)
 

@@ -14,16 +14,16 @@ async def main() -> NoReturn:
     command_iterator: CommandIterator = CLICommandIterator(settings=settings)
 
     # create llm module
-    from voice_assistant.app_interfaces.gpt_module import LLMModule
+    from voice_assistant.app_interfaces.llm_module import LLMModule
     from voice_assistant.topic_definers.gpt.gpt_modules.gigachat_module import GigaChatModule
 
     gpt_module: LLMModule = GigaChatModule(Settings())
 
     # topic definer, which determines which command need to activate
-    from voice_assistant.app_interfaces.topic_definer import ITopicDefiner
+    from voice_assistant.app_interfaces.topic_definer import TopicDefiner
     from voice_assistant.topic_definers.gpt.gpt import TopicDefinerGPT
 
-    topic_definer: ITopicDefiner = TopicDefinerGPT(gpt_module)
+    topic_definer: TopicDefiner = TopicDefinerGPT(gpt_module)
 
     # create command recognizer, which recognize command by using topic definer
     from voice_assistant.command_recognizer import CommandRecognizer
@@ -31,23 +31,23 @@ async def main() -> NoReturn:
     command_recognizer: CommandRecognizer = CommandRecognizer(topic_definer)
 
     ### commands
-    from voice_assistant.app_interfaces.command_performer import ICommandPerformer
+    from voice_assistant.app_interfaces.command_performer import CommandPerformer
 
     # так же добавляем команды. Каждая команда – это класс, который должен реализовывать интерфейс команды
     from voice_assistant.commands.gpt.default import CommandLLMQuestion
     from voice_assistant.commands.test_commands.get_current_os import CommandGetCurrentOS
     from voice_assistant.commands.test_commands.get_current_time import CommandGetCurrentTime
 
-    command_time: ICommandPerformer = CommandGetCurrentOS()
+    command_time: CommandPerformer = CommandGetCurrentOS()
     command_recognizer.add_command(command_time.command_topic, command_time)
 
-    command_time: ICommandPerformer = CommandGetCurrentTime()
+    command_time: CommandPerformer = CommandGetCurrentTime()
     command_recognizer.add_command(command_time.command_topic, command_time)
 
     # command_notion: ICommandPerformer = CommandGPTNotion(gpt_module, topic_definer)
     # command_recognizer.add_command(command_notion)
 
-    command_default: ICommandPerformer = CommandLLMQuestion(gpt_module)
+    command_default: CommandPerformer = CommandLLMQuestion(gpt_module)
     command_recognizer.add_command(None, command_default)
 
     ### main process

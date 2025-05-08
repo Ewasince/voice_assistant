@@ -1,8 +1,8 @@
-from voice_assistant.app_interfaces.command_performer import ICommandPerformer
-from voice_assistant.app_interfaces.gpt_module import LLMModule
+from voice_assistant.app_interfaces.command_performer import CommandPerformer
+from voice_assistant.app_interfaces.llm_module import LLMModule
 
 
-class CommandLLMQuestion(ICommandPerformer):
+class CommandLLMQuestion(CommandPerformer):
     def __init__(self, gpt_module: LLMModule):
         self.gpt_module = gpt_module
 

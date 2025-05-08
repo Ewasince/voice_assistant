@@ -1,10 +1,10 @@
 from datetime import datetime
 from typing import ClassVar
 
-from voice_assistant.app_interfaces.command_performer import ICommandPerformer
+from voice_assistant.app_interfaces.command_performer import CommandPerformer
 
 
-class CommandGetCurrentTime(ICommandPerformer):
+class CommandGetCurrentTime(CommandPerformer):
     _command_topic: ClassVar[str] = "время"
 
     async def perform_command(self, _: str) -> str | None:

@@ -3,7 +3,7 @@ from typing import ClassVar
 from langchain_core.messages import HumanMessage
 from langchain_gigachat.chat_models import GigaChat
 
-from voice_assistant.app_interfaces.gpt_module import LLMModule
+from voice_assistant.app_interfaces.llm_module import LLMModule
 from voice_assistant.app_utils.settings import Settings
 
 

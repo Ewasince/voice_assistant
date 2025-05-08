@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import ClassVar
 
 
-class ICommandPerformer(ABC):
+class CommandPerformer(ABC):
     """Определяет класс, содержащий в себе команду"""
 
     # command topic defines how llm will see this command

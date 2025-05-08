@@ -1,7 +1,7 @@
-from voice_assistant.app_interfaces.topic_definer import ITopicDefiner
+from voice_assistant.app_interfaces.topic_definer import TopicDefiner
 
 
-class TopicDefinerSimple(ITopicDefiner):
+class TopicDefinerSimple(TopicDefiner):
     async def define_topic(self, topics: list[str], current_topic: str) -> str | None:
         for command_topic in topics:
             if not current_topic.startswith(command_topic):

@@ -1,7 +1,7 @@
 from typing import ClassVar, Final
 
-from voice_assistant.app_interfaces.gpt_module import LLMModule
-from voice_assistant.app_interfaces.topic_definer import ITopicDefiner
+from voice_assistant.app_interfaces.llm_module import LLMModule
+from voice_assistant.app_interfaces.topic_definer import TopicDefiner
 from voice_assistant.app_utils.utils import normalize_text
 
 _DEFINE_TOPIC_PROMPT_TEMPLATE: Final[str] = """\
@@ -16,7 +16,7 @@ _PROMPT_RELIABLE_TOPICS_TEMPLATE: Final[str] = """\
 """
 
 
-class TopicDefinerGPT(ITopicDefiner):
+class TopicDefinerGPT(TopicDefiner):
     _define_topic_prompt_template: ClassVar[str] = _DEFINE_TOPIC_PROMPT_TEMPLATE
     _define_reliable_topics_prompt_template: ClassVar[str] = _PROMPT_RELIABLE_TOPICS_TEMPLATE
 

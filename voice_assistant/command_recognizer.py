@@ -1,18 +1,18 @@
-from voice_assistant.app_interfaces.command_performer import ICommandPerformer
-from voice_assistant.app_interfaces.topic_definer import ITopicDefiner
+from voice_assistant.app_interfaces.command_performer import CommandPerformer
+from voice_assistant.app_interfaces.topic_definer import TopicDefiner
 from voice_assistant.app_utils.utils import is_forbidden_chars
 
 
 class CommandRecognizer:
     """Определяет интерфейс класса, который определяет к какой теме принадлежит команда"""
 
-    def __init__(self, topic_definer: ITopicDefiner):
+    def __init__(self, topic_definer: TopicDefiner):
         self._topic_definer = topic_definer
 
-        self._command_dict: dict[str, ICommandPerformer] = {}
-        self._default_command: ICommandPerformer | None = None
+        self._command_dict: dict[str, CommandPerformer] = {}
+        self._default_command: CommandPerformer | None = None
 
-    def add_command(self, topic: str | None, command_class: ICommandPerformer) -> None:
+    def add_command(self, topic: str | None, command_class: CommandPerformer) -> None:
         """
         Добавляет команды для распознавания.
         Для задания команды по-умолчанию, нужно передать команду с текстом None
@@ -31,7 +31,7 @@ class CommandRecognizer:
 
         return await command_performer.perform_command(command_text)
 
-    async def _ques_command(self, command_text: str) -> ICommandPerformer:
+    async def _ques_command(self, command_text: str) -> CommandPerformer:
         topics = list(self._command_dict.keys())
         command_topic = await self._topic_definer.define_topic(topics, command_text)
 

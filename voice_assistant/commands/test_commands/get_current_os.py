@@ -1,10 +1,10 @@
 import platform
 from typing import ClassVar
 
-from voice_assistant.app_interfaces.command_performer import ICommandPerformer
+from voice_assistant.app_interfaces.command_performer import CommandPerformer
 
 
-class CommandGetCurrentOS(ICommandPerformer):
+class CommandGetCurrentOS(CommandPerformer):
     _command_topic: ClassVar[str] = "система"
 
     async def perform_command(self, _: str) -> str | None:

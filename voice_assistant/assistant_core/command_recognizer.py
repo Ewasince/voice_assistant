@@ -30,11 +30,11 @@ class CommandRecognizer:
         self._command_dict[topic] = command_class
 
     async def process_command_from_text(self, command_text: str) -> str | None:
-        command_performer = await self._ques_command(command_text)
+        command_performer = await self._guess_command(command_text)
 
         return await command_performer.perform_command(command_text, self._context)
 
-    async def _ques_command(self, command_text: str) -> CommandPerformer:
+    async def _guess_command(self, command_text: str) -> CommandPerformer:
         topics = list(self._command_dict.keys())
         command_topic = await self._topic_definer.choose_topic_from_list(topics, command_text)
 

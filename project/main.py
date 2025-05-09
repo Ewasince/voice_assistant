@@ -64,7 +64,4 @@ async def main() -> NoReturn:
 
 
 if __name__ == "__main__":
-    try:
-        asyncio.run(main())
-    except KeyboardInterrupt:
-        print("Goodbye!")
+    asyncio.run(main())

@@ -33,7 +33,7 @@ class CommandGPTNotion(CommandPerformer):
         # command_text = command_text[len(self.get_command_topic()):]
         if command_text == "":
             return None
-        suggested_topic = await self.topic_definer.define_topic(list(inner_pages.keys()), command_text)
+        suggested_topic = await self.topic_definer.choose_topic_from_list(list(inner_pages.keys()), command_text)
 
         if suggested_topic is None:
             return f'Не знаю куда записать "{command_text}"'

@@ -23,7 +23,7 @@ class TopicDefinerGPT(TopicDefiner):
     def __init__(self, llm_client: LLMClient):
         self._llm_client = llm_client
 
-    async def define_topic(self, topics: list[str], guessable_topic: str) -> str | None:
+    async def choose_topic_from_list(self, topics: list[str], guessable_topic: str) -> str | None:
         prompt = self._generate_define_topic_prompt(topics, guessable_topic)
 
         guessed_topic = self._llm_client.get_answer(prompt)

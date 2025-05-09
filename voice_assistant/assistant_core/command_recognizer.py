@@ -36,7 +36,7 @@ class CommandRecognizer:
 
     async def _ques_command(self, command_text: str) -> CommandPerformer:
         topics = list(self._command_dict.keys())
-        command_topic = await self._topic_definer.define_topic(topics, command_text)
+        command_topic = await self._topic_definer.choose_topic_from_list(topics, command_text)
 
         if command_topic is None:
             if not self._default_command:

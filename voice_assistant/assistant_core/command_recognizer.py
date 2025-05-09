@@ -27,6 +27,9 @@ class CommandRecognizer:
         if is_forbidden_chars(command_topic):
             msg = f"topic cant contain forbidden characters: {command_topic}"
             raise ValueError(msg)
+        if command_topic in self._command_dict:
+            msg = f"duplicate command topic: {command_topic}"
+            raise ValueError(msg)
         self._command_dict[command_topic] = command_class
 
     async def process_command_from_text(self, command_text: str) -> str | None:

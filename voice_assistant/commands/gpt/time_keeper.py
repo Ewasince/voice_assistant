@@ -8,19 +8,20 @@ from voice_assistant.app_interfaces.command_performer import CommandPerformer
 from voice_assistant.app_interfaces.llm_module import LLMClient
 from voice_assistant.assistant_core.context import Context as GeneralContext
 
-_ACTIVITY_END: Final[str] = "окончание"
-_ACTIVITY_NOT_END: Final[str] = "не окончание"
+_ACTIVITY_END: Final[str] = "нет"
+_ACTIVITY_NOT_END: Final[str] = "да"
 _DEFINE_END_TASK_PROMPT: Final[str] = f"""\
 Проанализируй следующее высказывание:
 
 "{{sentence}}"
 
-Определи, указывает ли оно на завершение какой-либо деятельности или события.
-Если высказывание прямо или косвенно указывает на завершение действия, напиши строго "{_ACTIVITY_END}".
-Если оно не указывает на завершение (например, описывает начало, процесс, паузу, продолжение и т.д.), \
-напиши строго "{_ACTIVITY_NOT_END}".
-Не добавляй никаких пояснений или комментариев — только одно из двух словосочетаний: \
-"{_ACTIVITY_END}" или "{_ACTIVITY_NOT_END}".
+В этом предложении есть информация о том \
+чем будет заниматься человек дальше \
+или чем он занимается сейчас \
+или какой деятельностью сейчас занят или будет занят \
+или что привлекло его внимание сейчас или привлечёт \
+? \
+Ответь "{_ACTIVITY_END}" или "{_ACTIVITY_NOT_END}" без пояснений.\
 """
 
 _DEFINE_TASK_TOPIC_PROMPT: Final[str] = """\
@@ -28,8 +29,9 @@ _DEFINE_TASK_TOPIC_PROMPT: Final[str] = """\
 
 "{sentence}"
 
-Определи, о каком виде активности в нём идёт речь, и опиши эту активность 1–5 словами, используя краткие, \
-точные формулировки. Не добавляй лишнего текста — только суть активности.
+Определи, о каком виде активности в нём идёт речь, и опиши эту активность несколькими словами, используя краткую, \
+точную формулировку, без синонимов. Чем кратче тем лучше, в идеале одним словом. \
+Не добавляй лишнего текста — только суть активности.
 """
 
 
@@ -124,6 +126,7 @@ class CommandTimeKeeperGoogle(CommandPerformer):
         return self._define_end_task_prompt.format(
             sentence=command,
         )
+        # logger.debug(f"prompt: \n\n{prompt}\n")
 
     def _generate_define_task_topic_prompt(self, command: str) -> str:
         return self._define_task_topic_prompt.format(

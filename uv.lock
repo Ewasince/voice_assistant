@@ -1148,6 +1148,7 @@ dependencies = [
     { name = "pydantic-settings" },
     { name = "pytion" },
     { name = "speechrecognition" },
+    { name = "tenacity" },
 ]
 
 [package.dev-dependencies]
@@ -1169,6 +1170,7 @@ requires-dist = [
     { name = "pydantic-settings", specifier = ">=2.9.1" },
     { name = "pytion", specifier = ">=1.3.5" },
     { name = "speechrecognition", specifier = ">=3.14.2" },
+    { name = "tenacity", specifier = ">=9.1.2" },
 ]
 
 [package.metadata.requires-dev]

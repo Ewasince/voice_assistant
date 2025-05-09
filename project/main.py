@@ -34,18 +34,25 @@ async def main() -> NoReturn:
     from voice_assistant.app_interfaces.command_performer import CommandPerformer
 
     # так же добавляем команды. Каждая команда – это класс, который должен реализовывать интерфейс команды
-    from voice_assistant.commands.gpt.llm_question import CommandLLMQuestion
     from voice_assistant.commands.test_commands.get_current_os import CommandGetCurrentOS
-    from voice_assistant.commands.test_commands.get_current_time import CommandGetCurrentTime
 
-    command_time: CommandPerformer = CommandGetCurrentOS()
-    command_recognizer.add_command(command_time.command_topic, command_time)
+    command_os: CommandPerformer = CommandGetCurrentOS()
+    command_recognizer.add_command(command_os.command_topic, command_os)
+
+    from voice_assistant.commands.test_commands.get_current_time import CommandGetCurrentTime
 
     command_time: CommandPerformer = CommandGetCurrentTime()
     command_recognizer.add_command(command_time.command_topic, command_time)
 
+    from voice_assistant.commands.gpt.time_keeper import CommandTimeKeeperGoogle
+
+    command_tk: CommandPerformer = CommandTimeKeeperGoogle(gpt_module)
+    command_recognizer.add_command(command_tk.command_topic, command_tk)
+
     # command_notion: ICommandPerformer = CommandGPTNotion(llm_client, topic_definer)
     # command_recognizer.add_command(command_notion)
+
+    from voice_assistant.commands.gpt.llm_question import CommandLLMQuestion
 
     command_default: CommandPerformer = CommandLLMQuestion(gpt_module)
     command_recognizer.add_command(None, command_default)

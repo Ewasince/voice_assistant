@@ -71,4 +71,5 @@ async def main() -> NoReturn:
 
 
 if __name__ == "__main__":
+    # noinspection PyUnreachableCode
     asyncio.run(main())

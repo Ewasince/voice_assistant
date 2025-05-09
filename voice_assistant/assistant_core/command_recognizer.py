@@ -15,19 +15,19 @@ class CommandRecognizer:
 
         self._context: Context = Context()
 
-    def add_command(self, topic: str | None, command_class: CommandPerformer) -> None:
+    def add_command(self, command_topic: str | None, command_class: CommandPerformer) -> None:
         """
         Добавляет команды для распознавания.
         Для задания команды по-умолчанию, нужно передать команду с текстом None
         """
 
-        if not topic:
+        if not command_topic:
             self._default_command = command_class
             return
-        if is_forbidden_chars(topic):
-            msg = f"topic cant contain forbidden characters: {topic}"
+        if is_forbidden_chars(command_topic):
+            msg = f"topic cant contain forbidden characters: {command_topic}"
             raise ValueError(msg)
-        self._command_dict[topic] = command_class
+        self._command_dict[command_topic] = command_class
 
     async def process_command_from_text(self, command_text: str) -> str | None:
         command_performer = await self._guess_command(command_text)

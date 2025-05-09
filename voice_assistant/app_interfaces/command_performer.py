@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import ClassVar
+from typing import Any, ClassVar
 
 from voice_assistant.assistant_core.context import Context
 
@@ -9,6 +9,7 @@ class CommandPerformer(ABC):
 
     # command topic defines how llm will see this command
     _command_topic: ClassVar[str] = ""
+    _context_class_type: ClassVar[type] = dict
 
     @property
     def command_topic(self) -> str:
@@ -24,3 +25,19 @@ class CommandPerformer(ABC):
         Возвращает текст и/или делает какие-либо изменения в системе.
         """
         raise NotImplementedError
+
+    def _get_reliable_context(self, context: Context) -> Any:
+        context_key = self._command_topic
+
+        if context_key in context.command_notes:
+            return context.command_notes[context_key]
+
+        return self._reset_reliable_context(context)
+
+    def _reset_reliable_context(self, context: Context) -> Any:
+        context_key = self._command_topic
+
+        command_context = self._context_class_type()
+        context.command_notes[context_key] = command_context
+
+        return command_context

@@ -1,3 +1,5 @@
+from loguru import logger
+
 from voice_assistant.app_interfaces.command_performer import CommandPerformer
 from voice_assistant.app_interfaces.topic_definer import TopicDefiner
 from voice_assistant.app_utils.utils import is_forbidden_chars
@@ -35,11 +37,16 @@ class CommandRecognizer:
     async def process_command_from_text(self, command_text: str) -> str | None:
         command_performer = await self._guess_command(command_text)
 
+        if command_performer is None:
+            return "Прости, я не понял чего ты хочешь. Попробуй переформулировать"
+
         return await command_performer.perform_command(command_text, self._context)
 
-    async def _guess_command(self, command_text: str) -> CommandPerformer:
+    async def _guess_command(self, command_text: str) -> CommandPerformer | None:
         topics = list(self._command_dict.keys())
         command_topic = await self._topic_definer.choose_topic_from_list(topics, command_text)
+
+        logger.info(f"Guessed topic: {command_topic}")
 
         if command_topic is None:
             if not self._default_command:
@@ -49,8 +56,11 @@ class CommandRecognizer:
             return self._default_command
 
         if command_topic not in topics:
-            msg = "ITopicDefiner отработал неправильно"
-            raise ValueError(msg)
+            msg = (
+                f"TopicDefiner has missed topic: {command_topic}, in text: {command_text} and aviable topics: {topics}"
+            )
+            logger.warning(msg)
+            return None
 
         return self._command_dict[command_topic]
 

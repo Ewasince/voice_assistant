@@ -38,8 +38,8 @@ async def main():
     ### commands
     # так же добавляем команды. Каждая команда – это класс, который должен реализовывать интерфейс команды
     from voice_assistant.app_interfaces import ICommandPerformer
-    from voice_assistant.commands import CommandGetCurrentOS
-    from voice_assistant.commands import CommandGetCurrentTime
+    from voice_assistant.base_commands import CommandGetCurrentOS
+    from voice_assistant.base_commands import CommandGetCurrentTime
 
     command_time: ICommandPerformer = CommandGetCurrentOS()
     command_recognizer.add_command(command_time)

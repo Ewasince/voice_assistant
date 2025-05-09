@@ -1,8 +1,8 @@
-from voice_assistant.app_interfaces.command_iterator import CommandIterator
+from voice_assistant.app_interfaces.command_source import CommandSource
 from voice_assistant.app_utils.settings import Settings
 
 
-class CLICommandIterator(CommandIterator):
+class CLICommandSource(CommandSource):
     def __init__(self, settings: Settings):
         self.config = settings
 

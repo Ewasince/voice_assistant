@@ -1,12 +1,12 @@
 from loguru import logger
 
-from voice_assistant.app_interfaces.command_iterator import CommandIterator
+from voice_assistant.app_interfaces.command_source import CommandSource
 from voice_assistant.app_utils.settings import Settings
 from voice_assistant.app_utils.utils import normalize_text
-from voice_assistant.commands_iterators.voice_command_iterator.stt_module import STTModule
+from voice_assistant.commands_sources.voice_command_source.stt_module import STTModule
 
 
-class VoiceCommandIterator(CommandIterator):
+class VoiceCommandSource(CommandSource):
     # TODO: разделить класс на распознаватель и источник аудио
     def __init__(self, settings: Settings, *, setup_micro: bool = True):
         self.config = settings

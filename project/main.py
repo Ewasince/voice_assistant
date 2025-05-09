@@ -14,10 +14,10 @@ async def main() -> NoReturn:
     settings = Settings()
 
     # create commands source iterator
-    from voice_assistant.app_interfaces.command_iterator import CommandIterator
-    from voice_assistant.commands_iterators.cli_command_iterator import CLICommandIterator
+    from voice_assistant.app_interfaces.command_source import CommandSource
+    from voice_assistant.commands_sources.cli_command_source import CLICommandSource
 
-    command_iterator: CommandIterator = CLICommandIterator(settings=settings)
+    command_source: CommandSource = CLICommandSource(settings=settings)
 
     # create llm module
     from voice_assistant.app_interfaces.llm_module import LLMClient
@@ -40,17 +40,17 @@ async def main() -> NoReturn:
     from voice_assistant.app_interfaces.command_performer import CommandPerformer
 
     # так же добавляем команды. Каждая команда – это класс, который должен реализовывать интерфейс команды
-    from voice_assistant.commands.test_commands.get_current_os import CommandGetCurrentOS
+    from voice_assistant.base_commands.get_current_os import CommandGetCurrentOS
 
     command_os: CommandPerformer = CommandGetCurrentOS()
     command_recognizer.add_command(command_os.command_topic, command_os)
 
-    from voice_assistant.commands.test_commands.get_current_time import CommandGetCurrentTime
+    from voice_assistant.base_commands.get_current_time import CommandGetCurrentTime
 
     command_time: CommandPerformer = CommandGetCurrentTime()
     command_recognizer.add_command(command_time.command_topic, command_time)
 
-    from voice_assistant.commands.gpt.time_keeper import CommandTimeKeeperGoogle
+    from project.commands.time_keeper import CommandTimeKeeperGoogle
 
     command_tk: CommandPerformer = CommandTimeKeeperGoogle(gpt_module)
     command_recognizer.add_command(command_tk.command_topic, command_tk)
@@ -58,7 +58,7 @@ async def main() -> NoReturn:
     # command_notion: ICommandPerformer = CommandGPTNotion(llm_client, topic_definer)
     # command_recognizer.add_command(command_notion)
 
-    from voice_assistant.commands.gpt.llm_question import CommandLLMQuestion
+    from voice_assistant.base_commands.llm_question import CommandLLMQuestion
 
     command_default: CommandPerformer = CommandLLMQuestion(gpt_module)
     command_recognizer.add_command(None, command_default)
@@ -66,7 +66,7 @@ async def main() -> NoReturn:
     ### main process
     # и, например, в цикле получаем от источника команд текстовые сообщения и обрабатываем их
     command_text: str
-    async for command_text in command_iterator:
+    async for command_text in command_source:
         command_result = await command_recognizer.process_command_from_text(command_text)
         assistant_response = f"Ответ ассистента > {command_result}"
 

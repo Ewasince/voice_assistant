@@ -1,3 +1,5 @@
+from loguru import logger
+
 from voice_assistant.app_interfaces.command_iterator import CommandIterator
 from voice_assistant.app_utils.settings import Settings
 from voice_assistant.app_utils.utils import normalize_text
@@ -24,7 +26,7 @@ class VoiceCommandIterator(CommandIterator):
 
     def _check_command_after_key_word(self, input_text: str | None) -> str | None:
         if input_text is None:
-            print("Ничего не услышал, слушаю дальше...")
+            logger.debug("Ничего не услышал, слушаю дальше...")
             return None
 
         text = normalize_text(input_text)
@@ -32,7 +34,7 @@ class VoiceCommandIterator(CommandIterator):
         filtered_text = extract_text_after_command(text, self.config.key_phase)
 
         if not filtered_text:
-            print(f"Не услышал ключевого слова: {text}")
+            logger.debug(f"Не услышал ключевого слова: {text}")
             return None
 
         return filtered_text

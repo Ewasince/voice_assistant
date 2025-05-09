@@ -1,5 +1,11 @@
 import asyncio
+import sys
 from typing import NoReturn
+
+from loguru import logger
+
+logger.remove()  # Удаляем стандартный вывод в stderr
+logger.add(sys.stdout, level="DEBUG")  # Добавляем вывод в stdout
 
 
 async def main() -> NoReturn:

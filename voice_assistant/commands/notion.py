@@ -5,11 +5,10 @@ from typing import ClassVar
 from pytion import Notion
 from pytion.api import Element
 from pytion.models import Block
-
-from voice_assistant.app_interfaces.command_performer import CommandPerformer
-from voice_assistant.app_interfaces.llm_module import LLMClient
-from voice_assistant.app_interfaces.topic_definer import TopicDefiner
-from voice_assistant.assistant_core.context import Context
+from voxmind.app_interfaces.command_performer import CommandPerformer
+from voxmind.app_interfaces.llm_module import LLMClient
+from voxmind.app_interfaces.topic_definer import TopicDefiner
+from voxmind.assistant_core.context import Context
 
 PROMPT_DELETE_TOPIC_FROM_TEXT = """\
 Удали из предложения "{note}" упоминание о "{topic}" и вышли мне исправленный вариант.\

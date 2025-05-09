@@ -9,48 +9,48 @@ logger.add(sys.stdout, level="DEBUG")  # Добавляем вывод в stdout
 
 
 async def main() -> NoReturn:
-    from voice_assistant.app_utils.settings import Settings
+    from voxmind.app_utils.settings import Settings
 
     settings = Settings()
 
     # create commands source iterator
-    from voice_assistant.app_interfaces.command_source import CommandSource
-    from voice_assistant.commands_sources.cli_command_source import CLICommandSource
+    from voxmind.app_interfaces.command_source import CommandSource
+    from voxmind.commands_sources.cli_command_source import CLICommandSource
 
     command_source: CommandSource = CLICommandSource(settings=settings)
 
     # create llm module
-    from voice_assistant.app_interfaces.llm_module import LLMClient
-    from voice_assistant.llm_clients.gigachat_client import GigaChatClient
+    from voxmind.app_interfaces.llm_module import LLMClient
+    from voxmind.llm_clients.gigachat_client import GigaChatClient
 
     gpt_module: LLMClient = GigaChatClient(Settings())
 
     # topic definer, which determines which command need to activate
-    from voice_assistant.app_interfaces.topic_definer import TopicDefiner
-    from voice_assistant.topic_definers.llm_based import TopicDefinerGPT
+    from voxmind.app_interfaces.topic_definer import TopicDefiner
+    from voxmind.topic_definers.llm_based import TopicDefinerGPT
 
     topic_definer: TopicDefiner = TopicDefinerGPT(gpt_module)
 
     # create command recognizer, which recognize command by using topic definer
-    from voice_assistant.assistant_core.command_recognizer import CommandRecognizer
+    from voxmind.assistant_core.command_recognizer import CommandRecognizer
 
     command_recognizer: CommandRecognizer = CommandRecognizer(topic_definer)
 
     ### commands
-    from voice_assistant.app_interfaces.command_performer import CommandPerformer
+    from voxmind.app_interfaces.command_performer import CommandPerformer
 
     # так же добавляем команды. Каждая команда – это класс, который должен реализовывать интерфейс команды
-    from voice_assistant.base_commands.get_current_os import CommandGetCurrentOS
+    from voxmind.base_commands.get_current_os import CommandGetCurrentOS
 
     command_os: CommandPerformer = CommandGetCurrentOS()
     command_recognizer.add_command(command_os.command_topic, command_os)
 
-    from voice_assistant.base_commands.get_current_time import CommandGetCurrentTime
+    from voxmind.base_commands.get_current_time import CommandGetCurrentTime
 
     command_time: CommandPerformer = CommandGetCurrentTime()
     command_recognizer.add_command(command_time.command_topic, command_time)
 
-    from project.commands.time_keeper import CommandTimeKeeperGoogle
+    from voice_assistant.commands.time_keeper import CommandTimeKeeperGoogle
 
     command_tk: CommandPerformer = CommandTimeKeeperGoogle(gpt_module)
     command_recognizer.add_command(command_tk.command_topic, command_tk)
@@ -58,7 +58,7 @@ async def main() -> NoReturn:
     # command_notion: ICommandPerformer = CommandGPTNotion(llm_client, topic_definer)
     # command_recognizer.add_command(command_notion)
 
-    from voice_assistant.base_commands.llm_question import CommandLLMQuestion
+    from voxmind.base_commands.llm_question import CommandLLMQuestion
 
     command_default: CommandPerformer = CommandLLMQuestion(gpt_module)
     command_recognizer.add_command(None, command_default)
@@ -74,6 +74,7 @@ async def main() -> NoReturn:
             print(assistant_response)
         else:
             print()
+    sys.exit(1)  # Завершение программы с кодом ошибки
 
 
 if __name__ == "__main__":

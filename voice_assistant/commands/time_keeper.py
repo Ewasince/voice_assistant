@@ -3,10 +3,9 @@ from datetime import datetime
 from typing import ClassVar, Final
 
 from loguru import logger
-
-from voice_assistant.app_interfaces.command_performer import CommandPerformer
-from voice_assistant.app_interfaces.llm_module import LLMClient
-from voice_assistant.assistant_core.context import Context as GeneralContext
+from voxmind.app_interfaces.command_performer import CommandPerformer
+from voxmind.app_interfaces.llm_module import LLMClient
+from voxmind.assistant_core.context import Context as GeneralContext
 
 _ACTIVITY_END: Final[str] = "нет"
 _ACTIVITY_NOT_END: Final[str] = "да"

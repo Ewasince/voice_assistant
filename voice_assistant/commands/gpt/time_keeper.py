@@ -110,7 +110,7 @@ class CommandTimeKeeperGoogle(CommandPerformer):
         command_context.last_activity_time = None
 
         last_topic = command_context.last_activity_topic
-        return f'Записал активность "{last_topic}"'
+        return f'Записал конец активности "{last_topic}"'
 
     async def _jot_down_activity(
         self,
@@ -118,7 +118,7 @@ class CommandTimeKeeperGoogle(CommandPerformer):
         start_time: datetime,
         end_time: datetime,
     ) -> None:
-        logger.info(f"Бот записал активность {topic} с {start_time} по {end_time}")
+        logger.info(f"Бот записал активность {topic} с {start_time.strftime('%H:%M')} по {end_time.strftime('%H:%M')}")
 
     def _generate_define_activity_end_prompt(self, command: str) -> str:
         return self._define_end_task_prompt.format(

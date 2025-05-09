@@ -7,4 +7,10 @@ class CLICommandIterator(CommandIterator):
         self.config = settings
 
     async def __anext__(self) -> str:
+        command_utterance = ""
+        while not command_utterance:
+            command_utterance = await self._get_text_input()
+        return command_utterance
+
+    async def _get_text_input(self) -> str:
         return input("Текстовая команда> ")

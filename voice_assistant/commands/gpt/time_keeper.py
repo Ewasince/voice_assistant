@@ -82,13 +82,13 @@ class CommandTimeKeeperGoogle(CommandPerformer):
                 last_activity_time,
                 current_time,
             )
-            response_message += f'Записал активность "{last_activity_topic}".'
+            response_message += f'Записал активность "{last_activity_topic}". '
 
         new_activity_topic = self._llm_module.get_simple_answer(self._generate_define_task_topic_prompt(command_text))
         command_context.last_activity_topic = new_activity_topic
         command_context.last_activity_time = current_time
 
-        response_message += f'Запомнил активность "{new_activity_topic}".'
+        response_message += f'Запомнил активность "{new_activity_topic}". '
 
         return response_message
 
@@ -110,8 +110,7 @@ class CommandTimeKeeperGoogle(CommandPerformer):
         command_context.last_activity_topic = None
         command_context.last_activity_time = None
 
-        last_topic = command_context.last_activity_topic
-        return f'Записал конец активности "{last_topic}"'
+        return f'Записал конец активности "{last_activity_topic}"'
 
     async def _jot_down_activity(
         self,

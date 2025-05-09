@@ -8,4 +8,4 @@ class CommandLLMQuestion(CommandPerformer):
         self.gpt_module = gpt_module
 
     async def perform_command(self, command_text: str, _: Context) -> str | None:
-        return self.gpt_module.get_answer(command_text)
+        return self.gpt_module.get_simple_answer(command_text)

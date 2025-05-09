@@ -26,7 +26,7 @@ class TopicDefinerGPT(TopicDefiner):
     async def choose_topic_from_list(self, topics: list[str], guessable_topic: str) -> str | None:
         prompt = self._generate_define_topic_prompt(topics, guessable_topic)
 
-        guessed_topic = self._llm_client.get_answer(prompt)
+        guessed_topic = self._llm_client.get_simple_answer(prompt)
         guessed_topic = normalize_text(guessed_topic)
 
         if guessed_topic in topics:

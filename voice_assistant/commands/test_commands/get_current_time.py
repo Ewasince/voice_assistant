@@ -5,7 +5,7 @@ from voice_assistant.app_interfaces.command_performer import CommandPerformer
 
 
 class CommandGetCurrentTime(CommandPerformer):
-    _command_topic: ClassVar[str] = "время"
+    _command_topic: ClassVar[str] = "сказать какое сейчас время"
 
     async def perform_command(self, *args: Any) -> str | None:
         # extract_text_after_command(command_text, self.get_command_text())

@@ -26,7 +26,7 @@ class GigaChatClient(LLMClient):
             profanity_check=True,
         )
 
-    def get_answer(self, text: str) -> str:
+    def get_simple_answer(self, text: str) -> str:
         resp = self._giga.invoke([HumanMessage(content=text)])
         content = resp.content
         if not isinstance(content, str):
@@ -39,4 +39,4 @@ if __name__ == "__main__":
     gc = GigaChatClient(Settings())
 
     while True:
-        print(gc.get_answer(input()))
+        print(gc.get_simple_answer(input()))

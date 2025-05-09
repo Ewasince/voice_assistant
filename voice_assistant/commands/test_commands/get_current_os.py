@@ -5,7 +5,7 @@ from voice_assistant.app_interfaces.command_performer import CommandPerformer
 
 
 class CommandGetCurrentOS(CommandPerformer):
-    _command_topic: ClassVar[str] = "система"
+    _command_topic: ClassVar[str] = "дать информацию о системе"
 
     async def perform_command(self, *args: Any) -> str | None:
         # os_type = os.name

@@ -43,7 +43,9 @@ class CommandGPTNotion(CommandPerformer):
         # page = self._no.pages.get(page_block.id)
 
         note_text = command_text
-        note_text = self.gpt_module.get_answer(self._generate_prompt_delete_topic_from_text(note_text, suggested_topic))
+        note_text = self.gpt_module.get_simple_answer(
+            self._generate_prompt_delete_topic_from_text(note_text, suggested_topic)
+        )
 
         my_text_block = Block.create(note_text)
         self._no.blocks.block_append(page_block.id, block=my_text_block)

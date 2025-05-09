@@ -40,7 +40,7 @@ class Contex:
 
 
 class CommandTimeKeeperGoogle(CommandPerformer):
-    _command_topic: ClassVar[str] = "запись того чем занимаюсь"
+    _command_topic: ClassVar[str] = "запись активности"
     _context_class_type: ClassVar[type] = Contex
 
     _define_end_task_prompt: ClassVar[str] = _DEFINE_END_TASK_PROMPT
@@ -50,7 +50,7 @@ class CommandTimeKeeperGoogle(CommandPerformer):
         self._llm_module = gpt_module
 
     async def perform_command(self, command_text: str, context: GeneralContext) -> str | None:
-        activity_type = self._llm_module.get_answer(self._generate_define_activity_end_prompt(command_text))
+        activity_type = self._llm_module.get_simple_answer(self._generate_define_activity_end_prompt(command_text))
         # topic = self._llm_module.get_answer(self._generate_define_task_topic_prompt(text_context))
 
         command_context: Contex = self._get_reliable_context(context)
@@ -83,7 +83,7 @@ class CommandTimeKeeperGoogle(CommandPerformer):
             )
             response_message += f'Записал активность "{last_activity_topic}".'
 
-        new_activity_topic = self._llm_module.get_answer(self._generate_define_task_topic_prompt(command_text))
+        new_activity_topic = self._llm_module.get_simple_answer(self._generate_define_task_topic_prompt(command_text))
         command_context.last_activity_topic = new_activity_topic
         command_context.last_activity_time = current_time
 

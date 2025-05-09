@@ -53,7 +53,7 @@ class CommandTimeKeeperGoogle(CommandPerformer):
 
     async def perform_command(self, command_text: str, context: GeneralContext) -> str | None:
         activity_type = self._llm_module.get_simple_answer(self._generate_define_activity_end_prompt(command_text))
-        logger.debug(f"Guessed activity event: {activity_type}")
+        logger.debug(f"Guessed activity event: is continue activity? {activity_type}.")
         # topic = self._llm_module.get_answer(self._generate_define_task_topic_prompt(text_context))
 
         command_context: Contex = self._get_reliable_context(context)

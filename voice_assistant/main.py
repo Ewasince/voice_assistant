@@ -2,7 +2,9 @@ import asyncio
 import sys
 from typing import NoReturn
 
+from fastapi import FastAPI
 from loguru import logger
+from uvicorn import Config, Server
 
 logger.remove()  # Удаляем стандартный вывод в stderr
 logger.add(sys.stdout, level="DEBUG")  # Добавляем вывод в stdout
@@ -12,12 +14,6 @@ async def main() -> NoReturn:
     from voxmind.app_utils.settings import Settings
 
     settings = Settings()
-
-    # create commands source iterator
-    from voxmind.app_interfaces.command_source import CommandSource
-    from voxmind.commands_sources.cli_command_source import CLICommandSource
-
-    command_source: CommandSource = CLICommandSource(settings=settings)
 
     # create llm module
     from voxmind.app_interfaces.llm_module import LLMClient
@@ -65,9 +61,24 @@ async def main() -> NoReturn:
 
     ### main process
     # и, например, в цикле получаем от источника команд текстовые сообщения и обрабатываем их
+
+    # create commands source iterator
+    from voxmind.app_interfaces.command_source import CommandSource
+    from voxmind.commands_sources.web_voice_command_source.command_source import WebVoiceCommandSource
+
+    app = FastAPI()
+    command_source: CommandSource = WebVoiceCommandSource(settings, app)
+
+    config = Config(app=app, host="127.0.0.1", port=8010, loop="asyncio")
+    server = Server(config)
+
+    asyncio.create_task(server.serve())  # noqa: RUF006
+    logger.info("Web api created")
+
     command_text: str
     async for command_text in command_source:
         command_result = await command_recognizer.process_command_from_text(command_text)
+        # command_result = "testttt " + command_text
         assistant_response = f"Ответ ассистента > {command_result}"
 
         if command_result is not None:

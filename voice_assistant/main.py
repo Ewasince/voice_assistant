@@ -23,7 +23,7 @@ async def main() -> NoReturn:
     from voxmind.app_interfaces.llm_module import LLMClient
     from voxmind.llm_clients.gigachat_client import GigaChatClient
 
-    gpt_module: LLMClient = GigaChatClient(Settings())
+    gpt_module: LLMClient = GigaChatClient(settings)
 
     # topic definer, which determines which command need to activate
     from voxmind.app_interfaces.topic_definer import TopicDefiner

@@ -6,9 +6,9 @@ PYTEST_REPORT_ARGS :=  --cov-report=xml:coverage.xml
 
 .PHONY: install
 install:
-	@poetry env use $(PYTHON_VERSION)
-	@poetry install
-	@poetry run pre-commit install
+	@git submodule init && git submodule update --remote
+	@uv sync
+	@uv run pre-commit install
 
 .PHONY: lint.mypy
 lint.mypy:

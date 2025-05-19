@@ -6,6 +6,9 @@ from fastapi import FastAPI
 from loguru import logger
 from uvicorn import Config, Server
 
+from voxmind.app_interfaces.command_source import CommandSource
+from voxmind.app_utils.settings import Settings
+
 logger.remove()  # Удаляем стандартный вывод в stderr
 logger.add(sys.stdout, level="DEBUG")  # Добавляем вывод в stdout
 
@@ -63,17 +66,8 @@ async def main() -> NoReturn:
     # и, например, в цикле получаем от источника команд текстовые сообщения и обрабатываем их
 
     # create commands source iterator
-    from voxmind.app_interfaces.command_source import CommandSource
-    from voxmind.commands_sources.web_voice_command_source.command_source import WebVoiceCommandSource
 
-    app = FastAPI()
-    command_source: CommandSource = WebVoiceCommandSource(settings, app)
-
-    config = Config(app=app, host="127.0.0.1", port=8010, loop="asyncio")
-    server = Server(config)
-
-    asyncio.create_task(server.serve())  # noqa: RUF006
-    logger.info("Web api created")
+    command_source = get_local_source(settings)
 
     command_text: str
     async for command_text in command_source:
@@ -86,6 +80,24 @@ async def main() -> NoReturn:
         else:
             print()
     sys.exit(1)  # Завершение программы с кодом ошибки
+
+def get_local_source(settings: Settings) -> CommandSource:
+    from voxmind.commands_sources.local_voice_command_source.command_source import LocalVoiceCommandSource
+
+    command_source: CommandSource = LocalVoiceCommandSource(settings)
+    return command_source
+
+def get_web_source(settings: Settings) -> CommandSource:
+    from voxmind.commands_sources.web_voice_command_source.command_source import WebVoiceCommandSource
+    app = FastAPI()
+    command_source: CommandSource = WebVoiceCommandSource(settings, app)
+
+    config = Config(app=app, host="127.0.0.1", port=8010, loop="asyncio")
+    server = Server(config)
+
+    asyncio.create_task(server.serve())  # noqa: RUF006
+    logger.info("Web api created")
+    return command_source
 
 
 if __name__ == "__main__":

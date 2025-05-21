@@ -12,24 +12,24 @@ install:
 
 .PHONY: lint.mypy
 lint.mypy:
-	@poetry run mypy
+	@uv run mypy
 
 .PHONY: lint.ruff
 lint.ruff:
-	@poetry run ruff check . --fix
+	@uv run ruff check . --fix
 
 .PHONY: test.pytest
 test.pytest:
-	@poetry run pytest $(PYTEST_ARGS) -- tests
+	@uv run pytest $(PYTEST_ARGS) -- tests
 
 .PHONY: test.coverage
 test.coverage:
-	@poetry run pytest $(PYTEST_ARGS) $(PYTEST_REPORT_ARGS) -- tests
+	@uv run pytest $(PYTEST_ARGS) $(PYTEST_REPORT_ARGS) -- tests
 
 .PHONY: pre-commit-all
 pre-commit-all:
-	@poetry run pre-commit run --all-files
+	@uv run pre-commit run --all-files
 
 .PHONY: align_code
 align_code:
-	poetry run ruff format .
+	uv run ruff format .

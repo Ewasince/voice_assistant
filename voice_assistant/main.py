@@ -2,10 +2,12 @@ import asyncio
 import sys
 from typing import NoReturn
 
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from loguru import logger
 from uvicorn import Config, Server
 
+from voice_assistant.utils.settings import VASettings
 from voxmind.app_interfaces.command_source import CommandSource
 from voxmind.app_utils.settings import Settings
 
@@ -16,7 +18,8 @@ logger.add(sys.stdout, level="DEBUG")  # Добавляем вывод в stdout
 async def main() -> NoReturn:
     from voxmind.app_utils.settings import Settings
 
-    settings = Settings()
+    load_dotenv()
+    settings = VASettings()
 
     # create llm module
     from voxmind.app_interfaces.llm_module import LLMClient

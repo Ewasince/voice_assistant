@@ -167,3 +167,4 @@ poetry.lock
 data/
 models/*
 .cache/
+**/node_modules

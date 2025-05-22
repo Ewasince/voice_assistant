@@ -16,7 +16,6 @@ logger.add(sys.stdout, level="DEBUG")  # Добавляем вывод в stdout
 
 
 async def main() -> NoReturn:
-    from voxmind.app_utils.settings import Settings
 
     load_dotenv()
     settings = VASettings()

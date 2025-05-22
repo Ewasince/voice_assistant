@@ -5,6 +5,7 @@ from typing import ClassVar
 from pytion import Notion
 from pytion.api import Element
 from pytion.models import Block
+
 from voxmind.app_interfaces.command_performer import CommandPerformer
 from voxmind.app_interfaces.llm_module import LLMClient
 from voxmind.app_interfaces.topic_definer import TopicDefiner

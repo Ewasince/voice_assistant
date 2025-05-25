@@ -116,7 +116,7 @@ def get_whisper_sst_module():
 def get_local_source(settings: Settings) -> CommandSource:
     from voxmind.commands_sources.local_voice_command_source.command_source import LocalVoiceCommandSource
 
-    audio_recognizer = get_whisper_sst_module(settings)
+    audio_recognizer = get_whisper_sst_module()
     command_source: CommandSource = LocalVoiceCommandSource(settings, audio_recognizer)
     return command_source
 

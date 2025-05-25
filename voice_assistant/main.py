@@ -108,9 +108,9 @@ async def main() -> NoReturn:
     sys.exit(1)  # Завершение программы с кодом ошибки
 
 @cache
-def get_whisper_sst_module(settings: Settings):
+def get_whisper_sst_module():
     from voxmind.sst_modules.sst_whisper import WhisperSST
-    audio_recognizer = WhisperSST(settings)
+    audio_recognizer = WhisperSST(Settings())  # TODO: fix
     return audio_recognizer
 
 def get_local_source(settings: Settings) -> CommandSource:

@@ -1,5 +1,6 @@
 import asyncio
 import sys
+from functools import cache
 from typing import NoReturn
 
 from dotenv import load_dotenv
@@ -69,10 +70,14 @@ async def main() -> NoReturn:
 
     # create commands source iterator
 
-    command_source = get_local_source(settings)
+    command_sources: list[CommandSource] = [
+        get_local_source(settings),
+    ]
 
-    command_text: str
-    async for command_text in command_source:
+    tasks = {asyncio.create_task(source.get_command()): n for n, source in enumerate(command_sources)}
+
+
+    async def process_command(command_text: str) -> str:
         command_result = await command_recognizer.process_command_from_text(command_text)
         assistant_response = f"Ответ ассистента > {command_result}"
 
@@ -80,12 +85,39 @@ async def main() -> NoReturn:
             print(assistant_response)
         else:
             print()
+
+        return command_result
+
+    while True:
+        done, _ = await asyncio.wait(tasks.keys(), return_when=asyncio.FIRST_COMPLETED)
+
+        for task in done:
+            idx = tasks[task]
+            result = task.result()
+
+            result = await process_command(result)
+
+            completed_source = command_sources[idx]
+            await completed_source.send_response(result)
+
+            new_task = asyncio.create_task(completed_source.get_command())
+            del tasks[task]
+            tasks[new_task] = idx
+
+    # noinspection PyUnreachableCode
     sys.exit(1)  # Завершение программы с кодом ошибки
+
+@cache
+def get_whisper_sst_module(settings: Settings):
+    from voxmind.sst_modules.sst_whisper import WhisperSST
+    audio_recognizer = WhisperSST(settings)
+    return audio_recognizer
 
 def get_local_source(settings: Settings) -> CommandSource:
     from voxmind.commands_sources.local_voice_command_source.command_source import LocalVoiceCommandSource
 
-    command_source: CommandSource = LocalVoiceCommandSource(settings)
+    audio_recognizer = get_whisper_sst_module()
+    command_source: CommandSource = LocalVoiceCommandSource(settings, audio_recognizer)
     return command_source
 
 def get_web_source(settings: Settings) -> CommandSource:

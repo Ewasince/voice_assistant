@@ -9,6 +9,7 @@ from loguru import logger
 from uvicorn import Config, Server
 
 from voice_assistant.utils.settings import VASettings
+from voxmind.app_interfaces.audio_recognizer import AudioRecognizer
 from voxmind.app_interfaces.command_source import CommandSource
 from voxmind.app_utils.settings import Settings
 
@@ -17,7 +18,6 @@ logger.add(sys.stdout, level="DEBUG")  # Добавляем вывод в stdout
 
 
 async def main() -> NoReturn:
-
     load_dotenv()
     settings = VASettings()
 
@@ -72,10 +72,10 @@ async def main() -> NoReturn:
 
     command_sources: list[CommandSource] = [
         get_local_source(settings),
+        await get_tg_source(settings),
     ]
 
     tasks = {asyncio.create_task(source.get_command()): n for n, source in enumerate(command_sources)}
-
 
     async def process_command(command_text: str) -> str:
         command_result = await command_recognizer.process_command_from_text(command_text)
@@ -107,11 +107,13 @@ async def main() -> NoReturn:
     # noinspection PyUnreachableCode
     sys.exit(1)  # Завершение программы с кодом ошибки
 
+
 @cache
-def get_whisper_sst_module():
+def get_whisper_sst_module() -> AudioRecognizer:
     from voxmind.sst_modules.sst_whisper import WhisperSST
-    audio_recognizer = WhisperSST(Settings())  # TODO: fix
-    return audio_recognizer
+
+    return WhisperSST(Settings())  # TODO: fix
+
 
 def get_local_source(settings: Settings) -> CommandSource:
     from voxmind.commands_sources.local_voice_command_source.command_source import LocalVoiceCommandSource
@@ -120,8 +122,20 @@ def get_local_source(settings: Settings) -> CommandSource:
     command_source: CommandSource = LocalVoiceCommandSource(settings, audio_recognizer)
     return command_source
 
+
+async def get_tg_source(settings: Settings) -> CommandSource:
+    from voxmind.commands_sources.telegram_source.command_source import TelegramBotCommandSource
+
+    audio_recognizer = get_whisper_sst_module()
+    command_source = TelegramBotCommandSource(settings, audio_recognizer)
+    await command_source.start()
+
+    return command_source
+
+
 def get_web_source(settings: Settings) -> CommandSource:
     from voxmind.commands_sources.web_voice_command_source.command_source import WebVoiceCommandSource
+
     app = FastAPI()
     command_source: CommandSource = WebVoiceCommandSource(settings, app)
 

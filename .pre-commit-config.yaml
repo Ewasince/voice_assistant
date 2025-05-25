@@ -10,7 +10,7 @@ repos:
         entry: end-of-file-fixer
         language: system
         types: [text]
-        stages: [commit, push, manual]
+        stages: [pre-commit, pre-push, manual]
         files: '\.py$'
 
       - id: mixed-line-ending
@@ -27,7 +27,7 @@ repos:
         entry: trailing-whitespace-fixer
         language: system
         types: [text]
-        stages: [commit, push, manual]
+        stages: [pre-commit, pre-push, manual]
         files: '\.py$'
 
       - id: check-poetry

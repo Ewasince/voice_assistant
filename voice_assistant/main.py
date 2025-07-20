@@ -6,6 +6,7 @@ from typing import NoReturn
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from loguru import logger
+from plyer import notification
 from uvicorn import Config, Server
 
 from voice_assistant.utils.settings import VASettings
@@ -87,6 +88,13 @@ async def main() -> NoReturn:
             print()
 
         return command_result
+
+    notification.notify(
+        title="Ассистент запущен",
+        message="Ассистент запущен",
+        app_name="Голосовой помощник",
+        timeout=10,  # в секундах
+    )
 
     while True:
         done, _ = await asyncio.wait(tasks.keys(), return_when=asyncio.FIRST_COMPLETED)

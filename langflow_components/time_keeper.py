@@ -4,51 +4,29 @@ from langflow.io import Output
 from langflow.schema import Data
 
 
-class TimeKeeperComponent(Component):
-    display_name = "Time Keeper"
-    description = "Write activity events"
+class TKNewActivityComponent(Component):
+    display_name = "TK New Activity"
+    description = "Write new activity events"
     icon = "Radio"
 
     inputs = [
         MessageTextInput(
-            name="start_activity",
+            name="new_activity",
             display_name="Activity",
-            info="pass information about the activity that has started, if applicable",
+            info="current or newly started activity. Describe it in a short, precise phrase—ideally a single word, with no synonyms or variations.",
             tool_mode=True,
-            required=False,
-        ),
-        MessageTextInput(
-            name="end_activity",
-            display_name="Activity",
-            info="pass information about the activity that has ended, if applicable.",
-            tool_mode=True,
-            required=False,
         ),
     ]
 
     outputs = [
-        Output(display_name="Data", name="result", type_=Data, method="write_activity"),
+        Output(display_name="Data", name="result", type_=Data, method="write_new_activity"),
     ]
 
-    def write_activity(self) -> Data:
-        """Evaluate the mathematical expression and return the result."""
+    def write_new_activity(self) -> Data:
+        response = f"я записал, что начал активность '{self.new_activity}'"
+        print(response)
 
-        results = []
-
-        if self.end_activity:
-            results.append(f"записал, что завершена активность '{self.end_activity}'")
-        if self.start_activity:
-            results.append(f"записал, что начал активность '{self.start_activity}'")
-
-        if not results:
-            result = "ничего не записано"
-        else:
-            result = ", ".join(results)
-            result = f"я {result}"
-
-        return Data(data={"result": result})
-
+        return Data(data={"result": response})
 
     def build(self):
-        """Return the main evaluation function."""
-        return self.evaluate_expression
+        return self.write_new_activity

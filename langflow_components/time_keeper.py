@@ -7,7 +7,7 @@ from langflow.schema import Data
 class TimeKeeperComponent(Component):
     display_name = "Time Keeper"
     description = "Write activity events"
-    icon = "DarthVader"
+    icon = "Radio"
 
     inputs = [
         MessageTextInput(
@@ -36,15 +36,15 @@ class TimeKeeperComponent(Component):
         results = []
 
         if self.end_activity:
-            results.append(f"wrote activity '{self.end_activity}'")
+            results.append(f"записал, что завершена активность '{self.end_activity}'")
         if self.start_activity:
-            results.append(f"started new activity '{self.start_activity}'")
+            results.append(f"записал, что начал активность '{self.start_activity}'")
 
         if not results:
-            result = "I did nothing"
+            result = "ничего не записано"
         else:
             result = ", ".join(results)
-            result = f"i'm {result}"
+            result = f"я {result}"
 
         return Data(data={"result": result})
 

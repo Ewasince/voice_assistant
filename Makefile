@@ -33,3 +33,7 @@ pre-commit-all:
 .PHONY: align_code
 align_code:
 	uv run ruff format .
+
+.PHONY: start_langflow
+start_langflow:
+	docker compose -f docker/docker-compose.yml up

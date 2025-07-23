@@ -62,7 +62,10 @@ async def commit_end_activity(
     command_context.last_activity_topic = None
     command_context.last_activity_time = None
 
-    return f'Записал конец активности "{last_activity_topic}"'
+    if last_activity_topic:
+        return f'Записал конец активности "{last_activity_topic}"'
+
+    return "Не было информации о последней активности"
 
 
 async def _jot_down_activity(
@@ -72,30 +75,30 @@ async def _jot_down_activity(
 ) -> None:
     logger.info(f"Бот записал активность {topic} с {start_time.strftime('%H:%M')} по {end_time.strftime('%H:%M')}")
 
-    # # Данные мероприятия
-    # event = {
-    #     "summary": topic,
-    #     # 'location': 'Москва, ул. Ленина, 1',
-    #     # 'description': 'Обсудим проект.',
-    #     "start": {
-    #         "dateTime": start_time.isoformat(),
-    #         "timeZone": "Europe/Moscow",
-    #     },
-    #     "end": {
-    #         "dateTime": end_time.isoformat(),
-    #         "timeZone": "Europe/Moscow",
-    #     },
-    #     # 'attendees': [
-    #     #     {'email': 'example@gmail.com'},
-    #     # ],
-    # }
-    #
-    # event = (
-    #     calendar_service.events()
-    #     .insert(
-    #         calendarId="1390da56718a398ff28cdefb909fffc3aa55bc7aea60faafdbed20e5c9e2121a@group.calendar.google.com",
-    #         body=event,
-    #     )
-    #     .execute()
-    # )
-    # logger.info("event created: {}".format(event.get("htmlLink")))
+    # Данные мероприятия
+    event = {
+        "summary": topic,
+        # 'location': 'Москва, ул. Ленина, 1',
+        # 'description': 'Обсудим проект.',
+        "start": {
+            "dateTime": start_time.isoformat(),
+            "timeZone": "Europe/Moscow",
+        },
+        "end": {
+            "dateTime": end_time.isoformat(),
+            "timeZone": "Europe/Moscow",
+        },
+        # 'attendees': [
+        #     {'email': 'example@gmail.com'},
+        # ],
+    }
+
+    event = (
+        calendar_service.events()
+        .insert(
+            calendarId="1390da56718a398ff28cdefb909fffc3aa55bc7aea60faafdbed20e5c9e2121a@group.calendar.google.com",
+            body=event,
+        )
+        .execute()
+    )
+    logger.info("event created: {}".format(event.get("htmlLink")))

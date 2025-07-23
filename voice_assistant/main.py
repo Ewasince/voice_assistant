@@ -85,7 +85,13 @@ def make_langflow_request(input_text: str) -> str:
 
     data = response.json()
 
-    return data["outputs"][0]["outputs"][0]["outputs"]["message"]["message"]  # пиздец конечно
+    try:
+        text_response = data["outputs"][0]["outputs"][0]["outputs"]["message"]["message"]  # пиздец конечно
+    except (KeyError, IndexError):
+        logger.error(f"{data=}")
+        raise
+
+    return text_response
 
 
 @cache

@@ -1,8 +1,9 @@
 import asyncio
 import sys
 from functools import cache
-from typing import NoReturn
+from typing import Any, Final, NoReturn
 
+import requests
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from loguru import logger
@@ -17,59 +18,12 @@ from voxmind.app_utils.settings import Settings
 logger.remove()  # Удаляем стандартный вывод в stderr
 logger.add(sys.stdout, level="DEBUG")  # Добавляем вывод в stdout
 
+LANGFLOW_FLOW_URL: Final[str] = "http://localhost:7860/api/v1/run/efb05274-e31b-4fc7-82a0-761204b898f5?stream=false"
+
 
 async def main() -> NoReturn:
     load_dotenv()
     settings = VASettings()
-
-    # create llm module
-    from voxmind.app_interfaces.llm_module import LLMClient
-    from voxmind.llm_clients.gigachat_client import GigaChatClient
-
-    gpt_module: LLMClient = GigaChatClient(settings)
-
-    # topic definer, which determines which command need to activate
-    from voxmind.app_interfaces.topic_definer import TopicDefiner
-    from voxmind.topic_definers.llm_based import TopicDefinerGPT
-
-    topic_definer: TopicDefiner = TopicDefinerGPT(gpt_module)
-
-    # create command recognizer, which recognize command by using topic definer
-    from voxmind.assistant_core.command_recognizer import CommandRecognizer
-
-    command_recognizer: CommandRecognizer = CommandRecognizer(topic_definer)
-
-    ### commands
-    from voxmind.app_interfaces.command_performer import CommandPerformer
-
-    # так же добавляем команды. Каждая команда – это класс, который должен реализовывать интерфейс команды
-    from voxmind.base_commands.get_current_os import CommandGetCurrentOS
-
-    command_os: CommandPerformer = CommandGetCurrentOS()
-    command_recognizer.add_command(command_os.command_topic, command_os)
-
-    from voxmind.base_commands.get_current_time import CommandGetCurrentTime
-
-    command_time: CommandPerformer = CommandGetCurrentTime()
-    command_recognizer.add_command(command_time.command_topic, command_time)
-
-    from voice_assistant.commands.time_keeper import CommandTimeKeeperGoogle
-
-    command_tk: CommandPerformer = CommandTimeKeeperGoogle(gpt_module)
-    command_recognizer.add_command(command_tk.command_topic, command_tk)
-
-    # command_notion: ICommandPerformer = CommandGPTNotion(llm_client, topic_definer)
-    # command_recognizer.add_command(command_notion)
-
-    from voxmind.base_commands.llm_question import CommandLLMQuestion
-
-    command_default: CommandPerformer = CommandLLMQuestion(gpt_module)
-    command_recognizer.add_command(None, command_default)
-
-    ### main process
-    # и, например, в цикле получаем от источника команд текстовые сообщения и обрабатываем их
-
-    # create commands source iterator
 
     command_sources: list[CommandSource] = [
         get_local_source(settings),
@@ -79,7 +33,8 @@ async def main() -> NoReturn:
     tasks = {asyncio.create_task(source.get_command()): n for n, source in enumerate(command_sources)}
 
     async def process_command(command_text: str) -> str:
-        command_result = await command_recognizer.process_command_from_text(command_text)
+        command_result = make_langflow_request(command_text)
+
         assistant_response = f"Ответ ассистента > {command_result}"
 
         if command_result is not None:
@@ -114,6 +69,23 @@ async def main() -> NoReturn:
 
     # noinspection PyUnreachableCode
     sys.exit(1)  # Завершение программы с кодом ошибки
+
+
+def make_langflow_request(input_text: str) -> str:
+    payload = {
+        "output_type": "chat",
+        "input_type": "chat",
+        "input_value": input_text,
+    }
+
+    headers: dict[str, Any] = {}
+
+    # Отправка POST-запроса
+    response = requests.post(LANGFLOW_FLOW_URL, json=payload, headers=headers, timeout=100)
+
+    data = response.json()
+
+    return data["outputs"][0]["outputs"][0]["outputs"]["message"]["message"]  # пиздец конечно
 
 
 @cache

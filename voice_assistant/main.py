@@ -56,12 +56,14 @@ async def main() -> NoReturn:
 
         for task in done:
             idx = tasks[task]
-            result = task.result()
+            received_text = task.result()
 
-            result = await process_command(result)
+            generated_text = await process_command(received_text)
 
             completed_source = command_sources[idx]
-            await completed_source.send_response(result)
+
+            if generated_text:
+                await completed_source.send_response(generated_text)
 
             new_task = asyncio.create_task(completed_source.get_command())
             del tasks[task]
@@ -89,7 +91,7 @@ def make_langflow_request(input_text: str) -> str:
         text_response = data["outputs"][0]["outputs"][0]["outputs"]["message"]["message"]  # пиздец конечно
     except (KeyError, IndexError):
         logger.error(f"{data=}")
-        raise
+        return "Ошибка парсинга ответа от langflow"
 
     return text_response
 

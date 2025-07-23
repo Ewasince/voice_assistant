@@ -26,7 +26,7 @@ async def main() -> NoReturn:
     settings = VASettings()
 
     command_sources: list[CommandSource] = [
-        get_local_source(settings),
+        # get_local_source(settings),
         await get_tg_source(settings),
     ]
 

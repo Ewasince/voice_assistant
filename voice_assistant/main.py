@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from loguru import logger
 from plyer import notification
 
-from voice_assistant.sources import get_tg_source
+from voice_assistant.sources import get_local_source, get_tg_source
 from voice_assistant.utils.settings import VASettings
 from voxmind.app_interfaces.command_source import CommandSource
 
@@ -22,7 +22,7 @@ async def main() -> NoReturn:
     settings = VASettings()
 
     command_sources: list[CommandSource] = [
-        # get_local_source(settings),
+        get_local_source(settings),
         await get_tg_source(settings),
     ]
 

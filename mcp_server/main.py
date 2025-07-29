@@ -1,13 +1,15 @@
 from loguru import logger
 from mcp.server.fastmcp import FastMCP
 
-from mcp_server.al_modules.database import init_db, load_contex, save_contex
+from mcp_server.al_modules.database import MemoryService
 from mcp_server.al_modules.helpers import commit_end_activity, commit_new_activity
 
 
 class MCPServer(FastMCP):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, memory_service: MemoryService = None, **kwargs):
         super().__init__(*args, **kwargs)
+
+        self._context_memory = memory_service or MemoryService()
 
         self.add_tool(self.log_new_activity)
         self.add_tool(self.log_end_activity)
@@ -30,9 +32,9 @@ class MCPServer(FastMCP):
 
         logger.info(f"log_new_activity: {new_activity=} {new_activity_offset=}")
 
-        context = load_contex()
+        context = self._context_memory.load_contex()
         response = await commit_new_activity(new_activity, context)
-        save_contex(context)
+        self._context_memory.save_contex(context)
 
         # response = f"я записал, что начал активность '{new_activity}'"
         #
@@ -60,9 +62,9 @@ class MCPServer(FastMCP):
 
         logger.info(f"log_end_activity: {end_activity_offset=}")
 
-        context = load_contex()
+        context = self._context_memory.load_contex()
         response = await commit_end_activity(context)
-        save_contex(context)
+        self._context_memory.save_contex(context)
 
         # response = "я записал, что закончил активность"
         #
@@ -77,6 +79,5 @@ class MCPServer(FastMCP):
 
 
 if __name__ == "__main__":
-    init_db()
     mcp = MCPServer()
     mcp.run(transport="sse")

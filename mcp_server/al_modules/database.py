@@ -6,7 +6,7 @@ from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import Session
 
 from mcp_server.al_modules.schema import Base, ContexModel
-from mcp_server.al_modules.settings import DBSettings
+from mcp_server.al_modules.settings import ALSettings
 
 
 @dataclass
@@ -16,8 +16,8 @@ class Contex:
 
 
 class MemoryService:
-    def __init__(self, settings: DBSettings = None):
-        settings = settings or DBSettings()
+    def __init__(self, settings: ALSettings = None):
+        settings = settings or ALSettings()
         self._engine = create_engine(settings.database_uri, echo=False)
 
         self.ensure_db()

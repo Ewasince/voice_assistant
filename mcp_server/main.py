@@ -1,15 +1,22 @@
 from loguru import logger
 from mcp.server.fastmcp import FastMCP
 
+from mcp_server.al_modules.calendar import CalendarService
 from mcp_server.al_modules.database import MemoryService
-from mcp_server.al_modules.helpers import commit_end_activity, commit_new_activity
 
 
 class MCPServer(FastMCP):
-    def __init__(self, *args, memory_service: MemoryService = None, **kwargs):
+    def __init__(
+        self,
+        *args,
+        memory_service: MemoryService = None,
+        calendar_service: CalendarService = None,
+        **kwargs,
+    ):
         super().__init__(*args, **kwargs)
 
-        self._context_memory = memory_service or MemoryService()
+        self._memory_service = memory_service or MemoryService()
+        self._calendar_service = calendar_service or CalendarService()
 
         self.add_tool(self.log_new_activity)
         self.add_tool(self.log_end_activity)
@@ -32,9 +39,9 @@ class MCPServer(FastMCP):
 
         logger.info(f"log_new_activity: {new_activity=} {new_activity_offset=}")
 
-        context = self._context_memory.load_contex()
-        response = await commit_new_activity(new_activity, context)
-        self._context_memory.save_contex(context)
+        context = self._memory_service.load_contex()
+        response = await self._calendar_service.commit_new_activity(new_activity, context)
+        self._memory_service.save_contex(context)
 
         # response = f"я записал, что начал активность '{new_activity}'"
         #
@@ -62,9 +69,9 @@ class MCPServer(FastMCP):
 
         logger.info(f"log_end_activity: {end_activity_offset=}")
 
-        context = self._context_memory.load_contex()
-        response = await commit_end_activity(context)
-        self._context_memory.save_contex(context)
+        context = self._memory_service.load_contex()
+        response = await self._calendar_service.commit_end_activity(context)
+        self._memory_service.save_contex(context)
 
         # response = "я записал, что закончил активность"
         #

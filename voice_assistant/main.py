@@ -7,19 +7,20 @@ from dotenv import load_dotenv
 from loguru import logger
 from plyer import notification
 
+from voice_assistant.settings import VASettings
 from voice_assistant.sources import get_local_source, get_tg_source
-from voice_assistant.utils.settings import VASettings
 from voxmind.app_interfaces.command_source import CommandSource
 
 logger.remove()  # Удаляем стандартный вывод в stderr
 logger.add(sys.stdout, level="DEBUG")  # Добавляем вывод в stdout
 
-LANGFLOW_FLOW_URL: Final[str] = "http://localhost:7860/api/v1/run/efb05274-e31b-4fc7-82a0-761204b898f5?stream=false"
+LANGFLOW_FLOW_URL_TEMPLATE: Final[str] = "http://localhost:7860/api/v1/run/{}?stream=false"
+
+settings = VASettings()
 
 
 async def main() -> NoReturn:
     load_dotenv()
-    settings = VASettings()
 
     command_sources: list[CommandSource] = [
         get_local_source(settings),
@@ -79,7 +80,9 @@ def make_langflow_request(input_text: str) -> str:
     headers: dict[str, Any] = {}
 
     # Отправка POST-запроса
-    response = requests.post(LANGFLOW_FLOW_URL, json=payload, headers=headers, timeout=100)
+    response = requests.post(
+        LANGFLOW_FLOW_URL_TEMPLATE.format(settings.langflow_flow_id), json=payload, headers=headers, timeout=100
+    )
 
     data = response.json()
 

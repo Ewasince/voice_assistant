@@ -164,7 +164,6 @@ poetry.lock
 
 # data and env files
 *.env
-data/
 models/*
 .cache/
 **/node_modules

@@ -75,6 +75,7 @@ def make_langflow_request(input_text: str) -> str:
         "output_type": "chat",
         "input_type": "chat",
         "input_value": input_text,
+        "session_id": settings.langflow_session_id,
     }
 
     headers: dict[str, Any] = {}

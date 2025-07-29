@@ -1,5 +1,5 @@
+from fastmcp import FastMCP
 from loguru import logger
-from mcp.server.fastmcp import FastMCP
 
 from mcp_server.al_modules.calendar import CalendarService
 from mcp_server.al_modules.database import MemoryService
@@ -13,13 +13,17 @@ class MCPServer(FastMCP):
         calendar_service: CalendarService = None,
         **kwargs,
     ):
-        super().__init__(*args, **kwargs)
+        super().__init__(
+            *args,
+            tools=[
+                self.log_new_activity,
+                self.log_end_activity,
+            ],
+            **kwargs,
+        )
 
         self._memory_service = memory_service or MemoryService()
         self._calendar_service = calendar_service or CalendarService()
-
-        self.add_tool(self.log_new_activity)
-        self.add_tool(self.log_end_activity)
 
     async def log_new_activity(
         self,

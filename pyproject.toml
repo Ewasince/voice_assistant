@@ -18,9 +18,16 @@ dependencies = [
     "tenacity>=9.1.2",
     "uvicorn>=0.34.2",
     "voxmind",
+    "torch",
 ]
 [tool.uv.sources]
 voxmind = { path = "voxmind", editable = true }
+torch       = { index = "pytorch-cu126" }
+
+[[tool.uv.index]]
+name    = "pytorch-cu126"
+url     = "https://download.pytorch.org/whl/cu126"
+explicit = true
 
 [dependency-groups]
 dev = [

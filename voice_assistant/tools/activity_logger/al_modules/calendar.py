@@ -6,13 +6,13 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from loguru import logger
 
-from mcp_server.al_modules.database import Contex
-from mcp_server.al_modules.settings import ALSettings
+from voice_assistant.tools.activity_logger.al_modules.database import Contex
+from voice_assistant.tools.activity_logger.al_modules.settings import ALSettings
 
 
 class CalendarService:
-    def __init__(self, settings: ALSettings = None):
-        self._settings = settings or ALSettings()
+    def __init__(self) -> None:
+        self._settings = ALSettings()
 
         creds = self._get_credentials()
         self._calendar_service = build("calendar", "v3", credentials=creds)

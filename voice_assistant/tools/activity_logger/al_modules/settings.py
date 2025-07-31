@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Any
 
 from pydantic import field_validator
 from pydantic_settings import BaseSettings
@@ -7,9 +8,6 @@ from pytz.tzinfo import BaseTzInfo
 
 
 class ALSettings(BaseSettings):
-    # database
-    database_uri: str = "sqlite:///data/data.db"
-
     # calendar
     calendar_scopes: list[str] = ["https://www.googleapis.com/auth/calendar"]
     calendar_creds_file: Path = Path("data/credentials.json")
@@ -21,7 +19,7 @@ class ALSettings(BaseSettings):
     # noinspection PyNestedDecorators
     @field_validator("calendar_tz", mode="before")
     @classmethod
-    def parse_timezone(cls, v):
+    def parse_timezone(cls, v: Any) -> BaseTzInfo:
         if isinstance(v, BaseTzInfo):
             return v
         return timezone(v)

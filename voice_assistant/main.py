@@ -7,7 +7,7 @@ from loguru import logger
 from plyer import notification
 
 from voice_assistant.command_processer import process_command, settings
-from voice_assistant.sources import get_local_source, get_tg_source
+from voice_assistant.sources import get_tg_source
 from voxmind.app_interfaces.command_source import CommandSource
 
 logger.remove()  # Удаляем стандартный вывод в stderr
@@ -29,7 +29,7 @@ async def main() -> NoReturn:
 
 async def get_sources() -> list[CommandSource]:
     return [
-        get_local_source(settings),
+        # get_local_source(settings),
         await get_tg_source(settings),
     ]
 

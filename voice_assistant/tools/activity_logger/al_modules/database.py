@@ -5,8 +5,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import Session
 
-from mcp_server.al_modules.schema import Base, ContexModel
-from mcp_server.al_modules.settings import ALSettings
+from voice_assistant.settings import VASettings
+from voice_assistant.tools.activity_logger.al_modules.schema import Base, ContexModel
 
 
 @dataclass
@@ -16,16 +16,17 @@ class Contex:
 
 
 class MemoryService:
-    def __init__(self, settings: ALSettings = None):
-        settings = settings or ALSettings()
-        self._engine = create_engine(settings.database_uri, echo=False)
+    def __init__(self) -> None:
+        va_settings = VASettings()
+
+        self._engine = create_engine(va_settings.database_uri, echo=False)
 
         self.ensure_db()
 
-    def ensure_db(self):
+    def ensure_db(self) -> None:
         Base.metadata.create_all(self._engine)
 
-    def save_contex(self, contex: Contex, record_id: int = 1):
+    def save_contex(self, contex: Contex, record_id: int = 1) -> None:
         with Session(self._engine) as session:
             try:
                 existing = session.query(ContexModel).filter_by(id=record_id).one()

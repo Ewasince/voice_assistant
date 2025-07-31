@@ -3,6 +3,7 @@ from typing import Any, Final
 import requests
 from loguru import logger
 
+from voice_assistant.agent.openai_agent import run_agent
 from voice_assistant.settings import VASettings
 
 LANGFLOW_FLOW_URL_TEMPLATE: Final[str] = "http://localhost:7860/api/v1/run/{}?stream=false"
@@ -10,7 +11,7 @@ settings = VASettings()
 
 
 async def process_command(command_text: str) -> str:
-    command_result = make_langflow_request(command_text)
+    command_result = await make_open_ai_request(command_text)
 
     assistant_response = f"Ответ ассистента > {command_result}"
 
@@ -20,6 +21,10 @@ async def process_command(command_text: str) -> str:
         print()
 
     return command_result
+
+
+async def make_open_ai_request(input_text: str) -> str:
+    return await run_agent(input_text)
 
 
 def make_langflow_request(input_text: str) -> str:

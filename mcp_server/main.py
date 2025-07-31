@@ -1,8 +1,8 @@
 from fastmcp import FastMCP
 from loguru import logger
 
-from mcp_server.al_modules.calendar import CalendarService
-from mcp_server.al_modules.database import MemoryService
+from voice_assistant.tools.activity_logger.al_modules import CalendarService
+from voice_assistant.tools.activity_logger.al_modules.database import MemoryService
 
 
 class MCPServer(FastMCP):

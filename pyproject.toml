@@ -19,6 +19,8 @@ dependencies = [
     "voxmind",
     "torch",
     "fastmcp>=2.10.6",
+    "openai>=1.98.0",
+    "composio>=0.8.5",
 ]
 [tool.uv.sources]
 voxmind = { path = "voxmind", editable = true }

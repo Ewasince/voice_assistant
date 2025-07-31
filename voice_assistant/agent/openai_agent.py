@@ -55,10 +55,3 @@ async def run_agent(text: str) -> str:
         session=session,
     )
     return result.final_output
-
-
-# async def main():
-#
-#
-# if __name__ == '__main__':
-#     asyncio.run(main())

@@ -21,6 +21,29 @@ async def main() -> NoReturn:
 
     startup_completed()
 
+    await message_loop(command_sources)
+
+    # noinspection PyUnreachableCode
+    sys.exit(1)
+
+
+async def get_sources() -> list[CommandSource]:
+    return [
+        get_local_source(settings),
+        await get_tg_source(settings),
+    ]
+
+
+def startup_completed() -> None:
+    notification.notify(
+        title="Ассистент запущен",
+        message="Ассистент запущен",
+        app_name="Голосовой помощник",
+        timeout=10,  # в секундах
+    )
+
+
+async def message_loop(command_sources: list[CommandSource]) -> NoReturn:
     tasks = {asyncio.create_task(source.get_command()): n for n, source in enumerate(command_sources)}
     while True:
         done, _ = await asyncio.wait(tasks.keys(), return_when=asyncio.FIRST_COMPLETED)
@@ -39,25 +62,6 @@ async def main() -> NoReturn:
             new_task = asyncio.create_task(completed_source.get_command())
             del tasks[task]
             tasks[new_task] = idx
-
-    # noinspection PyUnreachableCode
-    sys.exit(1)  # Завершение программы с кодом ошибки
-
-
-async def get_sources() -> list[CommandSource]:
-    return [
-        get_local_source(settings),
-        await get_tg_source(settings),
-    ]
-
-
-def startup_completed() -> None:
-    notification.notify(
-        title="Ассистент запущен",
-        message="Ассистент запущен",
-        app_name="Голосовой помощник",
-        timeout=10,  # в секундах
-    )
 
 
 if __name__ == "__main__":

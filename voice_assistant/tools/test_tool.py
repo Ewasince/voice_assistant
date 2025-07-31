@@ -9,8 +9,8 @@ composio: Composio = Composio(api_key=settings.composio_api_key.get_secret_value
 
 
 user_id = "default"
-toolkit = "gmail"
-connected_accounts = composio.connected_accounts.list(user_ids=[user_id], toolkit_slugs=[toolkit])
+toolkit = "googlecalendar"
+# connected_accounts = composio.connected_accounts.list(user_ids=[user_id], toolkit_slugs=[toolkit])
 
 
 # if not connected_accounts.items:
@@ -32,7 +32,8 @@ connected_accounts = composio.connected_accounts.list(user_ids=[user_id], toolki
 openai_client = OpenAI(api_key=settings.openai_api_key.get_secret_value(), base_url=settings.openai_api_base_url)
 
 # Get Gmail tools that are pre-configured
-tools = composio.tools.get(user_id="default", tools=["GMAIL_SEND_EMAIL"])
+tools = composio.tools.get(user_id="default", tools=["GOOGLECALENDAR_EVENTS_LIST"])
+# tools = composio.tools.get(user_id="default", tools=["GMAIL_SEND_EMAIL"])
 
 # Get response from the LLM
 response = openai_client.chat.completions.create(

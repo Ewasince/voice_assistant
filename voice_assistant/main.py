@@ -17,7 +17,7 @@ logger.add(sys.stdout, level="DEBUG")  # Добавляем вывод в stdout
 async def main() -> NoReturn:
     load_dotenv()
 
-    command_sources: list[CommandSource] = await get_sources()
+    command_sources = await get_sources()
 
     startup_completed()
 

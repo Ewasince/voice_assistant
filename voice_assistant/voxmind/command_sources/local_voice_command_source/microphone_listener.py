@@ -6,20 +6,17 @@ from loguru import logger
 from speech_recognition import AudioData, Microphone, Recognizer
 
 from voice_assistant.app_interfaces.audio_recognizer import AudioRecognizer
-from voice_assistant.voxmind.app_utils.utils import Settings
 
 
 class MicrophoneListener:
     def __init__(
         self,
-        settings: Settings,
         sst_module: AudioRecognizer,
         *,
         do_setup_micro: bool = True,
     ):
         self._recognizer: Recognizer = Recognizer()
         self._microphone: Microphone = Microphone()
-        self._settings = settings
 
         self._sst_module = sst_module
 

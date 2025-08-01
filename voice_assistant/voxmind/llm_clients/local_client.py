@@ -5,13 +5,10 @@ from ollama import ChatResponse
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
 
 from voice_assistant.app_interfaces.llm_module import LLMClient
-from voice_assistant.voxmind.app_utils.utils import Settings
+from voice_assistant.voxmind.app_utils.settings import primary_settings
 
 
 class LocalLLMClient(LLMClient):
-    def __init__(self, settings: Settings):
-        self._settings = settings
-
     @retry(
         retry=retry_if_exception_type(httpx.ConnectError),
         stop=stop_after_attempt(5),
@@ -23,7 +20,7 @@ class LocalLLMClient(LLMClient):
     )
     def get_simple_answer(self, text: str) -> str:
         response: ChatResponse = ollama.chat(
-            model=self._settings.ollama_model,
+            model=primary_settings.ollama_model,
             messages=[
                 {
                     "role": "user",

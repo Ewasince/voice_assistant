@@ -2,14 +2,13 @@ from fastapi import FastAPI
 from loguru import logger
 
 from voice_assistant.app_interfaces.command_source import CommandSource
-from voice_assistant.voxmind.app_utils.utils import Settings, normalize_text
+from voice_assistant.voxmind.app_utils.settings import primary_settings
+from voice_assistant.voxmind.app_utils.utils import normalize_text
 from voice_assistant.voxmind.command_sources.web_voice_command_source.simple_web import SimpleWebWrapper
 
 
 class WebVoiceCommandSource(CommandSource):
-    def __init__(self, settings: Settings, web_app: FastAPI):
-        self.config = settings
-
+    def __init__(self, web_app: FastAPI):
         self._web_app_wrapper = SimpleWebWrapper(web_app)
 
     async def get_command(self) -> str:
@@ -33,7 +32,7 @@ class WebVoiceCommandSource(CommandSource):
 
         text = normalize_text(input_text)
 
-        filtered_text = extract_text_after_command(text, self.config.key_phase)
+        filtered_text = extract_text_after_command(text, primary_settings.key_phase)
 
         if not filtered_text:
             logger.debug(f"Не услышал ключевого слова: {text}")

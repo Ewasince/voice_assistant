@@ -1,11 +1,7 @@
 from voice_assistant.app_interfaces.command_source import CommandSource
-from voice_assistant.voxmind.app_utils.settings import Settings
 
 
 class CLICommandSource(CommandSource):
-    def __init__(self, settings: Settings):
-        self.config = settings
-
     async def get_command(self) -> str:
         command_utterance = ""
         while not command_utterance:

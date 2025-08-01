@@ -1,9 +1,8 @@
 import re
 
-from voice_assistant.voxmind.app_utils.settings import Settings
+from voice_assistant.voxmind.app_utils.settings import primary_settings
 
-config = Settings()
-p = re.compile(config.regexp)
+p = re.compile(primary_settings.regexp)
 
 
 def is_forbidden_chars(text: str) -> bool:

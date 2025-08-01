@@ -30,7 +30,14 @@ dependencies = [
     "ollama>=0.5.1",
     "langchain-gigachat>=0.3.12",
     "fastapi>=0.116.1",
+    "python-telegram-bot>=22.3",
+    "ffmpeg-python>=0.2.0",
+    "soundfile>=0.13.1",
+    "numba>=0.61.2",
+    "numpy>=2.2.6",
+    "whisper-openai>=1.0.0",
 ]
+
 [tool.uv.sources]
 torch       = { index = "pytorch-cu126" }
 

@@ -7,21 +7,20 @@ from loguru import logger
 from speech_recognition import AudioData, RequestError, UnknownValueError
 
 from voice_assistant.app_interfaces.audio_recognizer import AudioRecognizer
-from voice_assistant.voxmind.app_utils.utils import Settings
+from voice_assistant.voxmind.app_utils.settings import primary_settings
 
 
 class WhisperSST(AudioRecognizer):
-    def __init__(self, settings: Settings):
-        self._settings = settings
+    def __init__(self) -> None:
         self._setup_whisper()
 
     def _setup_whisper(self) -> None:
-        self._whisper_model = whisper.load_model(self._settings.whisper_model)
+        self._whisper_model = whisper.load_model(primary_settings.whisper_model)
 
         logger.info("Initialized whisper model")
 
-        if self._settings.use_gpu:
-            import torch
+        if primary_settings.use_gpu:
+            import torch  # noqa: PLC0415
 
             logger.info(f"Cuda available: {torch.cuda.is_available()}")
 

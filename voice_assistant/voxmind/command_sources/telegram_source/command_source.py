@@ -9,13 +9,13 @@ from telegram.ext import Application, ContextTypes, MessageHandler, filters
 
 from voice_assistant.app_interfaces.audio_recognizer import AudioRecognizer
 from voice_assistant.app_interfaces.command_source import CommandSource
-from voice_assistant.voxmind.app_utils.settings import Settings
+from voice_assistant.voxmind.app_utils.settings import primary_settings
 
 
 class TelegramBotCommandSource(CommandSource):
-    def __init__(self, settings: Settings, sst_module: AudioRecognizer) -> None:
-        self._token = settings.telegram_token
-        self._chat_id = settings.telegram_chat_id
+    def __init__(self, sst_module: AudioRecognizer) -> None:
+        self._token = primary_settings.telegram_token
+        self._chat_id = primary_settings.telegram_chat_id
         self._bot = Application.builder().token(self._token).build()
         self._message_queue: asyncio.Queue[str] = asyncio.Queue()
 

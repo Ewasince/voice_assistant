@@ -5,17 +5,16 @@ from plyer import notification
 
 from voice_assistant.app_interfaces.audio_recognizer import AudioRecognizer
 from voice_assistant.app_interfaces.command_source import CommandSource
-from voice_assistant.voxmind.app_utils.utils import Settings, normalize_text
+from voice_assistant.voxmind.app_utils.settings import primary_settings
+from voice_assistant.voxmind.app_utils.utils import normalize_text
 from voice_assistant.voxmind.command_sources.local_voice_command_source.microphone_listener import MicrophoneListener
 
 warnings.filterwarnings("ignore", message="FP16 is not supported on CPU*")
 
 
 class LocalVoiceCommandSource(CommandSource):
-    def __init__(self, settings: Settings, sst_module: AudioRecognizer, *, setup_micro: bool = True):
-        self.config = settings
-
-        self._listener = MicrophoneListener(settings, sst_module, do_setup_micro=setup_micro)
+    def __init__(self, sst_module: AudioRecognizer, *, setup_micro: bool = True):
+        self._listener = MicrophoneListener(sst_module, do_setup_micro=setup_micro)
         self._listener.start_listen()
         logger.info("TTS initialized")
 
@@ -45,7 +44,7 @@ class LocalVoiceCommandSource(CommandSource):
 
         text = normalize_text(input_text)
 
-        filtered_text = extract_text_after_command(text, self.config.key_phase)
+        filtered_text = extract_text_after_command(text, primary_settings.key_phase)
 
         if not filtered_text:
             return None

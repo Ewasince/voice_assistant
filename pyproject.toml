@@ -37,6 +37,7 @@ dependencies = [
     "numpy>=2.2.6",
     "openai-whisper>=20250625",
     "pyaudio>=0.2.14",
+    "alembic>=1.16.4",
 ]
 
 [tool.uv.sources]
@@ -180,6 +181,7 @@ select = [
 "**/{grpc_types,generated}/*" = ["E", "N", "ARG", "PL", "UP", "F"]
 # Ignore bandit and other rules for tests and utils
 "{tests,utils,scripts}/*" = ["S", "PLR0913", "ARG002", "RUF001", "PLR2004", "N803"]
+"alembic/*" = ["INP001", "E402"]
 
 [tool.ruff.format]
 quote-style = "double"

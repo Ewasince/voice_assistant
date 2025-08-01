@@ -8,7 +8,7 @@ from plyer import notification
 
 from voice_assistant.command_processer import process_command, settings
 from voice_assistant.sources import get_tg_source
-from voxmind.app_interfaces.command_source import CommandSource
+from voice_assistant.voxmind.app_interfaces.command_source import CommandSource
 
 logger.remove()  # Удаляем стандартный вывод в stderr
 logger.add(sys.stdout, level="DEBUG")  # Добавляем вывод в stdout

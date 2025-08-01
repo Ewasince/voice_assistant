@@ -1,6 +1,6 @@
 from pydantic import SecretStr
 
-from voxmind.app_utils.settings import Settings
+from voice_assistant.voxmind.app_utils.utils import Settings
 
 
 class VASettings(Settings):

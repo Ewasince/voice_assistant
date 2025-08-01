@@ -5,20 +5,22 @@ from fastapi import FastAPI
 from loguru import logger
 from uvicorn import Config, Server
 
-from voxmind.app_interfaces.audio_recognizer import AudioRecognizer
-from voxmind.app_interfaces.command_source import CommandSource
-from voxmind.app_utils.settings import Settings
+from voice_assistant.voxmind.app_interfaces.audio_recognizer import AudioRecognizer
+from voice_assistant.voxmind.app_interfaces.command_source import CommandSource
+from voice_assistant.voxmind.app_utils.utils import Settings
 
 
 @cache
 def _get_whisper_sst_module() -> AudioRecognizer:
-    from voxmind.sst_modules.sst_whisper import WhisperSST
+    from voice_assistant.voxmind.sst_modules.sst_whisper import WhisperSST
 
     return WhisperSST(Settings())  # TODO: fix
 
 
 def get_local_source(settings: Settings) -> CommandSource:
-    from voxmind.commands_sources.local_voice_command_source.command_source import LocalVoiceCommandSource
+    from voice_assistant.voxmind.command_sources.local_voice_command_source.command_source import (
+        LocalVoiceCommandSource,
+    )
 
     audio_recognizer = _get_whisper_sst_module()
     command_source: CommandSource = LocalVoiceCommandSource(settings, audio_recognizer)
@@ -26,7 +28,7 @@ def get_local_source(settings: Settings) -> CommandSource:
 
 
 async def get_tg_source(settings: Settings) -> CommandSource:
-    from voxmind.commands_sources.telegram_source.command_source import TelegramBotCommandSource
+    from voice_assistant.voxmind.command_sources.telegram_source.command_source import TelegramBotCommandSource
 
     audio_recognizer = _get_whisper_sst_module()
     command_source = TelegramBotCommandSource(settings, audio_recognizer)
@@ -36,7 +38,7 @@ async def get_tg_source(settings: Settings) -> CommandSource:
 
 
 def get_web_source(settings: Settings) -> CommandSource:
-    from voxmind.commands_sources.web_voice_command_source.command_source import WebVoiceCommandSource
+    from voice_assistant.voxmind.command_sources.web_voice_command_source.command_source import WebVoiceCommandSource
 
     app = FastAPI()
     command_source: CommandSource = WebVoiceCommandSource(settings, app)

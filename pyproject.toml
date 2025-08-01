@@ -16,7 +16,6 @@ dependencies = [
     "sqlalchemy>=2.0.41",
     "tenacity>=9.1.2",
     "uvicorn>=0.34.2",
-    "voxmind",
     "torch",
     "fastmcp>=2.10.6",
     "openai>=1.98.0",
@@ -27,9 +26,12 @@ dependencies = [
     "openai-agents>=0.2.4",
     "composio-openai-agents>=0.8.5",
     "types-pytz>=2025.2.0.20250516",
+    "loguru>=0.7.3",
+    "ollama>=0.5.1",
+    "langchain-gigachat>=0.3.12",
+    "fastapi>=0.116.1",
 ]
 [tool.uv.sources]
-voxmind = { path = "voxmind", editable = true }
 torch       = { index = "pytorch-cu126" }
 
 [[tool.uv.index]]

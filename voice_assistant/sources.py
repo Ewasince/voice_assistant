@@ -11,13 +11,13 @@ from voice_assistant.app_interfaces.command_source import CommandSource
 
 @cache
 def _get_whisper_sst_module() -> AudioRecognizer:
-    from voice_assistant.voxmind.sst_modules.sst_whisper import WhisperSST  # noqa: PLC0415
+    from voice_assistant.sst_modules.sst_whisper import WhisperSST  # noqa: PLC0415
 
     return WhisperSST()  # TODO: fix
 
 
 def get_local_source() -> CommandSource:
-    from voice_assistant.voxmind.command_sources.local_voice_command_source.command_source import (  # noqa: PLC0415
+    from voice_assistant.command_sources.local_voice_command_source.command_source import (  # noqa: PLC0415
         LocalVoiceCommandSource,
     )
 
@@ -27,7 +27,7 @@ def get_local_source() -> CommandSource:
 
 
 async def get_tg_source() -> CommandSource:
-    from voice_assistant.voxmind.command_sources.telegram_source.command_source import (  # noqa: PLC0415
+    from voice_assistant.command_sources.telegram_source.command_source import (  # noqa: PLC0415
         TelegramBotCommandSource,
     )
 
@@ -39,7 +39,7 @@ async def get_tg_source() -> CommandSource:
 
 
 def get_web_source() -> CommandSource:
-    from voice_assistant.voxmind.command_sources.web_voice_command_source.command_source import (  # noqa: PLC0415
+    from voice_assistant.command_sources.web_voice_command_source.command_source import (  # noqa: PLC0415
         WebVoiceCommandSource,
     )
 

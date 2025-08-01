@@ -9,7 +9,7 @@ from telegram.ext import Application, ContextTypes, MessageHandler, filters
 
 from voice_assistant.app_interfaces.audio_recognizer import AudioRecognizer
 from voice_assistant.app_interfaces.command_source import CommandSource
-from voice_assistant.voxmind.app_utils.settings import primary_settings
+from voice_assistant.app_utils.settings import primary_settings
 
 
 class TelegramBotCommandSource(CommandSource):

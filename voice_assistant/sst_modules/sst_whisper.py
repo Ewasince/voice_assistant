@@ -1,4 +1,5 @@
 import io
+from functools import cache
 
 import numpy as np
 import soundfile as sf
@@ -42,3 +43,8 @@ class WhisperSST(AudioRecognizer):
             raise e
         else:
             return value
+
+
+@cache
+def _get_whisper_sst_module() -> AudioRecognizer:
+    return WhisperSST()

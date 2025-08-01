@@ -7,7 +7,7 @@ from googleapiclient.discovery import build
 from loguru import logger
 
 from voice_assistant.database.models import Contex
-from voice_assistant.tools.activity_logger.al_modules.settings import al_settings
+from voice_assistant.tools.activity_logger.settings import al_settings
 
 
 class CalendarService:

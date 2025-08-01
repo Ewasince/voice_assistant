@@ -7,12 +7,14 @@ from telegram.ext import Application, ContextTypes, MessageHandler, filters
 from voice_assistant.app_interfaces.audio_recognizer import AudioRecognizer
 from voice_assistant.app_interfaces.command_source import CommandSource
 from voice_assistant.app_utils.settings import primary_settings
+from voice_assistant.app_utils.types import UserId
 from voice_assistant.command_sources.telegram_source.utils import get_audiodata_from_file
 from voice_assistant.sst_modules.sst_whisper import _get_whisper_sst_module
 
 
 class TelegramBotCommandSource(CommandSource):
-    def __init__(self, sst_module: AudioRecognizer) -> None:
+    def __init__(self, user_id: UserId, sst_module: AudioRecognizer) -> None:
+        super().__init__(user_id)
         self._token = primary_settings.telegram_token
         self._chat_id = primary_settings.telegram_chat_id
         self._bot = Application.builder().token(self._token).build()
@@ -69,9 +71,9 @@ class TelegramBotCommandSource(CommandSource):
         await self._message_queue.put(res)
 
 
-async def get_tg_source() -> CommandSource:
+async def get_tg_source(user_id: UserId) -> CommandSource:
     audio_recognizer = _get_whisper_sst_module()
-    command_source = TelegramBotCommandSource(audio_recognizer)
+    command_source = TelegramBotCommandSource(user_id, audio_recognizer)
     await command_source.start()
 
     return command_source

@@ -1,5 +1,4 @@
 import warnings
-from functools import cache
 
 from loguru import logger
 from plyer import notification
@@ -7,17 +6,19 @@ from plyer import notification
 from voice_assistant.app_interfaces.audio_recognizer import AudioRecognizer
 from voice_assistant.app_interfaces.command_source import CommandSource
 from voice_assistant.app_utils.settings import primary_settings
+from voice_assistant.app_utils.types import DEFAULT_USER_ID, UserId
 from voice_assistant.app_utils.utils import normalize_text
 from voice_assistant.command_sources.local_voice_command_source.microphone_listener import MicrophoneListener
+from voice_assistant.sst_modules.sst_whisper import _get_whisper_sst_module
 
 warnings.filterwarnings("ignore", message="FP16 is not supported on CPU*")
 
 
 class LocalVoiceCommandSource(CommandSource):
-    def __init__(self, sst_module: AudioRecognizer, *, setup_micro: bool = True):
+    def __init__(self, user_id: UserId, sst_module: AudioRecognizer, *, setup_micro: bool = True):
+        super().__init__(user_id)
         self._listener = MicrophoneListener(sst_module, do_setup_micro=setup_micro)
         self._listener.start_listen()
-        logger.info("TTS initialized")
 
     async def get_command(self) -> str:
         logger.info("Listening...")
@@ -68,14 +69,7 @@ def extract_text_after_command(text: str, key: str | None) -> str | None:
     return filtered_text.strip()
 
 
-@cache
-def _get_whisper_sst_module() -> AudioRecognizer:
-    from voice_assistant.sst_modules.sst_whisper import WhisperSST  # noqa: PLC0415
-
-    return WhisperSST()  # TODO: fix
-
-
 def get_local_source() -> CommandSource:
     audio_recognizer = _get_whisper_sst_module()
-    command_source: CommandSource = LocalVoiceCommandSource(audio_recognizer)
+    command_source: CommandSource = LocalVoiceCommandSource(DEFAULT_USER_ID, audio_recognizer)
     return command_source

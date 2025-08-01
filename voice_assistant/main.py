@@ -7,6 +7,8 @@ from loguru import logger
 from plyer import notification
 
 from voice_assistant.app_interfaces.command_source import CommandSource
+from voice_assistant.app_utils.settings import primary_settings
+from voice_assistant.app_utils.types import DEFAULT_USER_ID
 from voice_assistant.command_processer import process_command
 from voice_assistant.command_sources.sources import get_sources
 
@@ -19,7 +21,8 @@ async def main() -> NoReturn:
 
     logger.info("Starting voice assistant")
 
-    command_sources = await get_sources()
+    sources_to_use = primary_settings.sources_to_use_list
+    command_sources = await get_sources(DEFAULT_USER_ID, sources_to_use)
 
     startup_completed()
 

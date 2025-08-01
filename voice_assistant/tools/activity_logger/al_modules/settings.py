@@ -23,3 +23,7 @@ class ALSettings(BaseSettings):
         if isinstance(v, BaseTzInfo):
             return v
         return timezone(v)
+
+
+# noinspection PyArgumentList
+al_settings = ALSettings()

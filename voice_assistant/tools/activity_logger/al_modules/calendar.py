@@ -7,13 +7,11 @@ from googleapiclient.discovery import build
 from loguru import logger
 
 from voice_assistant.tools.activity_logger.al_modules.database import Contex
-from voice_assistant.tools.activity_logger.al_modules.settings import ALSettings
+from voice_assistant.tools.activity_logger.al_modules.settings import al_settings
 
 
 class CalendarService:
     def __init__(self) -> None:
-        self._settings = ALSettings()
-
         creds = self._get_credentials()
         self._calendar_service = build("calendar", "v3", credentials=creds)
 
@@ -22,7 +20,7 @@ class CalendarService:
         activity_topic: str,
         command_context: Contex,
     ) -> str:
-        current_time = datetime.now(tz=self._settings.calendar_tz)
+        current_time = datetime.now(tz=al_settings.calendar_tz)
 
         response_message = ""
 
@@ -47,7 +45,7 @@ class CalendarService:
         self,
         command_context: Contex,
     ) -> str:
-        current_time = datetime.now(tz=self._settings.calendar_tz)
+        current_time = datetime.now(tz=al_settings.calendar_tz)
 
         last_activity_topic = command_context.last_activity_topic
         last_activity_time = command_context.last_activity_time
@@ -98,7 +96,7 @@ class CalendarService:
         event = (
             self._calendar_service.events()
             .insert(
-                calendarId=self._settings.calendar_id,
+                calendarId=al_settings.calendar_id,
                 body=event,
             )
             .execute()
@@ -109,10 +107,10 @@ class CalendarService:
         creds = None
 
         # 1) Пробуем загрузить сохранённые креды
-        if self._settings.calendar_token_file.exists():
+        if al_settings.calendar_token_file.exists():
             creds = Credentials.from_authorized_user_file(
-                str(self._settings.calendar_token_file),
-                self._settings.calendar_scopes,
+                str(al_settings.calendar_token_file),
+                al_settings.calendar_scopes,
             )
 
         # 2) Если нет или невалидны — обновляем/получаем заново
@@ -123,15 +121,15 @@ class CalendarService:
             else:
                 logger.info("running OAuth flow in browser...")
                 flow = InstalledAppFlow.from_client_secrets_file(
-                    str(self._settings.calendar_creds_file),
-                    self._settings.calendar_scopes,
+                    str(al_settings.calendar_creds_file),
+                    al_settings.calendar_scopes,
                 )
                 # Важно: offline, чтобы получить refresh_token один раз
                 creds = flow.run_local_server(port=0, access_type="offline", prompt="consent")
 
             # 3) Сохраняем для будущих запусков
-            self._settings.calendar_token_file.parent.mkdir(parents=True, exist_ok=True)
-            with self._settings.calendar_token_file.open("w") as f:
+            al_settings.calendar_token_file.parent.mkdir(parents=True, exist_ok=True)
+            with al_settings.calendar_token_file.open("w") as f:
                 f.write(creds.to_json())
 
         return creds

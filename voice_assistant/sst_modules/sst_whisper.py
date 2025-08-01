@@ -31,6 +31,7 @@ class WhisperSST(AudioRecognizer):
             audio_array, sampling_rate = sf.read(wav_stream)
             audio_array = audio_array.astype(np.float32)
 
+            # noinspection PyArgumentList
             result = self._whisper_model.transcribe(audio_array, language="ru")
             value = result["text"]
         except UnknownValueError:

@@ -7,7 +7,7 @@ from pytz import timezone
 from pytz.tzinfo import BaseTzInfo
 
 
-class ALSettings(BaseSettings):
+class CalendarSettings(BaseSettings):
     # calendar
     calendar_scopes: list[str] = ["https://www.googleapis.com/auth/calendar"]
     calendar_creds_file: Path = Path("data/credentials.json")
@@ -26,4 +26,4 @@ class ALSettings(BaseSettings):
 
 
 # noinspection PyArgumentList
-al_settings = ALSettings()
+calendar_settings = CalendarSettings()

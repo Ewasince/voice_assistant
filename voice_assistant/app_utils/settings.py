@@ -1,5 +1,6 @@
 from typing import Any
 
+from pydantic import SecretStr
 from pydantic.fields import FieldInfo
 from pydantic_settings import (
     BaseSettings,
@@ -18,6 +19,13 @@ class ListableSource(EnvSettingsSource):
 
 
 class Settings(BaseSettings):
+    debug_mode: bool = False
+
+    # database
+    database_uri: str = "sqlite:///data/data.db"
+
+    composio_api_key: SecretStr
+
     # recognizing settings
     key_phase: str = "помощник"
     regexp: str = r"[^A-Za-zА-ЯЁа-яё0-9 ]"
@@ -46,4 +54,5 @@ class Settings(BaseSettings):
         return (ListableSource(settings_cls),)
 
 
+# noinspection PyArgumentList
 primary_settings = Settings()

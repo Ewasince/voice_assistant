@@ -7,8 +7,8 @@ from speech_recognition import AudioData
 from telegram import File, Update, Voice
 from telegram.ext import Application, ContextTypes, MessageHandler, filters
 
-from voice_assistant.voxmind.app_interfaces.audio_recognizer import AudioRecognizer
-from voice_assistant.voxmind.app_interfaces.command_source import CommandSource
+from voice_assistant.app_interfaces.audio_recognizer import AudioRecognizer
+from voice_assistant.app_interfaces.command_source import CommandSource
 from voice_assistant.voxmind.app_utils.settings import Settings
 
 
@@ -45,17 +45,17 @@ class TelegramBotCommandSource(CommandSource):
         )
         await self._bot.initialize()
         await self._bot.start()
-        await self._bot.updater.start_polling()
+        await self._bot.updater.start_polling()  # type: ignore[union-attr]
         logger.info("Telegram bot started")
 
     async def _handle_text_message(self, update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
-        message_text = update.message.text
+        message_text = update.message.text  # type: ignore[union-attr]
         if not isinstance(message_text, str):
             raise ValueError(f"not suitable text: {message_text}")
         await self._message_queue.put(message_text)
 
     async def _handle_voice_message(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-        voice: Voice = update.message.voice
+        voice: Voice = update.message.voice  # type: ignore[union-attr, assignment]
         file_id = voice.file_id
         duration = voice.duration
 

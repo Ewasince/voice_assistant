@@ -4,7 +4,7 @@ from loguru import logger
 from ollama import ChatResponse
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
 
-from voice_assistant.voxmind.app_interfaces.llm_module import LLMClient
+from voice_assistant.app_interfaces.llm_module import LLMClient
 from voice_assistant.voxmind.app_utils.utils import Settings
 
 

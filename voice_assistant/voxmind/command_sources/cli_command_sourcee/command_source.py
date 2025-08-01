@@ -1,4 +1,4 @@
-from voice_assistant.voxmind.app_interfaces.command_source import CommandSource
+from voice_assistant.app_interfaces.command_source import CommandSource
 from voice_assistant.voxmind.app_utils.settings import Settings
 
 

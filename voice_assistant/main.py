@@ -6,9 +6,10 @@ from dotenv import load_dotenv
 from loguru import logger
 from plyer import notification
 
-from voice_assistant.command_processer import process_command, settings
+from voice_assistant.app_interfaces.command_source import CommandSource
+from voice_assistant.command_processer import process_command
 from voice_assistant.sources import get_tg_source
-from voice_assistant.voxmind.app_interfaces.command_source import CommandSource
+from voice_assistant.voxmind.app_utils.settings import primary_settings
 
 logger.remove()  # Удаляем стандартный вывод в stderr
 logger.add(sys.stdout, level="DEBUG")  # Добавляем вывод в stdout
@@ -29,8 +30,8 @@ async def main() -> NoReturn:
 
 async def get_sources() -> list[CommandSource]:
     return [
-        # get_local_source(settings),
-        await get_tg_source(settings),
+        # get_local_source(primary_settings),
+        await get_tg_source(primary_settings),
     ]
 
 

@@ -16,3 +16,6 @@ class Settings(BaseSettings):
 
     # local llm settings
     ollama_model: str = Field(default="llama3:8b")
+
+
+primary_settings = Settings()

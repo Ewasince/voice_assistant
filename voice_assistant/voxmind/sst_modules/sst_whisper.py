@@ -6,7 +6,7 @@ import whisper
 from loguru import logger
 from speech_recognition import AudioData, RequestError, UnknownValueError
 
-from voice_assistant.voxmind.app_interfaces.audio_recognizer import AudioRecognizer
+from voice_assistant.app_interfaces.audio_recognizer import AudioRecognizer
 from voice_assistant.voxmind.app_utils.utils import Settings
 
 

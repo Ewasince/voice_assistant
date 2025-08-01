@@ -1,7 +1,4 @@
 from voice_assistant.agent.openai_agent import run_agent
-from voice_assistant.settings import VASettings
-
-settings = VASettings()
 
 
 async def process_command(command_text: str) -> str:

@@ -5,8 +5,8 @@ from fastapi import FastAPI
 from loguru import logger
 from uvicorn import Config, Server
 
-from voice_assistant.voxmind.app_interfaces.audio_recognizer import AudioRecognizer
-from voice_assistant.voxmind.app_interfaces.command_source import CommandSource
+from voice_assistant.app_interfaces.audio_recognizer import AudioRecognizer
+from voice_assistant.app_interfaces.command_source import CommandSource
 from voice_assistant.voxmind.app_utils.utils import Settings
 
 

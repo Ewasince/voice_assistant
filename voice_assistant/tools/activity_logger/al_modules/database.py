@@ -5,7 +5,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import Session
 
-from voice_assistant.settings import VASettings
+from voice_assistant.settings import va_settings
 from voice_assistant.tools.activity_logger.al_modules.schema import Base, ContexModel
 
 
@@ -17,8 +17,6 @@ class Contex:
 
 class MemoryService:
     def __init__(self) -> None:
-        va_settings = VASettings()
-
         self._engine = create_engine(va_settings.database_uri, echo=False)
 
         self.ensure_db()

@@ -1,4 +1,4 @@
-from voice_assistant.voxmind.app_interfaces.topic_definer import TopicDefiner
+from voice_assistant.app_interfaces.topic_definer import TopicDefiner
 
 
 class TopicDefinerSimple(TopicDefiner):

@@ -1,7 +1,7 @@
 from typing import ClassVar, Final
 
-from voice_assistant.voxmind.app_interfaces.llm_module import LLMClient
-from voice_assistant.voxmind.app_interfaces.topic_definer import TopicDefiner
+from voice_assistant.app_interfaces.llm_module import LLMClient
+from voice_assistant.app_interfaces.topic_definer import TopicDefiner
 from voice_assistant.voxmind.app_utils.utils import normalize_text
 
 _DEFINE_TOPIC_PROMPT_TEMPLATE: Final[str] = """\

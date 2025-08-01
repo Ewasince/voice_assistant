@@ -1,7 +1,7 @@
 from loguru import logger
 
-from voice_assistant.voxmind.app_interfaces.command_performer import CommandPerformer
-from voice_assistant.voxmind.app_interfaces.topic_definer import TopicDefiner
+from voice_assistant.app_interfaces.command_performer import CommandPerformer
+from voice_assistant.app_interfaces.topic_definer import TopicDefiner
 from voice_assistant.voxmind.app_utils.utils import is_forbidden_chars
 from voice_assistant.voxmind.assistant_core.context import Context
 

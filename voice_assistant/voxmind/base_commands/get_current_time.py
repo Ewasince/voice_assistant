@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Any, ClassVar
 
-from voice_assistant.voxmind.app_interfaces.command_performer import CommandPerformer
+from voice_assistant.app_interfaces.command_performer import CommandPerformer
 
 
 class CommandGetCurrentTime(CommandPerformer):

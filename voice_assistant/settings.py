@@ -1,9 +1,8 @@
 from pydantic import SecretStr
+from pydantic_settings import BaseSettings
 
-from voice_assistant.voxmind.app_utils.utils import Settings
 
-
-class VASettings(Settings):
+class VASettings(BaseSettings):
     debug_mode: bool = False
 
     langflow_flow_id: str
@@ -18,3 +17,7 @@ class VASettings(Settings):
     database_uri: str = "sqlite:///data/data.db"
 
     composio_api_key: SecretStr
+
+
+# noinspection PyArgumentList
+va_settings = VASettings()

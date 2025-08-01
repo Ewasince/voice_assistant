@@ -4,7 +4,7 @@ from langchain_gigachat.chat_models import GigaChat
 from loguru import logger
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
 
-from voice_assistant.voxmind.app_interfaces.llm_module import LLMClient
+from voice_assistant.app_interfaces.llm_module import LLMClient
 from voice_assistant.voxmind.llm_clients.gigachat_client.settings import GigachatSettings
 
 

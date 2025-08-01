@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from loguru import logger
 
-from voice_assistant.voxmind.app_interfaces.command_source import CommandSource
+from voice_assistant.app_interfaces.command_source import CommandSource
 from voice_assistant.voxmind.app_utils.utils import Settings, normalize_text
 from voice_assistant.voxmind.command_sources.web_voice_command_source.simple_web import SimpleWebWrapper
 

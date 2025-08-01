@@ -1,10 +1,8 @@
 from agents import Agent, RunConfig, Runner, SQLiteSession
 from agents.models.multi_provider import MultiProvider
 
-from voice_assistant.settings import VASettings
+from voice_assistant.settings import va_settings
 from voice_assistant.tools.activity_logger.tools import log_end_activity, log_new_activity
-
-settings = VASettings()
 
 agent = Agent(
     name="Personal AI assistant",
@@ -20,12 +18,12 @@ agent = Agent(
     ],
 )
 
-session = SQLiteSession(settings.agent_session_name)
+session = SQLiteSession(va_settings.agent_session_name)
 
 
 multi_provider = MultiProvider(
-    openai_base_url=settings.agent_api_base_url,
-    openai_api_key=settings.agent_api_key.get_secret_value(),
+    openai_base_url=va_settings.agent_api_base_url,
+    openai_api_key=va_settings.agent_api_key.get_secret_value(),
     openai_use_responses=False,
 )
 
@@ -48,7 +46,7 @@ async def run_agent(text: str) -> str:
         starting_agent=agent,
         input=text,
         run_config=RunConfig(
-            model=settings.agent_model,
+            model=va_settings.agent_model,
             model_provider=multi_provider,
             tracing_disabled=True,
         ),

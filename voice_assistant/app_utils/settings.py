@@ -10,7 +10,7 @@ class Settings(BaseSettings):
 
     # example recognizers settings
     use_gpu: bool = Field(default=False)
-    whisper_model: str = Field(default="base")
+    whisper_model: str = Field(default="turbo")
     telegram_token: str = Field(default="")
     telegram_chat_id: int = Field(default=0)
 

@@ -35,7 +35,7 @@ dependencies = [
     "soundfile>=0.13.1",
     "numba>=0.61.2",
     "numpy>=2.2.6",
-    "whisper-openai>=1.0.0",
+    "openai-whisper>=20250625",
 ]
 
 [tool.uv.sources]

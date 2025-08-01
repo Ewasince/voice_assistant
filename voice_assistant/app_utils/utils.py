@@ -1,12 +1,8 @@
 import re
 
-from voice_assistant.voxmind.app_utils.settings import primary_settings
+from voice_assistant.app_utils.settings import primary_settings
 
 p = re.compile(primary_settings.regexp)
-
-
-def is_forbidden_chars(text: str) -> bool:
-    return bool(p.findall(text))
 
 
 def normalize_text(input_text: str) -> str:

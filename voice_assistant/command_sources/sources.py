@@ -1,4 +1,4 @@
-from typing import Iterable, Sequence
+from typing import Iterable
 
 from loguru import logger
 
@@ -10,7 +10,7 @@ from voice_assistant.command_sources.telegram_source.command_source import get_t
 from voice_assistant.command_sources.web_voice_command_source.command_source import get_web_source
 
 
-async def get_sources(user_id: UserId, sources_types: Iterable[CommandSourcesTypes]) -> Sequence[CommandSource]:
+async def get_sources(user_id: UserId, sources_types: Iterable[CommandSourcesTypes]) -> list[CommandSource]:
     logger.info(f"Initializing for user '{user_id}' command sources: {', '.join(sources_types)}")
 
     sources: list[CommandSource] = []

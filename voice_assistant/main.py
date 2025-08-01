@@ -1,6 +1,6 @@
 import asyncio
 import sys
-from typing import NoReturn, Sequence
+from typing import NoReturn
 
 from dotenv import load_dotenv
 from loguru import logger
@@ -42,7 +42,7 @@ def startup_completed() -> None:
     )
 
 
-async def message_loop(command_sources: Sequence[CommandSource]) -> NoReturn:
+async def message_loop(command_sources: list[CommandSource]) -> NoReturn:
     tasks = {asyncio.create_task(source.get_command()): n for n, source in enumerate(command_sources)}
     while True:
         done, _ = await asyncio.wait(tasks.keys(), return_when=asyncio.FIRST_COMPLETED)

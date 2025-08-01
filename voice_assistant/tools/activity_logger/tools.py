@@ -1,8 +1,8 @@
 from agents import function_tool
 from loguru import logger
 
-from voice_assistant.tools.activity_logger.al_modules.calendar import CalendarService
-from voice_assistant.tools.activity_logger.al_modules.database import MemoryService
+from voice_assistant.services.calendar import CalendarService
+from voice_assistant.services.memory import MemoryService
 
 _memory_service = MemoryService()
 _calendar_service = CalendarService()

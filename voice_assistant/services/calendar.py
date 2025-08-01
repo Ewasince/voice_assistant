@@ -6,7 +6,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from loguru import logger
 
-from voice_assistant.tools.activity_logger.al_modules.database import Contex
+from voice_assistant.database.models import Contex
 from voice_assistant.tools.activity_logger.al_modules.settings import al_settings
 
 

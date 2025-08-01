@@ -8,7 +8,7 @@ from plyer import notification
 
 from voice_assistant.app_interfaces.command_source import CommandSource
 from voice_assistant.command_processer import process_command
-from voice_assistant.sources import get_tg_source
+from voice_assistant.command_sources.sources import get_sources
 
 logger.remove()  # Удаляем стандартный вывод в stderr
 logger.add(sys.stdout, level="DEBUG")  # Добавляем вывод в stdout
@@ -16,6 +16,8 @@ logger.add(sys.stdout, level="DEBUG")  # Добавляем вывод в stdout
 
 async def main() -> NoReturn:
     load_dotenv()
+
+    logger.info("Starting voice assistant")
 
     command_sources = await get_sources()
 
@@ -27,14 +29,8 @@ async def main() -> NoReturn:
     sys.exit(1)
 
 
-async def get_sources() -> list[CommandSource]:
-    return [
-        # get_local_source(),
-        await get_tg_source(),
-    ]
-
-
 def startup_completed() -> None:
+    logger.info("Startup completed!")
     notification.notify(
         title="Ассистент запущен",
         message="Ассистент запущен",

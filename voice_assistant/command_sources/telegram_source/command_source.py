@@ -10,6 +10,7 @@ from telegram.ext import Application, ContextTypes, MessageHandler, filters
 from voice_assistant.app_interfaces.audio_recognizer import AudioRecognizer
 from voice_assistant.app_interfaces.command_source import CommandSource
 from voice_assistant.app_utils.settings import primary_settings
+from voice_assistant.command_sources.local_voice_command_source.command_source import _get_whisper_sst_module
 
 
 class TelegramBotCommandSource(CommandSource):
@@ -85,3 +86,11 @@ async def get_audiodata_from_file(voice_file: File) -> AudioData:
 
     # Создаем AudioData из WAV-данных
     return AudioData(wav_bytes, sample_rate=16000, sample_width=2)
+
+
+async def get_tg_source() -> CommandSource:
+    audio_recognizer = _get_whisper_sst_module()
+    command_source = TelegramBotCommandSource(audio_recognizer)
+    await command_source.start()
+
+    return command_source

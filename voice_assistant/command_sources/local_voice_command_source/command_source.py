@@ -1,4 +1,5 @@
 import warnings
+from functools import cache
 
 from loguru import logger
 from plyer import notification
@@ -65,3 +66,16 @@ def extract_text_after_command(text: str, key: str | None) -> str | None:
     filtered_text = text[pos:]
 
     return filtered_text.strip()
+
+
+@cache
+def _get_whisper_sst_module() -> AudioRecognizer:
+    from voice_assistant.sst_modules.sst_whisper import WhisperSST  # noqa: PLC0415
+
+    return WhisperSST()  # TODO: fix
+
+
+def get_local_source() -> CommandSource:
+    audio_recognizer = _get_whisper_sst_module()
+    command_source: CommandSource = LocalVoiceCommandSource(audio_recognizer)
+    return command_source

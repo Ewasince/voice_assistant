@@ -67,8 +67,8 @@ class MicrophoneListener:
         if not do_setup_micro:
             return
 
-        print("Момент тишины, микрофон настраивается...")
+        logger.info("A moment of silence, the microphone is being adjusted...")
         with self._microphone as source:
             self._recognizer.adjust_for_ambient_noise(source)
 
-        print("Микрофон настроен!")
+        logger.info("The microphone is set up!")

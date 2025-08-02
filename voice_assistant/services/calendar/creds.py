@@ -13,7 +13,7 @@ async def get_calendar_credentials(calendar_data_service: CalendarDataService) -
     calendar_data = calendar_data_service.load_calendar_data()
 
     if calendar_data is None:
-        raise ValueError(f"No calendar_data found for user_id={calendar_data_service.user_id}")
+        raise ValueError(f"no calendar_data found for user_id='{calendar_data_service.user_id}'")
 
     creds = None
 

@@ -1,5 +1,6 @@
 from agents import Agent, RunConfig, Runner, SQLiteSession, Tool
 from agents.models.multi_provider import MultiProvider
+from loguru import logger
 
 from voice_assistant.agent.settings import agent_settings
 from voice_assistant.app_utils.types import UserId
@@ -34,6 +35,8 @@ class UserAgent:
         )
 
         self._multi_provider._get_prefix_and_model_name = _get_prefix_and_model_name  # type: ignore[method-assign, assignment]
+
+        logger.info(f"Initializing Agent for user '{user_id}' with {len(tools)} tools")
 
     async def run_agent(self, input_text: str) -> str | None:
         result = await Runner.run(

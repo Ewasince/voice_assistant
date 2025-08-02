@@ -11,7 +11,7 @@ from voice_assistant.app_interfaces.command_source import CommandSource
 from voice_assistant.app_utils.settings import primary_settings
 from voice_assistant.app_utils.types import CommandPerformerFunction, UserId
 from voice_assistant.command_performers.performer_factory import get_performer
-from voice_assistant.command_sources.sources import get_sources
+from voice_assistant.command_sources.sources_factory import get_sources
 
 logger.remove()  # Удаляем стандартный вывод в stderr
 logger.add(sys.stdout, level="DEBUG")  # Добавляем вывод в stdout

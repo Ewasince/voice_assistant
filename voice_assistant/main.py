@@ -1,7 +1,7 @@
 import asyncio
 import contextlib
 import sys
-from typing import AsyncGenerator, NoReturn
+from typing import AsyncGenerator, Awaitable, Callable, NoReturn
 
 from dotenv import load_dotenv
 from loguru import logger
@@ -30,7 +30,7 @@ async def main() -> NoReturn:
 
     # noinspection PyUnreachableCode
     loops = [
-        asyncio.create_task(message_loop(user_id, command_sources))
+        asyncio.create_task(message_loop(user_id, command_sources, process_command))
         for user_id, command_sources in sources_by_users.items()
     ]
 
@@ -51,7 +51,11 @@ def startup_completed() -> None:
     )
 
 
-async def message_loop(user_id: UserId, command_sources: list[CommandSource]) -> NoReturn:
+async def message_loop(
+    user_id: UserId,
+    command_sources: list[CommandSource],
+    command_performer: Callable[[str], Awaitable[str]],
+) -> NoReturn:
     logger.info(f"Start messages loop for user: {user_id}")
     tasks = {asyncio.create_task(source.get_interaction_gen()): n for n, source in enumerate(command_sources)}
     while True:
@@ -63,7 +67,7 @@ async def message_loop(user_id: UserId, command_sources: list[CommandSource]) ->
 
             received_text = await anext(interaction_gen)
 
-            generated_text = await process_command(received_text)
+            generated_text = await command_performer(received_text)
 
             completed_source = command_sources[idx]
 

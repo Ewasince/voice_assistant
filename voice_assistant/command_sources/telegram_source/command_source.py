@@ -36,7 +36,7 @@ class TelegramBotCommandSource(CommandSource):
         response = yield user_message_data.message_text
 
         await self._bot.bot.send_message(chat_id=user_message_data.chat_id, text=response)
-        logger.info(f"Answer for {self.user_id} sent to telegram: '{response}'")
+        logger.info(f"Answer for user '{self.user_id}' sent to telegram: '{response}'")
 
     async def get_command(self) -> str:
         raise NotImplementedError

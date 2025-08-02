@@ -46,7 +46,7 @@ class TelegramBotCommandSource(CommandSource):
 
 
 class TelegramBot:
-    def __init__(self, sst_module: AudioRecognizer) -> None:
+    def __init__(self, sst_module: AudioRecognizer | None) -> None:
         self._sst_module = sst_module
 
         self._bot = Application.builder().token(telegram_settings.telegram_token).build()
@@ -63,13 +63,14 @@ class TelegramBot:
                 block=False,
             )
         )
-        self._bot.add_handler(
-            MessageHandler(
-                filters.VOICE,
-                self._handle_voice_message,
-                block=False,
+        if self._sst_module is not None:
+            self._bot.add_handler(
+                MessageHandler(
+                    filters.VOICE,
+                    self._handle_voice_message,
+                    block=False,
+                )
             )
-        )
         await self._bot.initialize()
         await self._bot.start()
         await self._bot.updater.start_polling()  # type: ignore[union-attr]
@@ -103,6 +104,9 @@ class TelegramBot:
         await message_queue.put(UserResponse(message_text, chat.id))
 
     async def _handle_voice_message(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+        if not self._sst_module:
+            raise ValueError("_handle_voice_message was called when _sst_module is None")
+
         user_data = self._get_user_data(update)
         if user_data is None:
             return
@@ -148,7 +152,7 @@ class TelegramBot:
 
 @cache
 def get_telegram_bot() -> TelegramBot:
-    audio_recognizer = get_whisper_sst_module()
+    audio_recognizer = get_whisper_sst_module() if telegram_settings.telegram_recognize_voice else None
     return TelegramBot(audio_recognizer)
 
 

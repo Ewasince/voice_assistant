@@ -21,5 +21,4 @@ class CalendarModel(Base):
 
     user_id: Mapped[str] = mapped_column(primary_key=True)
     token_data: Mapped[dict | None] = mapped_column(JSON, nullable=True)
-    creds_data: Mapped[dict] = mapped_column(JSON, nullable=False)
     calendar_id: Mapped[str] = mapped_column(String, nullable=False)

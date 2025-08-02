@@ -1,6 +1,3 @@
-import json
-from pathlib import Path
-
 import typer
 from sqlalchemy import Engine, create_engine, select
 from sqlalchemy.exc import NoResultFound
@@ -31,7 +28,6 @@ class CalendarDataService:
             result = session.scalar(stmt)
 
             if result:
-                result.creds_data = calendar_data.creds_data
                 result.token_data = calendar_data.token_data
                 result.calendar_id = calendar_data.calendar_id
             else:
@@ -48,19 +44,7 @@ def cli_add(
     database_uri: str = typer.Option(..., help="URI к БД (например, sqlite:///db.sqlite3)"),
     user_id: str = typer.Option(..., help="ID пользователя"),
     calendar_id: str = typer.Option(..., help="ID календаря"),
-    creds_data: str = typer.Option(None, help="JSON-строка с данными creds"),
-    creds_data_path: str = typer.Option(None, help="Путь к JSON-файлу с creds (если не передаётся строкой)"),
 ) -> None:
-    # Загрузка данных
-    if creds_data_path:
-        with Path(creds_data_path).open() as f:
-            creds = json.load(f)
-    elif creds_data:
-        creds = json.loads(creds_data)
-    else:
-        typer.echo("must provide creds_data or creds_data_path")
-        raise typer.Exit(code=1)
-
     # Подключение к БД
     engine = create_engine(database_uri, echo=False)
 
@@ -69,11 +53,10 @@ def cli_add(
         result = session.scalar(stmt)
 
         if result:
-            result.creds_data = creds
             result.calendar_id = calendar_id
             typer.echo(f"Обновлены данные для user_id {user_id}")
         else:
-            new_entry = CalendarModel(user_id=user_id, creds_data=creds, calendar_id=calendar_id)
+            new_entry = CalendarModel(user_id=user_id, calendar_id=calendar_id)
             session.add(new_entry)
             typer.echo(f"Добавлена новая запись для user_id={user_id}")
 

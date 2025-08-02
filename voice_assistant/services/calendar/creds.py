@@ -36,7 +36,7 @@ async def get_calendar_credentials(calendar_data_service: CalendarDataService) -
 
         # Используем creds_data напрямую (dict)
         flow = InstalledAppFlow.from_client_config(
-            client_config=calendar_data.creds_data,
+            client_config=calendar_settings.calendar_creds_file,
             scopes=calendar_settings.calendar_scopes,
         )
 

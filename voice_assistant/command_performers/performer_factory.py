@@ -32,10 +32,8 @@ class CommandPerformer:
 
         command_result = await self._user_agent.run_agent(command_text)
 
-        assistant_response = f"Ответ ассистента > {command_result}"
-
         if command_result is not None:
-            print(assistant_response)
+            print(f"Ответ ассистента > {command_result}")
         else:
             print()
 

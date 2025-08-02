@@ -11,15 +11,7 @@ class UserAgent:
         self,
         user_id: UserId,
         tools: list[Tool],
-        # agent_name: str,
-        # agent_id: str,
-        # agent_settings: RunConfig,
     ):
-        # self.agent_name = agent_name
-        # self.agent_id = agent_id
-        # self.agent_settings = agent_settings
-        # self.agent_settings.agent_
-
         self._agent = Agent(
             name="Personal AI assistant",
             instructions="You are a helpful assistant who can use tools to answer questions and perform tasks. "
@@ -30,10 +22,6 @@ class UserAgent:
             "information about what they are doing, you should record this activity using the appropriate "
             "tool.Answer in Russian",
             tools=tools,
-            # [
-            #     log_new_activity,
-            #     log_end_activity,
-            # ],
         )
 
         self._session = SQLiteSession(UserAgent.get_session_name(user_id))

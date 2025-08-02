@@ -7,6 +7,7 @@ from voice_assistant.services.calendar.calendar_data import CalendarDataService
 from voice_assistant.services.calendar.creds import get_calendar_credentials
 from voice_assistant.services.calendar.service import CalendarService
 from voice_assistant.services.memory import ContextMemoryService
+from voice_assistant.tools.decorators import tool_decorator
 
 
 class ActivityLoggerToolset(Toolset):
@@ -21,15 +22,14 @@ class ActivityLoggerToolset(Toolset):
 
     async def get_tools(self) -> list[Tool]:
         return [
-            self.log_new_activity,
-            self.log_end_activity,
+            function_tool(tool_decorator(self.log_new_activity, self._logger)),
+            function_tool(tool_decorator(self.log_end_activity, self._logger)),
         ]
 
-    @function_tool()
     async def log_new_activity(
         self,
         new_activity: str,
-        new_activity_offset: str | None = None,
+        new_activity_offset: str | None = None,  # noqa: ARG002
     ) -> str:
         """Log a new activity event.
         Trigger this tool when the user indicates they are currently engaged in an activity or have just started one.
@@ -42,7 +42,7 @@ class ActivityLoggerToolset(Toolset):
                 for example: "00:10:45" (10 minutes and 45 seconds ago).
         """
 
-        self._logger.info(f"log_new_activity: {new_activity=} {new_activity_offset=}")
+        # self._logger.info(f"log_new_activity: {new_activity=} {new_activity_offset=}")
 
         if self._calendar_service is None:
             raise RuntimeError("Calendar service was not initialized")
@@ -61,10 +61,9 @@ class ActivityLoggerToolset(Toolset):
 
         return response
 
-    @function_tool()
     async def log_end_activity(
         self,
-        end_activity_offset: str | None = None,
+        end_activity_offset: str | None = None,  # noqa: ARG002
     ) -> str:
         """Log an activity event that ended.
         Use this tool only if the user has stated that an activity is finished AND has NOT mentioned being currently
@@ -75,8 +74,6 @@ class ActivityLoggerToolset(Toolset):
                 mentioned how long ago the activity ended. The value must be in the %H:%M:%S format —
                 for example: "00:10:45" (10 minutes and 45 seconds ago).
         """
-
-        self._logger.info(f"log_end_activity: {end_activity_offset=}")
 
         if self._calendar_service is None:
             raise RuntimeError("Calendar service was not initialized")

@@ -1,10 +1,11 @@
 import asyncio
 import contextlib
 import sys
-from typing import AsyncGenerator, Awaitable, NoReturn
+import traceback
+from typing import Any, AsyncGenerator, Awaitable, NoReturn
 
 from dotenv import load_dotenv
-from loguru import Record, logger
+from loguru import logger
 from plyer import notification
 
 from voice_assistant.app_interfaces.command_source import CommandSource
@@ -16,7 +17,7 @@ from voice_assistant.command_sources.sources_factory import get_sources
 logger.remove()  # Удаляем стандартный вывод в stderr
 
 
-def fmt(record: Record) -> str:
+def fmt(record: Any) -> str:
     record["extra"].setdefault("user_id", "<no_user>")
 
     format_str = "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | <level>{level: <8}</level> | {extra[user_id]: <9} | "
@@ -47,20 +48,34 @@ async def main() -> Awaitable[NoReturn]:
     for user_id in primary_settings.active_users_list:
         loops_tasks.append(asyncio.create_task(setup_user_and_start_loop(user_id)))
 
-    await asyncio.wait(loops_tasks, return_when=asyncio.ALL_COMPLETED)
+    while loops_tasks:
+        done, _ = await asyncio.wait(loops_tasks, return_when=asyncio.FIRST_EXCEPTION)
+        for task in done:
+            loops_tasks.remove(task)
+
+            exc = task.exception()
+            if not exc:
+                continue
+
+            logger.error(f"Task {task} ends with exception: {exc}")
+            traceback.print_exception(type(exc), exc, exc.__traceback__, file=sys.stderr)
 
     sys.exit(0)
 
 
 async def setup_user_and_start_loop(user_id: UserId) -> Awaitable[NoReturn]:
-    sources_to_use = primary_settings.sources_to_use_list
-    command_sources = await get_sources(user_id, sources_to_use)
+    try:
+        sources_to_use = primary_settings.sources_to_use_list
+        command_sources = await get_sources(user_id, sources_to_use)
 
-    command_performer = await get_performer(user_id)
+        command_performer = await get_performer(user_id)
 
-    startup_completed(user_id)
+        startup_completed(user_id)
 
-    return await message_loop(user_id, command_sources, command_performer)
+        return await message_loop(user_id, command_sources, command_performer)
+    except Exception as e:
+        logger.bind(user_id=user_id).exception(f"exception in user loop: {e}")
+        raise e
 
 
 def startup_completed(user_id: UserId) -> None:

@@ -9,11 +9,15 @@ from voice_assistant.services.calendar.calendar_data import CalendarDataService
 from voice_assistant.services.calendar.settings import calendar_settings
 
 
+class NoCalendarDataError(ValueError):
+    pass
+
+
 async def get_calendar_credentials(calendar_data_service: CalendarDataService) -> Credentials:
     calendar_data = calendar_data_service.load_calendar_data()
 
     if calendar_data is None:
-        raise ValueError(f"no calendar_data found for user_id='{calendar_data_service.user_id}'")
+        raise NoCalendarDataError(f"no calendar_data found for user_id='{calendar_data_service.user_id}'")
 
     creds = None
 
@@ -35,8 +39,8 @@ async def get_calendar_credentials(calendar_data_service: CalendarDataService) -
         logger.info(f"Running OAuth flow in browser for {calendar_data_service.user_id}...")
 
         # Используем creds_data напрямую (dict)
-        flow = InstalledAppFlow.from_client_config(
-            client_config=calendar_settings.calendar_creds_file,
+        flow = InstalledAppFlow.from_client_secrets_file(
+            client_secrets_file=calendar_settings.calendar_creds_file,
             scopes=calendar_settings.calendar_scopes,
         )
 

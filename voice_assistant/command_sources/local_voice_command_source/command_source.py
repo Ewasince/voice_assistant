@@ -9,7 +9,7 @@ from voice_assistant.app_utils.settings import primary_settings
 from voice_assistant.app_utils.types import DEFAULT_USER_ID, UserId
 from voice_assistant.app_utils.utils import normalize_text
 from voice_assistant.command_sources.local_voice_command_source.microphone_listener import MicrophoneListener
-from voice_assistant.sst_modules.sst_whisper import _get_whisper_sst_module
+from voice_assistant.sst_modules.sst_whisper import get_whisper_sst_module
 
 warnings.filterwarnings("ignore", message="FP16 is not supported on CPU*")
 
@@ -70,6 +70,6 @@ def extract_text_after_command(text: str, key: str | None) -> str | None:
 
 
 def get_local_source() -> CommandSource:
-    audio_recognizer = _get_whisper_sst_module()
+    audio_recognizer = get_whisper_sst_module()
     command_source: CommandSource = LocalVoiceCommandSource(DEFAULT_USER_ID, audio_recognizer)
     return command_source

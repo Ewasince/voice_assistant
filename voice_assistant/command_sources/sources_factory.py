@@ -11,7 +11,10 @@ from voice_assistant.command_sources.web_voice_command_source.command_source imp
 
 
 async def get_sources(user_id: UserId, sources_types: Iterable[CommandSourcesTypes]) -> list[CommandSource]:
-    logger.info(f"Initializing for user '{user_id}' command sources: {', '.join(sources_types)}")
+    logger.bind(
+        user_id=user_id,
+        action="src_init",
+    ).info(f"Initializing command sources: {', '.join(sources_types)}")
 
     sources: list[CommandSource] = []
     if CommandSourcesTypes.local_voice in sources_types:

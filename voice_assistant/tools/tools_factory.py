@@ -27,9 +27,9 @@ async def get_tools(user_id: UserId) -> list[Tool]:
             raise ValueError(f"invalid gather_result '{type(gather_result)}': {gather_result}")
 
         if isinstance(gather_result, NoCalendarDataError):
-            logger.error(f"fail to load toolset for user '{user_id}': {gather_result}")
+            logger.bind(user_id=user_id).error(f"fail to load toolset: {gather_result}")
             continue
-        logger.opt(exception=gather_result).error(f"fail to load toolset for user '{user_id}': {gather_result}")
+        logger.bind(user_id=user_id).opt(exception=gather_result).error(f"fail to load toolset: {gather_result}")
 
     tools_lists = await asyncio.gather(*(toolset.get_tools() for toolset in toolsets))
 

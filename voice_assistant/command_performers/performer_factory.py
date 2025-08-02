@@ -5,7 +5,10 @@ from voice_assistant.app_utils.types import CommandPerformerFunction, UserId
 
 
 async def get_performer(user_id: UserId) -> CommandPerformerFunction:
-    logger.info(f"Initializing for user '{user_id}' command performer")
+    logger.bind(
+        user_id=user_id,
+        action="prf_init",
+    ).info("Initializing command performer")
 
     agent = await get_agent(user_id)
     command_performer = CommandPerformer(user_id, agent)

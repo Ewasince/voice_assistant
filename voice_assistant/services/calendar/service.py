@@ -57,7 +57,9 @@ class CalendarService:
                 current_time,
             )
         else:
-            logger.error(f"commit end activity called without last activity {command_context}")
+            logger.bind(user_id=self._user_id).error(
+                f"commit end activity called without last activity {command_context}"
+            )
 
         command_context.last_activity_topic = None
         command_context.last_activity_time = None
@@ -73,7 +75,9 @@ class CalendarService:
         start_time: datetime,
         end_time: datetime,
     ) -> None:
-        logger.info(f"бот записал активность {topic} с {start_time.strftime('%H:%M')} по {end_time.strftime('%H:%M')}")
+        logger.bind(user_id=self._user_id).info(
+            f"бот записал активность {topic} с {start_time.strftime('%H:%M')} по {end_time.strftime('%H:%M')}"
+        )
 
         # Данные мероприятия
         event = {
@@ -101,4 +105,4 @@ class CalendarService:
             )
             .execute()
         )
-        logger.info("event created: {}".format(event.get("htmlLink")))
+        logger.bind(user_id=self._user_id).info("event created: {}".format(event.get("htmlLink")))

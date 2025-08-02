@@ -1,5 +1,4 @@
 from agents import Tool, function_tool
-from loguru import logger
 
 from voice_assistant.app_interfaces.toolset import Toolset
 from voice_assistant.app_utils.types import UserId
@@ -12,10 +11,13 @@ from voice_assistant.services.memory import ContextMemoryService
 
 class ActivityLoggerToolset(Toolset):
     def __init__(self, user_id: UserId, calendar_service: CalendarService) -> None:
+        super().__init__()
         self._user_id = user_id
         self._calendar_service: CalendarService = calendar_service
 
         self._memory_service = ContextMemoryService(user_id)
+
+        self._logger = self._logger.bind(user_id=user_id, action="tool")
 
     async def get_tools(self) -> list[Tool]:
         return [
@@ -40,7 +42,7 @@ class ActivityLoggerToolset(Toolset):
                 for example: "00:10:45" (10 minutes and 45 seconds ago).
         """
 
-        logger.info(f"log_new_activity: {new_activity=} {new_activity_offset=}")
+        self._logger.info(f"log_new_activity: {new_activity=} {new_activity_offset=}")
 
         if self._calendar_service is None:
             raise RuntimeError("Calendar service was not initialized")
@@ -74,7 +76,7 @@ class ActivityLoggerToolset(Toolset):
                 for example: "00:10:45" (10 minutes and 45 seconds ago).
         """
 
-        logger.info(f"log_end_activity: {end_activity_offset=}")
+        self._logger.info(f"log_end_activity: {end_activity_offset=}")
 
         if self._calendar_service is None:
             raise RuntimeError("Calendar service was not initialized")
@@ -102,7 +104,7 @@ async def get_activity_logger(user_id: UserId) -> ActivityLoggerToolset:
     user_data = calendar_data_service.load_calendar_data()
 
     if user_data is None:
-        raise RuntimeError(f"has no celandar data for user '{user_id}'")
+        raise RuntimeError(f"has no calendar data for {user_id.log()}")
 
     calendar_service = CalendarService(user_id, creds, user_data.calendar_id)
 

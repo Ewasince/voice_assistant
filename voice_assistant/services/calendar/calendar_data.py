@@ -41,24 +41,25 @@ app = Typer()
 
 @app.command()
 def cli_add(
-    database_uri: str = typer.Option(..., help="URI к БД (например, sqlite:///db.sqlite3)"),
+    database_uri: str = typer.Option("sqlite:///data/data.db", help="URI к БД (например, sqlite:///data/data.db)"),
     user_id: str = typer.Option(..., help="ID пользователя"),
     calendar_id: str = typer.Option(..., help="ID календаря"),
 ) -> None:
+    user_id_ = UserId(user_id)
     # Подключение к БД
     engine = create_engine(database_uri, echo=False)
 
     with Session(engine) as session:
-        stmt = select(CalendarModel).where(CalendarModel.user_id == user_id)
+        stmt = select(CalendarModel).where(CalendarModel.user_id == user_id_)
         result = session.scalar(stmt)
 
         if result:
             result.calendar_id = calendar_id
-            typer.echo(f"Обновлены данные для user_id {user_id}")
+            typer.echo(f"Обновлены данные для {user_id_.log()}")
         else:
-            new_entry = CalendarModel(user_id=user_id, calendar_id=calendar_id)
+            new_entry = CalendarModel(user_id=user_id_, calendar_id=calendar_id)
             session.add(new_entry)
-            typer.echo(f"Добавлена новая запись для user_id={user_id}")
+            typer.echo(f"Добавлена новая запись для {user_id_.log()}")
 
         session.commit()
 

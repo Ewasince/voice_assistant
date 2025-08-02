@@ -21,7 +21,7 @@ class LocalVoiceCommandSource(CommandSource):
         self._listener.start_listen()
 
     async def get_command(self) -> str:
-        logger.info("Listening...")
+        logger.bind(user_id=self.user_id).info("Listening...")
         while True:
             text = await self._listener.next_utterance()
 

@@ -4,7 +4,7 @@ import sys
 from typing import AsyncGenerator, Awaitable, NoReturn
 
 from dotenv import load_dotenv
-from loguru import logger
+from loguru import Record, logger
 from plyer import notification
 
 from voice_assistant.app_interfaces.command_source import CommandSource
@@ -14,7 +14,27 @@ from voice_assistant.command_performers.performer_factory import get_performer
 from voice_assistant.command_sources.sources_factory import get_sources
 
 logger.remove()  # Удаляем стандартный вывод в stderr
-logger.add(sys.stdout, level="DEBUG")  # Добавляем вывод в stdout
+
+
+def fmt(record: Record) -> str:
+    record["extra"].setdefault("user_id", "<no_user>")
+
+    format_str = "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | <level>{level: <8}</level> | {extra[user_id]: <9} | "
+
+    if "action" in record["extra"]:
+        record["extra"]["action"] = record["extra"]["action"].upper()
+        format_str += "<cyan>{extra[action]: <9}</cyan> | "
+
+    format_str += "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>\n"
+
+    return format_str
+
+
+logger.add(
+    sys.stdout,
+    level="DEBUG",
+    format=fmt,
+)
 
 
 async def main() -> Awaitable[NoReturn]:
@@ -44,7 +64,7 @@ async def setup_user_and_start_loop(user_id: UserId) -> Awaitable[NoReturn]:
 
 
 def startup_completed(user_id: UserId) -> None:
-    logger.success(f"Startup for user '{user_id}' completed!")
+    logger.bind(user_id=user_id).success("Startup completed!")
 
     if user_id == DEFAULT_USER_ID:
         notification.notify(
@@ -60,7 +80,7 @@ async def message_loop(
     command_sources: list[CommandSource],
     command_performer: CommandPerformerFunction,
 ) -> Awaitable[NoReturn]:
-    logger.info(f"Start messages loop for user '{user_id}'")
+    logger.bind(user_id=user_id).info("Start messages loop")
     tasks = {asyncio.create_task(source.get_interaction_gen()): n for n, source in enumerate(command_sources)}
     while True:
         done, _ = await asyncio.wait(tasks.keys(), return_when=asyncio.FIRST_COMPLETED)

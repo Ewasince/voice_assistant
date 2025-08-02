@@ -32,11 +32,12 @@ async def get_calendar_credentials(calendar_data_service: CalendarDataService) -
     if creds and creds.valid:
         return creds
 
+    user_id = calendar_data_service.user_id
     if creds and creds.expired and creds.refresh_token:
-        logger.info(f"Refreshing Google OAuth token for {calendar_data_service.user_id}...")
+        logger.bind(user_id=user_id).info("Refreshing Google OAuth token...")
         creds.refresh(Request())
     else:
-        logger.info(f"Running OAuth flow in browser for {calendar_data_service.user_id}...")
+        logger.bind(user_id=user_id).info("Running OAuth flow in browser...")
 
         # Используем creds_data напрямую (dict)
         flow = InstalledAppFlow.from_client_secrets_file(

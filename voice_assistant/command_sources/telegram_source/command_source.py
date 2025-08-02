@@ -31,13 +31,16 @@ class TelegramBotCommandSource(CommandSource):
         self.message_queue = message_queue
         self._bot = bot
 
+        self._logger = logger.bind(user_id=user_id)
+
     async def _user_bot_interaction(self) -> AsyncGenerator[str | None, str]:
         user_message_data = await self.message_queue.get()
+        self._logger.bind(action="get_msg").info(user_message_data.message_text)
         yield None  # first yield None
         response = yield user_message_data.message_text
 
         await self._bot.bot.send_message(chat_id=user_message_data.chat_id, text=response)
-        logger.info(f"Answer for user '{self.user_id}' sent to telegram: '{response}'")
+        self._logger.bind(action="send_msg").info(response)
 
     async def get_command(self) -> str:
         raise NotImplementedError
@@ -57,6 +60,8 @@ class TelegramBot:
         self.started = False
 
         self.start_bot_lock = asyncio.Lock()
+
+        self._logger = logger.bind(action="tg_bot")
 
     async def start(self) -> None:
         self._bot.add_handler(
@@ -78,7 +83,7 @@ class TelegramBot:
         await self._bot.start()
         await self._bot.updater.start_polling()  # type: ignore[union-attr]
         self.started = True
-        logger.info("Telegram bot started")
+        self._logger.info("Telegram bot started")
 
     def get_source_for_user(self, user_id: UserId) -> TelegramBotCommandSource:
         message_queue: ResponseQuery = Queue()
@@ -119,7 +124,7 @@ class TelegramBot:
         file_id = voice.file_id
         duration = voice.duration
 
-        logger.debug(f"Receive voice message duration {duration} seconds")
+        self._logger.debug(f"Receive voice message duration {duration} seconds")
 
         voice_file: File = await context.bot.get_file(file_id)
 
@@ -147,7 +152,7 @@ class TelegramBot:
 
         message_queue = self._message_queues_by_users.get(tg_user_id)
         if message_queue is None:
-            logger.info(f"Bot has message from unknown tg user {tg_user_name} ({tg_user_id}): {message.text}")
+            self._logger.info(f"Bot has message from unknown tg user {tg_user_name} ({tg_user_id}): {message.text}")
             return None
 
         return message, from_user, chat, message_queue

@@ -9,7 +9,7 @@ class TelegramSettings(ExtendedSettings):
     telegram_chat_id: int = 0
     telegram_recognize_voice: bool = True
 
-    telegram_tg_users_to_ids_map: dict[UserId, int] = Field(default_factory=dict)
+    telegram_tg_users_to_ids_map: dict[int, UserId] = Field(default_factory=dict)
 
 
 telegram_settings = TelegramSettings()

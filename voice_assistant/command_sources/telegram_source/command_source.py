@@ -79,9 +79,14 @@ class TelegramBot:
     def get_source_for_user(self, user_id: UserId) -> TelegramBotCommandSource:
         message_queue: ResponseQuery = Queue()
 
-        tg_user_id = telegram_settings.telegram_tg_users_to_ids_map[user_id]
+        tg_user_ids = []
 
-        self._message_queues_by_users[tg_user_id] = message_queue
+        for k, v in telegram_settings.telegram_tg_users_to_ids_map.items():
+            if v == user_id:
+                tg_user_ids.append(k)
+
+        for tg_user_id in tg_user_ids:
+            self._message_queues_by_users[tg_user_id] = message_queue
 
         return TelegramBotCommandSource(user_id, message_queue, self._bot)
 

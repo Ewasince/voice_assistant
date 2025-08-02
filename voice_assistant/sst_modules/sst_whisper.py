@@ -46,5 +46,5 @@ class WhisperSST(AudioRecognizer):
 
 
 @cache
-def _get_whisper_sst_module() -> AudioRecognizer:
+def get_whisper_sst_module() -> AudioRecognizer:
     return WhisperSST()

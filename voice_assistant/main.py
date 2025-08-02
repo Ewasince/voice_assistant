@@ -9,7 +9,7 @@ from plyer import notification
 
 from voice_assistant.app_interfaces.command_source import CommandSource
 from voice_assistant.app_utils.settings import primary_settings
-from voice_assistant.app_utils.types import DEFAULT_USER_ID, UserId
+from voice_assistant.app_utils.types import UserId
 from voice_assistant.command_processer import process_command
 from voice_assistant.command_sources.sources import get_sources
 
@@ -25,10 +25,7 @@ async def main() -> NoReturn:
     sources_to_use = primary_settings.sources_to_use_list
 
     sources_by_users = {
-        user_id: await get_sources(user_id, sources_to_use)
-        for user_id in [
-            DEFAULT_USER_ID,
-        ]
+        user_id: await get_sources(user_id, sources_to_use) for user_id in primary_settings.active_users_list
     }
 
     # noinspection PyUnreachableCode

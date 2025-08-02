@@ -1,6 +1,7 @@
 from pydantic import SecretStr
 
 from voice_assistant.app_utils.base_settings import ExtendedSettings
+from voice_assistant.app_utils.types import DEFAULT_USER_ID, UserId
 from voice_assistant.command_sources.enums import CommandSourcesTypes
 
 
@@ -25,6 +26,7 @@ class Settings(ExtendedSettings):
     ollama_model: str = "llama3:8b"
 
     sources_to_use_list: tuple[CommandSourcesTypes, ...] = (CommandSourcesTypes.telegram,)
+    active_users_list: tuple[UserId, ...] = (DEFAULT_USER_ID,)
 
 
 # noinspection PyArgumentList

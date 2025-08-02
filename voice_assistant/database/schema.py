@@ -11,6 +11,6 @@ class Base(DeclarativeBase):
 class ContexModel(Base):
     __tablename__ = "contex"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    session_name: Mapped[str] = mapped_column(String, primary_key=True)
     last_activity_topic: Mapped[str | None] = mapped_column(String, nullable=True)
     last_activity_time: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)

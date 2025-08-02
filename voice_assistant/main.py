@@ -1,7 +1,7 @@
 import asyncio
 import contextlib
 import sys
-from typing import AsyncGenerator, Awaitable, Callable, NoReturn
+from typing import AsyncGenerator, NoReturn
 
 from dotenv import load_dotenv
 from loguru import logger
@@ -9,8 +9,8 @@ from plyer import notification
 
 from voice_assistant.app_interfaces.command_source import CommandSource
 from voice_assistant.app_utils.settings import primary_settings
-from voice_assistant.app_utils.types import UserId
-from voice_assistant.command_performers.performer import get_performer
+from voice_assistant.app_utils.types import CommandPerformerFunction, UserId
+from voice_assistant.command_performers.performer_factory import get_performer
 from voice_assistant.command_sources.sources import get_sources
 
 logger.remove()  # Удаляем стандартный вывод в stderr
@@ -59,7 +59,7 @@ def startup_completed() -> None:
 async def message_loop(
     user_id: UserId,
     command_sources: list[CommandSource],
-    command_performer: Callable[[str], Awaitable[str]],
+    command_performer: CommandPerformerFunction,
 ) -> NoReturn:
     logger.info(f"Start messages loop for user: {user_id}")
     tasks = {asyncio.create_task(source.get_interaction_gen()): n for n, source in enumerate(command_sources)}

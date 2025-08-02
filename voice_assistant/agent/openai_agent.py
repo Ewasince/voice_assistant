@@ -47,7 +47,7 @@ class UserAgent:
 
         self._multi_provider._get_prefix_and_model_name = _get_prefix_and_model_name  # type: ignore[method-assign, assignment]
 
-    async def run_agent(self, input_text: str) -> str:
+    async def run_agent(self, input_text: str) -> str | None:
         result = await Runner.run(
             starting_agent=self._agent,
             input=input_text,
@@ -58,7 +58,10 @@ class UserAgent:
             ),
             session=self._session,
         )
-        return result.final_output
+        output = result.final_output
+        if not isinstance(output, str | None):
+            raise ValueError(f"agent output has wrong type ({type(output)}): {output}")
+        return output
 
     @staticmethod
     def get_session_name(user_id: UserId) -> str:

@@ -36,7 +36,7 @@ class UserAgent:
 
         self._multi_provider._get_prefix_and_model_name = _get_prefix_and_model_name  # type: ignore[method-assign, assignment]
 
-        logger.info(f"Initializing Agent for user '{user_id}' with {len(tools)} tools")
+        logger.info(f"Initialized UserAgent for user '{user_id}' with {len(tools)} tools")
 
     async def run_agent(self, input_text: str) -> str | None:
         result = await Runner.run(

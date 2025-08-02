@@ -1,8 +1,8 @@
 """calendar data
 
-Revision ID: b189eb68fa3c
+Revision ID: faeab7b7a397
 Revises: c98cce3bd58f
-Create Date: 2025-08-02 19:30:05.478526
+Create Date: 2025-08-02 20:41:26.286045
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision: str = "b189eb68fa3c"
+revision: str = "faeab7b7a397"
 down_revision: str | Sequence[str] | None = "c98cce3bd58f"
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
@@ -26,7 +26,6 @@ def upgrade() -> None:
         "calendar_data",
         sa.Column("user_id", sa.String(), nullable=False),
         sa.Column("token_data", sa.JSON(), nullable=True),
-        sa.Column("creds_data", sa.JSON(), nullable=False),
         sa.Column("calendar_id", sa.String(), nullable=False),
         sa.PrimaryKeyConstraint("user_id"),
     )

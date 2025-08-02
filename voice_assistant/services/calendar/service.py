@@ -1,18 +1,18 @@
 from datetime import datetime
 
-from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from loguru import logger
 
+from voice_assistant.app_utils.types import UserId
 from voice_assistant.database.models import Contex
 from voice_assistant.services.calendar.settings import calendar_settings
 
 
 class CalendarService:
-    def __init__(self) -> None:
-        creds = self._get_credentials()
+    def __init__(self, user_id: UserId, creds: Credentials, calendar_id: str) -> None:
+        self._user_id = user_id
+        self._calendar_id = calendar_id
         self._calendar_service = build("calendar", "v3", credentials=creds)
 
     async def commit_new_activity(
@@ -96,40 +96,9 @@ class CalendarService:
         event = (
             self._calendar_service.events()
             .insert(
-                calendarId=calendar_settings.calendar_id,
+                calendarId=self._calendar_id,
                 body=event,
             )
             .execute()
         )
         logger.info("event created: {}".format(event.get("htmlLink")))
-
-    def _get_credentials(self) -> Credentials:
-        creds = None
-
-        # 1) Пробуем загрузить сохранённые креды
-        if calendar_settings.calendar_token_file.exists():
-            creds = Credentials.from_authorized_user_file(
-                str(calendar_settings.calendar_token_file),
-                calendar_settings.calendar_scopes,
-            )
-
-        # 2) Если нет или невалидны — обновляем/получаем заново
-        if not creds or not creds.valid:
-            if creds and creds.expired and creds.refresh_token:
-                logger.info("refreshing Google OAuth token...")
-                creds.refresh(Request())
-            else:
-                logger.info("running OAuth flow in browser...")
-                flow = InstalledAppFlow.from_client_secrets_file(
-                    str(calendar_settings.calendar_creds_file),
-                    calendar_settings.calendar_scopes,
-                )
-                # Важно: offline, чтобы получить refresh_token один раз
-                creds = flow.run_local_server(port=0, access_type="offline", prompt="consent")
-
-            # 3) Сохраняем для будущих запусков
-            calendar_settings.calendar_token_file.parent.mkdir(parents=True, exist_ok=True)
-            with calendar_settings.calendar_token_file.open("w") as f:
-                f.write(creds.to_json())
-
-        return creds

@@ -1,4 +1,3 @@
-from pathlib import Path
 from typing import Any
 
 from pydantic import field_validator
@@ -11,9 +10,9 @@ from voice_assistant.app_utils.base_settings import ExtendedSettings
 class CalendarSettings(ExtendedSettings):
     # calendar
     calendar_scopes: tuple[str, ...] = ("https://www.googleapis.com/auth/calendar",)
-    calendar_creds_file: Path = Path("data/credentials.json")
-    calendar_token_file: Path = Path("data/token.json")
-    calendar_id: str
+    # calendar_creds_file: Path = Path("data/credentials.json")
+    # calendar_token_file: Path = Path("data/token.json")
+    # calendar_id: str
 
     calendar_tz: BaseTzInfo = timezone("Europe/Moscow")
 

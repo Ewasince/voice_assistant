@@ -38,6 +38,7 @@ dependencies = [
     "openai-whisper>=20250625",
     "pyaudio>=0.2.14",
     "alembic>=1.16.4",
+    "typer>=0.16.0",
 ]
 
 [tool.uv.sources]

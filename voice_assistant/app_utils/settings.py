@@ -20,8 +20,6 @@ class Settings(ExtendedSettings):
     # example recognizers settings
     use_gpu: bool = False
     whisper_model: str = "turbo"
-    telegram_token: str = ""
-    telegram_chat_id: int = 0
 
     # local llm settings
     ollama_model: str = "llama3:8b"

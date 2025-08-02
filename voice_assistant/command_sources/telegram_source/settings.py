@@ -1,0 +1,15 @@
+from pydantic import Field
+
+from voice_assistant.app_utils.base_settings import ExtendedSettings
+from voice_assistant.app_utils.types import UserId
+
+
+class TelegramSettings(ExtendedSettings):
+    telegram_token: str = ""
+    telegram_chat_id: int = 0
+    telegram_recognize_voice: bool = True
+
+    telegram_tg_users_to_ids_map: dict[UserId, int] = Field(default_factory=dict)
+
+
+telegram_settings = TelegramSettings()

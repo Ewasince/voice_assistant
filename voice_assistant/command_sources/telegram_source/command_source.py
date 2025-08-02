@@ -1,3 +1,4 @@
+import asyncio
 from asyncio import Queue
 from collections import namedtuple
 from functools import cache
@@ -54,6 +55,8 @@ class TelegramBot:
         self._message_queues_by_users: dict[int, ResponseQuery] = {}
 
         self.started = False
+
+        self.start_bot_lock = asyncio.Lock()
 
     async def start(self) -> None:
         self._bot.add_handler(
@@ -161,7 +164,8 @@ async def get_tg_source(user_id: UserId) -> CommandSource:
 
     command_source = telegram_bot.get_source_for_user(user_id)
 
-    if not telegram_bot.started:
-        await telegram_bot.start()
+    async with telegram_bot.start_bot_lock:
+        if not telegram_bot.started:
+            await telegram_bot.start()
 
     return command_source

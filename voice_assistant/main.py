@@ -10,7 +10,7 @@ from plyer import notification
 from voice_assistant.app_interfaces.command_source import CommandSource
 from voice_assistant.app_utils.settings import primary_settings
 from voice_assistant.app_utils.types import UserId
-from voice_assistant.command_processer import process_command
+from voice_assistant.command_performers.performer import get_performer
 from voice_assistant.command_sources.sources import get_sources
 
 logger.remove()  # Удаляем стандартный вывод в stderr
@@ -22,17 +22,22 @@ async def main() -> NoReturn:
 
     logger.info("Starting voice assistant")
 
+    logger.info("Initializing sources")
     sources_to_use = primary_settings.sources_to_use_list
-
     sources_by_users = {
         user_id: await get_sources(user_id, sources_to_use) for user_id in primary_settings.active_users_list
     }
 
-    # noinspection PyUnreachableCode
-    loops = [
-        asyncio.create_task(message_loop(user_id, command_sources, process_command))
-        for user_id, command_sources in sources_by_users.items()
-    ]
+    logger.info("Initializing performers")
+    performers_by_users = {user_id: await get_performer(user_id) for user_id in primary_settings.active_users_list}
+
+    loops = []
+
+    for user_id in primary_settings.active_users_list:
+        command_sources = sources_by_users[user_id]
+        command_performer = performers_by_users[user_id]
+        # noinspection PyUnreachableCode
+        loops.append(asyncio.create_task(message_loop(user_id, command_sources, command_performer)))
 
     startup_completed()
 

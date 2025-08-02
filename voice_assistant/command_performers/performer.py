@@ -1,0 +1,24 @@
+from typing import Awaitable, Callable
+
+from loguru import logger
+
+from voice_assistant.agent.openai_agent import run_agent
+from voice_assistant.app_utils.types import UserId
+
+
+async def get_performer(user_id: UserId) -> Callable[[str], Awaitable[str]]:
+    logger.info(f"Initializing for user '{user_id}' command performer")
+    return _process_command
+
+
+async def _process_command(command_text: str) -> str:
+    command_result = await run_agent(command_text)
+
+    assistant_response = f"Ответ ассистента > {command_result}"
+
+    if command_result is not None:
+        print(assistant_response)
+    else:
+        print()
+
+    return command_result

@@ -1,4 +1,4 @@
-from agents import Tool, function_tool
+from agents import Tool
 
 from voice_assistant.app_interfaces.toolset import Toolset
 from voice_assistant.app_utils.types import UserId
@@ -7,7 +7,6 @@ from voice_assistant.services.calendar.calendar_data import CalendarDataService
 from voice_assistant.services.calendar.creds import get_calendar_credentials
 from voice_assistant.services.calendar.service import CalendarService
 from voice_assistant.services.memory import ContextMemoryService
-from voice_assistant.tools.decorators import tool_decorator
 
 
 class ActivityLoggerToolset(Toolset):
@@ -18,13 +17,13 @@ class ActivityLoggerToolset(Toolset):
 
         self._memory_service = ContextMemoryService(user_id)
 
-        self._logger = self._logger.bind(user_id=user_id, action="tool")
+        self._logger = self._logger.bind(user_id=user_id)
 
     async def get_tools(self) -> list[Tool]:
-        return [
-            function_tool(tool_decorator(self.log_new_activity, self._logger)),
-            function_tool(tool_decorator(self.log_end_activity, self._logger)),
-        ]
+        return self._wrap_tools(
+            self.log_new_activity,
+            self.log_end_activity,
+        )
 
     async def log_new_activity(
         self,
@@ -42,22 +41,9 @@ class ActivityLoggerToolset(Toolset):
                 for example: "00:10:45" (10 minutes and 45 seconds ago).
         """
 
-        # self._logger.info(f"log_new_activity: {new_activity=} {new_activity_offset=}")
-
-        if self._calendar_service is None:
-            raise RuntimeError("Calendar service was not initialized")
-
         context = self._memory_service.load_contex()
         response = await self._calendar_service.commit_new_activity(new_activity, context)
         self._memory_service.save_contex(context)
-
-        # response = f"я записал, что начал активность '{new_activity}'"
-        #
-        # if new_activity_offset:
-        #     dt_offset = datetime.strptime(new_activity_offset, "%H:%M:%S")
-        #     delta = timedelta(hours=dt_offset.hour, minutes=dt_offset.minute, seconds=dt_offset.second)
-        #     delta_minutes = delta.seconds / 60
-        #     response += f" {delta_minutes:.2f} минут назад"
 
         return response
 
@@ -75,21 +61,9 @@ class ActivityLoggerToolset(Toolset):
                 for example: "00:10:45" (10 minutes and 45 seconds ago).
         """
 
-        if self._calendar_service is None:
-            raise RuntimeError("Calendar service was not initialized")
-
         context = self._memory_service.load_contex()
         response = await self._calendar_service.commit_end_activity(context)
         self._memory_service.save_contex(context)
-
-        # response = "я записал, что закончил активность"
-        #
-        # dt_offset = datetime.strptime(end_activity_offset or "00:00:00", "%H:%M:%S")
-        # delta = timedelta(hours=dt_offset.hour, minutes=dt_offset.minute, seconds=dt_offset.second)
-        # delta_minutes = delta.seconds / 60
-        #
-        # if delta_minutes:
-        #     response += f" {delta_minutes:.2f} минут назад"
 
         return response
 

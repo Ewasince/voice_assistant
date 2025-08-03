@@ -15,59 +15,84 @@ class CalendarService:
         self._calendar_id = calendar_id
         self._calendar_service = build("calendar", "v3", credentials=creds)
 
+        self._logger = logger.bind(user_id=user_id, action="calendar")
+
     async def commit_new_activity(
         self,
         activity_topic: str,
         command_context: Contex,
     ) -> str:
-        current_time = datetime.now(tz=calendar_settings.calendar_tz)
-
         response_message = ""
+        try:
+            current_time = datetime.now(tz=calendar_settings.calendar_tz)
 
-        last_activity_topic = command_context.last_activity_topic
-        last_activity_time = command_context.last_activity_time
-        if last_activity_topic and last_activity_time:
-            await self._jot_down_activity(
-                last_activity_topic,
-                last_activity_time,
-                current_time,
-            )
-            response_message += f'Записал активность "{last_activity_topic}". '
+            last_activity_topic = command_context.last_activity_topic
+            last_activity_time = command_context.last_activity_time
+            if last_activity_topic and last_activity_time:
+                await self._jot_down_activity(
+                    last_activity_topic,
+                    last_activity_time,
+                    current_time,
+                )
+                response_message += f'Записал активность "{last_activity_topic}". '
 
-        command_context.last_activity_topic = activity_topic
-        command_context.last_activity_time = current_time
+            command_context.last_activity_topic = activity_topic
+            command_context.last_activity_time = current_time
 
-        response_message += f'Запомнил активность "{activity_topic}". '
+            response_message += f'Запомнил активность "{activity_topic}". '
 
-        return response_message
+            # response = f"я записал, что начал активность '{new_activity}'"
+            #
+            # if new_activity_offset:
+            #     dt_offset = datetime.strptime(new_activity_offset, "%H:%M:%S")
+            #     delta = timedelta(hours=dt_offset.hour, minutes=dt_offset.minute, seconds=dt_offset.second)
+            #     delta_minutes = delta.seconds / 60
+            #     response += f" {delta_minutes:.2f} минут назад"
+        except Exception as e:
+            response_message += f"Возникла ошибка: {e}"
+
+        return f"Передай пользователю — {response_message}"
 
     async def commit_end_activity(
         self,
         command_context: Contex,
     ) -> str:
-        current_time = datetime.now(tz=calendar_settings.calendar_tz)
+        response_message = ""
+        try:
+            current_time = datetime.now(tz=calendar_settings.calendar_tz)
 
-        last_activity_topic = command_context.last_activity_topic
-        last_activity_time = command_context.last_activity_time
+            last_activity_topic = command_context.last_activity_topic
+            last_activity_time = command_context.last_activity_time
 
-        if last_activity_topic and last_activity_time:
-            await self._jot_down_activity(
-                last_activity_topic,
-                last_activity_time,
-                current_time,
-            )
-        else:
-            logger.bind(user_id=self._user_id).error(
-                f"commit end activity called without last activity {command_context}"
-            )
+            if last_activity_topic and last_activity_time:
+                await self._jot_down_activity(
+                    last_activity_topic,
+                    last_activity_time,
+                    current_time,
+                )
+            else:
+                self._logger.error(f"commit end activity called without last activity {command_context}")
 
-        command_context.last_activity_topic = None
-        command_context.last_activity_time = None
+            command_context.last_activity_topic = None
+            command_context.last_activity_time = None
 
-        if last_activity_topic:
-            return f'Записал конец активности "{last_activity_topic}"'
+            if last_activity_topic:
+                response_message += f'Записал конец активности "{last_activity_topic}"'
+            else:
+                response_message += "Не было информации о последней активности"
 
-        return "Не было информации о последней активности"
+            # response = "я записал, что закончил активность"
+            #
+            # dt_offset = datetime.strptime(end_activity_offset or "00:00:00", "%H:%M:%S")
+            # delta = timedelta(hours=dt_offset.hour, minutes=dt_offset.minute, seconds=dt_offset.second)
+            # delta_minutes = delta.seconds / 60
+            #
+            # if delta_minutes:
+            #     response += f" {delta_minutes:.2f} минут назад"
+        except Exception as e:
+            response_message += f"Возникла ошибка: {e}"
+
+        return f"Передай пользователю — {response_message}"
 
     async def _jot_down_activity(
         self,
@@ -75,8 +100,8 @@ class CalendarService:
         start_time: datetime,
         end_time: datetime,
     ) -> None:
-        logger.bind(user_id=self._user_id).info(
-            f"бот записал активность {topic} с {start_time.strftime('%H:%M')} по {end_time.strftime('%H:%M')}"
+        self._logger.info(
+            f"write activity '{topic}' from {start_time.strftime('%H:%M:%S')} по {end_time.strftime('%H:%M:%S')}"
         )
 
         # Данные мероприятия
@@ -105,4 +130,4 @@ class CalendarService:
             )
             .execute()
         )
-        logger.bind(user_id=self._user_id).info("event created: {}".format(event.get("htmlLink")))
+        self._logger.debug("event created: {}".format(event.get("htmlLink")))

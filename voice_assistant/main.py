@@ -25,8 +25,12 @@ def fmt(record: Any) -> str:
     if "action" in record["extra"]:
         record["extra"]["action"] = record["extra"]["action"].upper()
         format_str += "<cyan>{extra[action]: <9}</cyan> | "
+    else:
+        format_str += "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - "
 
-    format_str += "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>\n"
+    format_str += "<level>{message}</level>"
+
+    format_str += "\n"
 
     return format_str
 

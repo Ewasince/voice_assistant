@@ -34,7 +34,7 @@ class CalendarService:
                     last_activity_time,
                     current_time,
                 )
-                response_message += f'Записал активность "{last_activity_topic}". '
+                response_message += f'Зафиксировал активность "{last_activity_topic}". '
 
             command_context.last_activity_topic = activity_topic
             command_context.last_activity_time = current_time
@@ -77,7 +77,7 @@ class CalendarService:
             command_context.last_activity_time = None
 
             if last_activity_topic:
-                response_message += f'Записал конец активности "{last_activity_topic}"'
+                response_message += f'Зафиксировал конец активности "{last_activity_topic}"'
             else:
                 response_message += "Не было информации о последней активности"
 

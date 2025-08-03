@@ -3,6 +3,7 @@ from agents import Tool
 from voice_assistant.app_interfaces.toolset import Toolset
 from voice_assistant.app_utils.types import UserId
 from voice_assistant.database.core import engine
+from voice_assistant.database.models import Contex
 from voice_assistant.services.calendar.calendar_data import CalendarDataService
 from voice_assistant.services.calendar.creds import get_calendar_credentials
 from voice_assistant.services.calendar.service import CalendarService
@@ -23,6 +24,7 @@ class ActivityLoggerToolset(Toolset):
         return self._wrap_tools(
             self.log_new_activity,
             self.log_end_activity,
+            self.cancel_activity,
         )
 
     async def log_new_activity(
@@ -66,6 +68,22 @@ class ActivityLoggerToolset(Toolset):
         self._memory_service.save_contex(context)
 
         return response
+
+    async def cancel_activity(
+        self,
+    ) -> str:
+        """Use this tool when the user clearly states they want to cancel, delete, or forget an activity that was
+        previously stored. Do not use when the activity simply ends — use only if the user requests its removal
+        or negation.
+        """
+        response = ""
+
+        context = self._memory_service.load_contex()
+        self._memory_service.save_contex(Contex())
+
+        response += f"Отменил активность {context.last_activity_topic}"
+
+        return f"Сообщи пользователю что ты — {response}"
 
 
 async def get_activity_logger(user_id: UserId) -> ActivityLoggerToolset:

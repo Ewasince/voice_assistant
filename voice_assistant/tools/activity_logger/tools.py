@@ -66,14 +66,6 @@ class ActivityLoggerToolset(Toolset):
             context.last_activity_time = current_time
 
             response_message += f'Запомнил активность "{new_activity_topic}". '
-
-            # response = f"я записал, что начал активность '{new_activity}'"
-            #
-            # if new_activity_offset:
-            #     dt_offset = datetime.strptime(new_activity_offset, "%H:%M:%S")
-            #     delta = timedelta(hours=dt_offset.hour, minutes=dt_offset.minute, seconds=dt_offset.second)
-            #     delta_minutes = delta.seconds / 60
-            #     response += f" {delta_minutes:.2f} минут назад"
         except Exception as e:
             response_message += f"Возникла ошибка: {e}"
 
@@ -120,15 +112,6 @@ class ActivityLoggerToolset(Toolset):
                 response_message += f'Зафиксировал конец активности "{last_activity_topic}"'
             else:
                 response_message += "Не было информации о последней активности"
-
-            # response = "я записал, что закончил активность"
-            #
-            # dt_offset = datetime.strptime(end_activity_offset or "00:00:00", "%H:%M:%S")
-            # delta = timedelta(hours=dt_offset.hour, minutes=dt_offset.minute, seconds=dt_offset.second)
-            # delta_minutes = delta.seconds / 60
-            #
-            # if delta_minutes:
-            #     response += f" {delta_minutes:.2f} минут назад"
         except Exception as e:
             response_message += f"Возникла ошибка: {e}"
 

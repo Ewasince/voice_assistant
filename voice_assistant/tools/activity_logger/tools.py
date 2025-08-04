@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from agents import Tool
 
 from voice_assistant.app_interfaces.toolset import Toolset
@@ -7,6 +9,7 @@ from voice_assistant.database.models import Contex
 from voice_assistant.services.calendar.calendar_data import CalendarDataService
 from voice_assistant.services.calendar.creds import get_calendar_credentials
 from voice_assistant.services.calendar.service import CalendarService
+from voice_assistant.services.calendar.settings import calendar_settings
 from voice_assistant.services.memory import ContextMemoryService
 
 
@@ -29,14 +32,14 @@ class ActivityLoggerToolset(Toolset):
 
     async def log_new_activity(
         self,
-        new_activity: str,
+        new_activity_topic: str,
         new_activity_offset: str | None = None,  # noqa: ARG002
     ) -> str:
         """Log a new activity event.
         Trigger this tool when the user indicates they are currently engaged in an activity or have just started one.
 
         Args:
-            new_activity: Name of the started activity. Should be short, precise, and sound natural to a human —
+            new_activity_topic: Name of the started activity. Should be short, precise, and sound natural to a human —
                 like a familiar, conventional label for the activity. Avoid synonyms, verb forms, or uncommon phrasings.
             new_activity_offset: Time since activity started (optional). Provide this only if the user explicitly
                 mentioned how long ago the activity began. The value must be in the %H:%M:%S format —
@@ -44,10 +47,39 @@ class ActivityLoggerToolset(Toolset):
         """
 
         context = self._memory_service.load_contex()
-        response = await self._calendar_service.commit_new_activity(new_activity, context)
+
+        response_message = ""
+        try:
+            current_time = datetime.now(tz=calendar_settings.calendar_tz)
+
+            last_activity_topic = context.last_activity_topic
+            last_activity_time = context.last_activity_time
+            if last_activity_topic and last_activity_time:
+                await self._calendar_service.jot_down_activity(
+                    last_activity_topic,
+                    last_activity_time,
+                    current_time,
+                )
+                response_message += f'Зафиксировал активность "{last_activity_topic}". '
+
+            context.last_activity_topic = new_activity_topic
+            context.last_activity_time = current_time
+
+            response_message += f'Запомнил активность "{new_activity_topic}". '
+
+            # response = f"я записал, что начал активность '{new_activity}'"
+            #
+            # if new_activity_offset:
+            #     dt_offset = datetime.strptime(new_activity_offset, "%H:%M:%S")
+            #     delta = timedelta(hours=dt_offset.hour, minutes=dt_offset.minute, seconds=dt_offset.second)
+            #     delta_minutes = delta.seconds / 60
+            #     response += f" {delta_minutes:.2f} минут назад"
+        except Exception as e:
+            response_message += f"Возникла ошибка: {e}"
+
         self._memory_service.save_contex(context)
 
-        return response
+        return f"Передай пользователю — {response_message}"
 
     async def log_end_activity(
         self,
@@ -64,10 +96,45 @@ class ActivityLoggerToolset(Toolset):
         """
 
         context = self._memory_service.load_contex()
-        response = await self._calendar_service.commit_end_activity(context)
+
+        response_message = ""
+        try:
+            current_time = datetime.now(tz=calendar_settings.calendar_tz)
+
+            last_activity_topic = context.last_activity_topic
+            last_activity_time = context.last_activity_time
+
+            if last_activity_topic and last_activity_time:
+                await self._calendar_service.jot_down_activity(
+                    last_activity_topic,
+                    last_activity_time,
+                    current_time,
+                )
+            else:
+                self._logger.error(f"commit end activity called without last activity {context}")
+
+            context.last_activity_topic = None
+            context.last_activity_time = None
+
+            if last_activity_topic:
+                response_message += f'Зафиксировал конец активности "{last_activity_topic}"'
+            else:
+                response_message += "Не было информации о последней активности"
+
+            # response = "я записал, что закончил активность"
+            #
+            # dt_offset = datetime.strptime(end_activity_offset or "00:00:00", "%H:%M:%S")
+            # delta = timedelta(hours=dt_offset.hour, minutes=dt_offset.minute, seconds=dt_offset.second)
+            # delta_minutes = delta.seconds / 60
+            #
+            # if delta_minutes:
+            #     response += f" {delta_minutes:.2f} минут назад"
+        except Exception as e:
+            response_message += f"Возникла ошибка: {e}"
+
         self._memory_service.save_contex(context)
 
-        return response
+        return f"Передай пользователю — {response_message}"
 
     async def cancel_activity(
         self,

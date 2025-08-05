@@ -63,13 +63,13 @@ class ActivityLoggerToolset(Toolset):
         end_time = current_time
 
         if new_activity_delta is not None:
-            end_time = current_time + new_activity_delta
+            end_time = current_time - new_activity_delta
 
         last_activity_topic = context.last_activity_topic
         last_activity_time = context.last_activity_time
         if last_activity_topic and last_activity_time:
-            if last_activity_time < end_time:
-                end_time = last_activity_time + timedelta(seconds=1)
+            if end_time < last_activity_time:
+                end_time = last_activity_time + timedelta(minutes=1)
                 response_message += (
                     "Время окончания оказалось меньше времени начала! Поставил время на своё усмотрение. "
                 )
@@ -79,20 +79,20 @@ class ActivityLoggerToolset(Toolset):
                 end_time,
             )
 
-            new_activity_message = f'Зафиксировал конец активности "{last_activity_topic}"'
-
-            if new_activity_delta:
-                delta_minutes = new_activity_delta.seconds / 60
-                new_activity_message += f" {delta_minutes:.2f} минут назад. "
-            else:
-                new_activity_message += ". "
+            new_activity_message = f'Зафиксировал конец активности "{last_activity_topic}". '
 
             response_message += new_activity_message
 
         context.last_activity_topic = new_activity_topic
-        context.last_activity_time = current_time
+        context.last_activity_time = end_time
 
-        response_message += f'Запомнил активность "{new_activity_topic}". '
+        response_message += f'Запомнил активность "{new_activity_topic}"'
+
+        if new_activity_delta:
+            delta_minutes = new_activity_delta.total_seconds() / 60
+            response_message += f" {delta_minutes:.2f} минут назад. "
+        else:
+            response_message += ". "
 
         self._memory_service.save_contex(context)
 
@@ -125,14 +125,14 @@ class ActivityLoggerToolset(Toolset):
         end_time = current_time
 
         if end_activity_delta is not None:
-            end_time = current_time + end_activity_delta
+            end_time = current_time - end_activity_delta
 
         last_activity_topic = context.last_activity_topic
         last_activity_time = context.last_activity_time
 
         if last_activity_topic and last_activity_time:
             if last_activity_time < end_time:
-                end_time = last_activity_time + timedelta(seconds=1)
+                end_time = last_activity_time + timedelta(minutes=1)
                 response_message += (
                     "Время окончания оказалось меньше времени начала! Поставил время на своё усмотрение. "
                 )
@@ -151,7 +151,7 @@ class ActivityLoggerToolset(Toolset):
             new_activity_message = f'Зафиксировал конец активности "{last_activity_topic}"'
 
             if end_activity_delta:
-                delta_minutes = end_activity_delta.seconds / 60
+                delta_minutes = end_activity_delta.total_seconds() / 60
                 new_activity_message += f" {delta_minutes:.2f} минут назад. "
             else:
                 new_activity_message += ". "
@@ -200,9 +200,9 @@ class ActivityLoggerToolset(Toolset):
 
         new_last_activity_time = None
         if activity_relative_offset is not None and context.last_activity_time is not None:
-            new_last_activity_time = context.last_activity_time + parse_timedelta(activity_relative_offset)
+            new_last_activity_time = context.last_activity_time - parse_timedelta(activity_relative_offset)
         elif activity_offset_from_now is not None:
-            new_last_activity_time = current_time + parse_timedelta(activity_offset_from_now)
+            new_last_activity_time = current_time - parse_timedelta(activity_offset_from_now)
 
         if new_last_activity_time:
             context.last_activity_time = new_last_activity_time
@@ -256,12 +256,12 @@ class ActivityLoggerToolset(Toolset):
             response_message += f"Сейчас запомнена активность с темой '{last_activity_topic}'. "
         elif last_activity_topic is None:
             activity_delta = current_time - last_activity_time
-            delta_minutes = activity_delta.seconds / 60
+            delta_minutes = activity_delta.total_seconds() / 60
 
             response_message += f"Сейчас запомнена активность которая началась {delta_minutes:.2f} минут назад."
         else:
             activity_delta = current_time - last_activity_time
-            delta_minutes = activity_delta.seconds / 60
+            delta_minutes = activity_delta.total_seconds() / 60
 
             response_message += (
                 f"Сейчас запомнена активность с темой '{context.last_activity_topic}', "

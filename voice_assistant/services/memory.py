@@ -33,7 +33,7 @@ class ContextMemoryService:
                 db_obj = session.query(ContexModel).filter_by(session_name=self._session_name).one()
                 last_activity_time = db_obj.last_activity_time
                 if last_activity_time is not None:
-                    last_activity_time = last_activity_time.replace(tzinfo=calendar_settings.calendar_tz)
+                    last_activity_time = calendar_settings.calendar_tz.localize(last_activity_time)
                 return Contex(last_activity_topic=db_obj.last_activity_topic, last_activity_time=last_activity_time)
             except NoResultFound:
                 return Contex()

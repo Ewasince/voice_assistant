@@ -5,6 +5,7 @@ from voice_assistant.app_utils.types import UserId
 from voice_assistant.database.core import engine
 from voice_assistant.database.models import Contex
 from voice_assistant.database.schema import ContexModel
+from voice_assistant.services.calendar.settings import calendar_settings
 
 
 class ContextMemoryService:
@@ -30,9 +31,10 @@ class ContextMemoryService:
         with Session(engine) as session:
             try:
                 db_obj = session.query(ContexModel).filter_by(session_name=self._session_name).one()
-                return Contex(
-                    last_activity_topic=db_obj.last_activity_topic, last_activity_time=db_obj.last_activity_time
-                )
+                last_activity_time = db_obj.last_activity_time
+                if last_activity_time is not None:
+                    last_activity_time = last_activity_time.replace(tzinfo=calendar_settings.calendar_tz)
+                return Contex(last_activity_topic=db_obj.last_activity_topic, last_activity_time=last_activity_time)
             except NoResultFound:
                 return Contex()
 

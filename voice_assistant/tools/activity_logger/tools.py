@@ -9,7 +9,7 @@ from voice_assistant.database.models import Contex
 from voice_assistant.services.calendar.calendar_data import CalendarDataService
 from voice_assistant.services.calendar.creds import get_calendar_credentials
 from voice_assistant.services.calendar.service import CalendarService
-from voice_assistant.services.calendar.settings import calendar_settings
+from voice_assistant.services.google_settings import calendar_settings
 from voice_assistant.services.memory import ContextMemoryService
 from voice_assistant.tools.utils import parse_timedelta
 

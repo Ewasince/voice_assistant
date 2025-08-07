@@ -6,7 +6,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from loguru import logger
 
 from voice_assistant.services.calendar.calendar_data import CalendarDataService
-from voice_assistant.services.calendar.settings import calendar_settings
+from voice_assistant.services.google_settings import calendar_settings
 
 
 class NoCalendarDataError(ValueError):
@@ -25,7 +25,7 @@ async def get_calendar_credentials(calendar_data_service: CalendarDataService, r
     if calendar_data.token_data and not refresh:
         creds = Credentials.from_authorized_user_info(
             info=calendar_data.token_data,
-            scopes=calendar_settings.calendar_scopes,
+            scopes=calendar_settings.google_scopes,
         )
 
     # 2) Если токен валиден — возвращаем его
@@ -42,7 +42,7 @@ async def get_calendar_credentials(calendar_data_service: CalendarDataService, r
         # Используем creds_data напрямую (dict)
         flow = InstalledAppFlow.from_client_secrets_file(
             client_secrets_file=calendar_settings.calendar_creds_file,
-            scopes=calendar_settings.calendar_scopes,
+            scopes=calendar_settings.google_scopes,
         )
 
         creds = flow.run_local_server(port=0, access_type="offline", prompt="consent")

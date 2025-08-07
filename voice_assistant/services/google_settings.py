@@ -10,7 +10,10 @@ from voice_assistant.app_utils.base_settings import ExtendedSettings
 
 class CalendarSettings(ExtendedSettings):
     # calendar
-    calendar_scopes: tuple[str, ...] = ("https://www.googleapis.com/auth/calendar",)
+    google_scopes: tuple[str, ...] = (
+        "https://www.googleapis.com/auth/calendar",
+        "https://www.googleapis.com/auth/spreadsheets",
+    )
     calendar_creds_file: Path = Path("data/credentials.json")
 
     calendar_tz: BaseTzInfo = timezone("Europe/Moscow")

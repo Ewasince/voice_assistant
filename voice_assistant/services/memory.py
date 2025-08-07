@@ -5,7 +5,7 @@ from voice_assistant.app_utils.types import UserId
 from voice_assistant.database.core import engine
 from voice_assistant.database.models import Contex
 from voice_assistant.database.schema import ContexModel
-from voice_assistant.services.calendar.settings import calendar_settings
+from voice_assistant.services.google_settings import calendar_settings
 
 
 class ContextMemoryService:

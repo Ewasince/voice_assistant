@@ -13,7 +13,7 @@ class NoCalendarDataError(ValueError):
     pass
 
 
-async def get_calendar_credentials(calendar_data_service: CalendarDataService) -> Credentials:
+async def get_calendar_credentials(calendar_data_service: CalendarDataService, refresh: bool = False) -> Credentials:
     calendar_data = calendar_data_service.load_calendar_data()
 
     if calendar_data is None:
@@ -22,7 +22,7 @@ async def get_calendar_credentials(calendar_data_service: CalendarDataService) -
     creds = None
 
     # 1) Пробуем загрузить сохранённые токены
-    if calendar_data.token_data:
+    if calendar_data.token_data and not refresh:
         creds = Credentials.from_authorized_user_info(
             info=calendar_data.token_data,
             scopes=calendar_settings.calendar_scopes,

@@ -5,8 +5,8 @@ from loguru import logger
 from uvicorn import Config, Server
 
 from voice_assistant.app_interfaces.command_source import CommandSource
+from voice_assistant.app_utils.app_types import UserId
 from voice_assistant.app_utils.settings import primary_settings
-from voice_assistant.app_utils.types import UserId
 from voice_assistant.app_utils.utils import normalize_text
 from voice_assistant.command_sources.web_voice_command_source.simple_web import SimpleWebWrapper
 

@@ -5,8 +5,8 @@ from plyer import notification
 
 from voice_assistant.app_interfaces.audio_recognizer import AudioRecognizer
 from voice_assistant.app_interfaces.command_source import CommandSource
+from voice_assistant.app_utils.app_types import DEFAULT_USER_ID, UserId
 from voice_assistant.app_utils.settings import primary_settings
-from voice_assistant.app_utils.types import DEFAULT_USER_ID, UserId
 from voice_assistant.app_utils.utils import normalize_text
 from voice_assistant.command_sources.local_voice_command_source.microphone_listener import MicrophoneListener
 from voice_assistant.sst_modules.sst_whisper import get_whisper_sst_module

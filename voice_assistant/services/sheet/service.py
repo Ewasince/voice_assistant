@@ -15,7 +15,7 @@ from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from loguru import logger
 
-from voice_assistant.app_utils.types import UserId
+from voice_assistant.app_utils.app_types import UserId
 from voice_assistant.database.core import engine
 from voice_assistant.services.calendar.calendar_data import CalendarDataService
 from voice_assistant.services.calendar.creds import get_calendar_credentials

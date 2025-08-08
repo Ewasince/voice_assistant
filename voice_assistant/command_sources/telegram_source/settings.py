@@ -1,7 +1,7 @@
 from pydantic import Field
 
+from voice_assistant.app_utils.app_types import UserId
 from voice_assistant.app_utils.base_settings import ExtendedSettings
-from voice_assistant.app_utils.types import UserId
 
 
 class TelegramSettings(ExtendedSettings):

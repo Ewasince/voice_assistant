@@ -9,8 +9,8 @@ from loguru import logger
 from plyer import notification
 
 from voice_assistant.app_interfaces.command_source import CommandSource
+from voice_assistant.app_utils.app_types import DEFAULT_USER_ID, CommandPerformerFunction, UserId
 from voice_assistant.app_utils.settings import primary_settings
-from voice_assistant.app_utils.types import DEFAULT_USER_ID, CommandPerformerFunction, UserId
 from voice_assistant.command_performers.performer_factory import get_performer
 from voice_assistant.command_sources.sources_factory import get_sources
 

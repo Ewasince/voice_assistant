@@ -4,7 +4,7 @@ from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import Session
 from typer import Typer
 
-from voice_assistant.app_utils.types import UserId
+from voice_assistant.app_utils.app_types import UserId
 from voice_assistant.database.schema import CalendarModel
 
 

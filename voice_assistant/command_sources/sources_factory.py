@@ -3,7 +3,7 @@ from typing import Iterable
 from loguru import logger
 
 from voice_assistant.app_interfaces.command_source import CommandSource
-from voice_assistant.app_utils.types import UserId
+from voice_assistant.app_utils.app_types import UserId
 from voice_assistant.command_sources.enums import CommandSourcesTypes
 from voice_assistant.command_sources.local_voice_command_source.command_source import get_local_source
 from voice_assistant.command_sources.telegram_source.command_source import get_tg_source

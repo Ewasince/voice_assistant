@@ -5,7 +5,7 @@ from agents import Tool
 from loguru import logger
 
 from voice_assistant.app_interfaces.toolset import Toolset
-from voice_assistant.app_utils.types import UserId
+from voice_assistant.app_utils.app_types import UserId
 from voice_assistant.services.calendar.creds import NoCalendarDataError
 from voice_assistant.tools.activity_logger.tools import get_activity_logger
 

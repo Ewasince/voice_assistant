@@ -10,7 +10,7 @@ from telegram.ext import Application, ContextTypes, MessageHandler, filters
 
 from voice_assistant.app_interfaces.audio_recognizer import AudioRecognizer
 from voice_assistant.app_interfaces.command_source import CommandSource
-from voice_assistant.app_utils.types import UserId
+from voice_assistant.app_utils.app_types import UserId
 from voice_assistant.command_sources.telegram_source.settings import telegram_settings
 from voice_assistant.command_sources.telegram_source.utils import get_audiodata_from_file
 from voice_assistant.sst_modules.sst_whisper import get_whisper_sst_module

@@ -1,7 +1,7 @@
 from pydantic import SecretStr
 
+from voice_assistant.app_utils.app_types import DEFAULT_USER_ID, UserId
 from voice_assistant.app_utils.base_settings import ExtendedSettings
-from voice_assistant.app_utils.types import DEFAULT_USER_ID, UserId
 from voice_assistant.command_sources.enums import CommandSourcesTypes
 
 

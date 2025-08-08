@@ -4,7 +4,7 @@ from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from loguru import logger
 
-from voice_assistant.app_utils.types import UserId
+from voice_assistant.app_utils.app_types import UserId
 
 
 class CalendarService:

@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from agents import Tool
 
 from voice_assistant.app_interfaces.toolset import Toolset
-from voice_assistant.app_utils.types import UserId
+from voice_assistant.app_utils.app_types import UserId
 from voice_assistant.database.core import engine
 from voice_assistant.database.models import Contex
 from voice_assistant.services.calendar.calendar_data import CalendarDataService

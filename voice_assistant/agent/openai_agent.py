@@ -3,7 +3,7 @@ from agents.models.multi_provider import MultiProvider
 from loguru import logger
 
 from voice_assistant.agent.settings import agent_settings
-from voice_assistant.app_utils.types import UserId
+from voice_assistant.app_utils.app_types import UserId
 from voice_assistant.tools.tools_factory import get_tools
 
 

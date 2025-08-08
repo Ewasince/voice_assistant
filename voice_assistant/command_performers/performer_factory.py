@@ -1,7 +1,7 @@
 from loguru import logger
 
 from voice_assistant.agent.openai_agent import UserAgent, get_agent
-from voice_assistant.app_utils.types import CommandPerformerFunction, UserId
+from voice_assistant.app_utils.app_types import CommandPerformerFunction, UserId
 
 
 async def get_performer(user_id: UserId) -> CommandPerformerFunction:

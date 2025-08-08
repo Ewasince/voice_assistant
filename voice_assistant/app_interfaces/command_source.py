@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import AsyncGenerator, Self, final
 
-from voice_assistant.app_utils.types import UserId
+from voice_assistant.app_utils.app_types import UserId
 
 
 class CommandSource(ABC):

@@ -11,7 +11,7 @@ from voice_assistant.services.calendar.creds import get_calendar_credentials
 from voice_assistant.services.calendar.service import CalendarService
 from voice_assistant.services.google_settings import calendar_settings
 from voice_assistant.services.memory import ContextMemoryService
-from voice_assistant.tools.utils import parse_timedelta
+from voice_assistant.tools.utils import parse_datetime, parse_timedelta
 
 
 class ActivityLoggerToolset(Toolset):
@@ -37,18 +37,24 @@ class ActivityLoggerToolset(Toolset):
         self,
         new_activity_topic: str,
         new_activity_offset: str | None = None,
+        new_activity_time: str | None = None,
     ) -> str:
         """Log a new activity event.
         Trigger this tool when the user indicates they are currently engaged in an activity, have just started one,
         or clearly stated that the activity began some time ago.
+        Offset values must be in the %H:%M format, а positive value indicates a delta into the past
+        (e.g., "01:10" means the activity started 1 hour and 10 minutes ago).
 
         Args:
             new_activity_topic: Name of the started activity. Should be short, precise, and sound natural to a human —
                 like a familiar, conventional label for the activity. Avoid synonyms, verb forms, or uncommon phrasings.
+
             new_activity_offset: Time since activity started (optional). Provide this only if the user explicitly
                 mentioned how long ago the activity began.
-                The value must be in the %H:%M:%S format, а positive value indicates a delta into the past
-                (e.g., "00:10:45" means the activity started 10 minutes and 45 seconds ago).
+
+                Format must be "%H:%M".
+            new_activity_time: Exact start time of the activity (optional). Provide this only if the user explicitly
+                mentioned the specific time the activity began. The value must be in the "%H:%M" format (e.g., "14:35").
         """
 
         context = self._memory_service.load_contex()
@@ -64,6 +70,9 @@ class ActivityLoggerToolset(Toolset):
 
         if new_activity_delta is not None:
             end_time = current_time - new_activity_delta
+
+        if new_activity_time is not None:
+            end_time = parse_datetime(new_activity_time)
 
         last_activity_topic = context.last_activity_topic
         last_activity_time = context.last_activity_time
@@ -101,6 +110,7 @@ class ActivityLoggerToolset(Toolset):
     async def log_end_activity(
         self,
         end_activity_offset: str | None = None,
+        end_activity_time: str | None = None,
     ) -> str:
         """Log an activity event that ended.
         Use this tool only if the user has stated that an activity is finished AND has NOT mentioned being currently
@@ -109,8 +119,11 @@ class ActivityLoggerToolset(Toolset):
         Args:
             end_activity_offset: Time since activity ended (optional). Provide this only if the user explicitly
                 mentioned how long ago the activity ended.
-                The value must be in the %H:%M:%S format, а positive value indicates a delta into the past
-                (e.g., "00:10:45" means the activity started 10 minutes and 45 seconds ago).
+                Offset values must be in the %H:%M format, а positive value indicates a delta into the past
+                (e.g., "01:10" means the activity started 1 hour and 10 minutes ago).
+
+            end_activity_time: Exact end time of the activity (optional). Provide this only if the user explicitly
+                mentioned the specific time the activity began. The value must be in the "%H:%M" format (e.g., "14:35").
         """
 
         context = self._memory_service.load_contex()
@@ -127,11 +140,14 @@ class ActivityLoggerToolset(Toolset):
         if end_activity_delta is not None:
             end_time = current_time - end_activity_delta
 
+        if end_activity_time is not None:
+            end_time = parse_datetime(end_activity_time)
+
         last_activity_topic = context.last_activity_topic
         last_activity_time = context.last_activity_time
 
         if last_activity_topic and last_activity_time:
-            if last_activity_time < end_time:
+            if end_time < last_activity_time:
                 end_time = last_activity_time + timedelta(minutes=1)
                 response_message += (
                     "Время окончания оказалось меньше времени начала! Поставил время на своё усмотрение. "
@@ -171,8 +187,8 @@ class ActivityLoggerToolset(Toolset):
         activity_offset_from_now: str | None = None,
     ) -> str:
         """Update details of a previously started activity with log_new_activity
-        Offset values must be in the %H:%M:%S format, а positive value indicates a delta into the past
-        (e.g., "00:10:45" means the activity started 10 minutes and 45 seconds ago).
+        Offset values must be in the %H:%M format, а positive value indicates a delta into the past
+        (e.g., "01:10" means the activity started 1 hour and 10 minutes ago).
 
         Args:
             activity_topic: (Optional) Updated name of the saved activity. Should be short, precise, and sound natural
@@ -181,11 +197,11 @@ class ActivityLoggerToolset(Toolset):
                 Provide only if the user wants to rename the remembered activity.
 
             activity_relative_offset: (Optional) Relative shift to adjust the original
-                start time. Format must be "%H:%M:%S".
+                start time. Format must be "%H:%M".
                 Use this only if the user wants to move the start time by a specific amount.
 
             activity_offset_from_now: (Optional) Sets the start time to a point relative to the current time.
-                Format must be "%H:%M:%S".
+                Format must be "%H:%M".
                 Use this when the user indicates how long ago the activity started, relative to the present moment.
 
         Notes:

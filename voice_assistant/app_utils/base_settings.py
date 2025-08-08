@@ -9,6 +9,32 @@ from pydantic_settings import (
 )
 
 
+class _LazySettings[T]:
+    def __init__(self, cls: type[T]):
+        print("__init__ lazy")
+        self._cls = cls
+
+    _obj: T | None = None
+
+    def __getattr__(self, item: str) -> Any:
+        print(f"get attr from lazy {item}")
+        # avoid pyCharm debugger
+        if item == "shape":
+            return None
+        return getattr(self._get(), item)
+
+    def _get(self) -> T:
+        if self._obj is None:
+            # noinspection PyArgumentList
+            print("init from lazy!")
+            self._obj = self._cls()
+        return self._obj
+
+
+def lazy[T](cls: type[T]) -> T:
+    return _LazySettings[T](cls)  # type: ignore[return-value]
+
+
 class ExtendedSource(EnvSettingsSource):
     def prepare_field_value(self, field_name: str, field: FieldInfo, value: Any, value_is_complex: bool) -> Any:
         try:

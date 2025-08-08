@@ -28,6 +28,8 @@ class Settings(ExtendedSettings):
     sources_to_use_list: tuple[CommandSourcesTypes, ...] = (CommandSourcesTypes.telegram,)
     active_users_list: tuple[UserId, ...] = (DEFAULT_USER_ID,)
 
+    # calendar_settings: CalendarSettings = lazy(CalendarSettings)
+
 
 # noinspection PyArgumentList
 primary_settings = Settings()

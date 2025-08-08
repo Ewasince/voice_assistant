@@ -48,7 +48,7 @@ class MicrophoneListener:
         self._stop_listening(wait_for_stop=False)
         self._stop_listening = None
 
-    def _audio_callback(self, recognizer: Recognizer, audio: AudioData) -> None:
+    def _audio_callback(self, _: Recognizer, audio: AudioData) -> None:
         self._audio_queue.put(audio)
         logger.info(f"audio queue size +1 ={self._audio_queue.qsize()}")
 

@@ -4,7 +4,8 @@ from voice_assistant.services.google_settings import calendar_settings
 
 
 def parse_datetime(value: str) -> datetime:
-    dt = datetime.strptime(value, "%H:%M:%S")  # noqa: DTZ007
+    dt = datetime.strptime(value, "%H:%M")  # noqa: DTZ007
+    dt = datetime.combine(datetime.now(tz=calendar_settings.calendar_tz), dt.time())
     return calendar_settings.calendar_tz.localize(dt)
 
 

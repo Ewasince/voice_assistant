@@ -1,11 +1,11 @@
 from datetime import datetime, timedelta
 
-from dateutil import parser as dateutil_parser
+from voice_assistant.services.google_settings import calendar_settings
 
 
 def parse_datetime(value: str) -> datetime:
-    """Преобразует строку ISO 8601 в datetime с таймзоной."""
-    return dateutil_parser.isoparse(value)
+    dt = datetime.strptime(value, "%H:%M:%S")  # noqa: DTZ007
+    return calendar_settings.calendar_tz.localize(dt)
 
 
 def parse_timedelta(value: str) -> timedelta:

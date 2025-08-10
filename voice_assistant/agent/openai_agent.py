@@ -65,11 +65,6 @@ class UserAgent:
 
 # need to compatibility with vsegpt
 def _get_prefix_and_model_name(full_model_name: str | None) -> tuple[str | None, str | None]:
-    if full_model_name is None:
-        return None, None
-    if "/" in full_model_name:
-        prefix, _ = full_model_name.split("/", 1)
-        return prefix, full_model_name
     return None, full_model_name
 
 

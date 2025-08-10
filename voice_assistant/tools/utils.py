@@ -50,7 +50,7 @@ def parse_timedelta(value: str) -> timedelta:
         negative = True
         value = value[1:]
 
-    dt_offset = datetime.strptime(value, "%H:%M:%S")  # noqa: DTZ007
+    dt_offset = datetime.strptime(value, "%H:%M")  # noqa: DTZ007
     delta = timedelta(hours=dt_offset.hour, minutes=dt_offset.minute, seconds=dt_offset.second)
 
     return delta * -1 if negative else delta

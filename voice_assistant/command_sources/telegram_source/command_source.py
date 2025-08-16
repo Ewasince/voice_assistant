@@ -13,7 +13,7 @@ from voice_assistant.app_interfaces.command_source import CommandSource
 from voice_assistant.app_utils.app_types import UserId
 from voice_assistant.command_sources.telegram_source.settings import telegram_settings
 from voice_assistant.command_sources.telegram_source.utils import get_audiodata_from_file
-from voice_assistant.sst_modules.sst_whisper import get_whisper_sst_module
+from voice_assistant.sst_modules.sst_modules_factory import get_sst_module
 
 UserResponse = namedtuple("UserResponse", ["message_text", "chat_id"])
 
@@ -160,17 +160,5 @@ class TelegramBot:
 
 @cache
 def get_telegram_bot() -> TelegramBot:
-    audio_recognizer = get_whisper_sst_module() if telegram_settings.telegram_recognize_voice else None
+    audio_recognizer = get_sst_module() if telegram_settings.telegram_recognize_voice else None
     return TelegramBot(audio_recognizer)
-
-
-async def get_tg_source(user_id: UserId) -> CommandSource:
-    telegram_bot = get_telegram_bot()
-
-    command_source = telegram_bot.get_source_for_user(user_id)
-
-    async with telegram_bot.start_bot_lock:
-        if not telegram_bot.started:
-            await telegram_bot.start()
-
-    return command_source

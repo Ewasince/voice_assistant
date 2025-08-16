@@ -4,7 +4,7 @@ from loguru import logger
 
 from voice_assistant.agent.settings import agent_settings
 from voice_assistant.app_utils.app_types import UserId
-from voice_assistant.tools.tools_factory import get_tools
+from voice_assistant.tools.factory import get_tools
 
 
 class UserAgent:

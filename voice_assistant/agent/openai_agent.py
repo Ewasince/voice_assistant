@@ -3,11 +3,11 @@ from agents.models.multi_provider import MultiProvider
 from loguru import logger
 
 from voice_assistant.agent.settings import agent_settings
+from voice_assistant.app_interfaces.user_agent import UserAgent
 from voice_assistant.app_utils.app_types import UserId
-from voice_assistant.tools.factory import get_tools
 
 
-class UserAgent:
+class OpenAIAgent(UserAgent):
     def __init__(
         self,
         user_id: UserId,
@@ -29,7 +29,7 @@ class UserAgent:
             tools=tools,
         )
 
-        self._session = SQLiteSession(UserAgent.get_session_name(user_id))
+        self._session = SQLiteSession(OpenAIAgent.get_session_name(user_id))
 
         # TODO: per-user models
         self._multi_provider = MultiProvider(
@@ -66,8 +66,3 @@ class UserAgent:
 # need to compatibility with vsegpt
 def _get_prefix_and_model_name(full_model_name: str | None) -> tuple[str | None, str | None]:
     return None, full_model_name
-
-
-async def get_agent(user_id: UserId) -> UserAgent:
-    tools = await get_tools(user_id)
-    return UserAgent(user_id, tools)

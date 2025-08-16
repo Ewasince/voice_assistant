@@ -2,6 +2,7 @@ import asyncio
 from functools import cache
 from typing import Iterable
 
+from async_lru import alru_cache
 from fastapi import FastAPI
 from loguru import logger
 from uvicorn import Config, Server
@@ -40,19 +41,13 @@ def get_local_source() -> CommandSource:
     return command_source
 
 
-@cache
+@alru_cache
 async def get_tg_source(user_id: UserId) -> CommandSource:
-    from voice_assistant.command_sources.telegram_source.command_source import get_telegram_bot  # noqa: PLC0415
+    from voice_assistant.command_sources.telegram_source.factory import get_telegram_bot  # noqa: PLC0415
 
-    telegram_bot = get_telegram_bot()
+    telegram_bot = await get_telegram_bot()
 
-    command_source = telegram_bot.get_source_for_user(user_id)
-
-    async with telegram_bot.start_bot_lock:
-        if not telegram_bot.started:
-            await telegram_bot.start()
-
-    return command_source
+    return telegram_bot.get_source_for_user(user_id)
 
 
 @cache

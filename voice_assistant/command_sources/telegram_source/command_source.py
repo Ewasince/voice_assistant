@@ -1,7 +1,6 @@
 import asyncio
 from asyncio import Queue
 from collections import namedtuple
-from functools import cache
 from typing import AsyncGenerator
 
 from loguru import logger
@@ -10,10 +9,10 @@ from telegram.ext import Application, ContextTypes, MessageHandler, filters
 
 from voice_assistant.app_interfaces.audio_recognizer import AudioRecognizer
 from voice_assistant.app_interfaces.command_source import CommandSource
+from voice_assistant.app_interfaces.source_factory import SourceFactory
 from voice_assistant.app_utils.app_types import UserId
 from voice_assistant.command_sources.telegram_source.settings import telegram_settings
 from voice_assistant.command_sources.telegram_source.utils import get_audiodata_from_file
-from voice_assistant.sst_modules.sst_modules_factory import get_sst_module
 
 UserResponse = namedtuple("UserResponse", ["message_text", "chat_id"])
 
@@ -49,7 +48,7 @@ class TelegramBotCommandSource(CommandSource):
         raise NotImplementedError
 
 
-class TelegramBot:
+class TelegramBot(SourceFactory):
     def __init__(self, sst_module: AudioRecognizer | None) -> None:
         self._sst_module = sst_module
 
@@ -156,9 +155,3 @@ class TelegramBot:
             return None
 
         return message, from_user, chat, message_queue
-
-
-@cache
-def get_telegram_bot() -> TelegramBot:
-    audio_recognizer = get_sst_module() if telegram_settings.telegram_recognize_voice else None
-    return TelegramBot(audio_recognizer)

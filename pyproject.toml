@@ -41,6 +41,7 @@ dependencies = [
     "typer>=0.16.0",
     "python-dateutil>=2.9.0.post0",
     "types-python-dateutil>=2.9.0.20250708",
+    "async-lru>=2.0.5",
 ]
 
 [tool.uv.sources]

@@ -63,6 +63,20 @@ class TelegramBot:
 
         self._logger = logger.bind(action="tg_bot")
 
+    def get_source_for_user(self, user_id: UserId) -> TelegramBotCommandSource:
+        message_queue: ResponseQuery = Queue()
+
+        tg_user_ids = []
+
+        for k, v in telegram_settings.telegram_tg_users_to_ids_map.items():
+            if v == user_id:
+                tg_user_ids.append(k)
+
+        for tg_user_id in tg_user_ids:
+            self._message_queues_by_users[tg_user_id] = message_queue
+
+        return TelegramBotCommandSource(user_id, message_queue, self._bot)
+
     async def start(self) -> None:
         self._bot.add_handler(
             MessageHandler(
@@ -84,20 +98,6 @@ class TelegramBot:
         await self._bot.updater.start_polling()  # type: ignore[union-attr]
         self.started = True
         self._logger.info("Telegram bot started")
-
-    def get_source_for_user(self, user_id: UserId) -> TelegramBotCommandSource:
-        message_queue: ResponseQuery = Queue()
-
-        tg_user_ids = []
-
-        for k, v in telegram_settings.telegram_tg_users_to_ids_map.items():
-            if v == user_id:
-                tg_user_ids.append(k)
-
-        for tg_user_id in tg_user_ids:
-            self._message_queues_by_users[tg_user_id] = message_queue
-
-        return TelegramBotCommandSource(user_id, message_queue, self._bot)
 
     async def _handle_text_message(self, update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
         user_data = self._get_user_data(update)

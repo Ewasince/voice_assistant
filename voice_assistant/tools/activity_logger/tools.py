@@ -4,10 +4,7 @@ from agents import Tool
 
 from voice_assistant.app_interfaces.toolset import Toolset
 from voice_assistant.app_utils.app_types import UserId
-from voice_assistant.database.core import engine
 from voice_assistant.database.models import Contex
-from voice_assistant.services.calendar.calendar_data import CalendarDataService
-from voice_assistant.services.calendar.creds import get_calendar_credentials
 from voice_assistant.services.calendar.service import CalendarService
 from voice_assistant.services.google_settings import calendar_settings
 from voice_assistant.services.memory import ContextMemoryService
@@ -285,17 +282,3 @@ class ActivityLoggerToolset(Toolset):
             )
 
         return response_message
-
-
-async def get_activity_logger(user_id: UserId) -> ActivityLoggerToolset:
-    calendar_data_service = CalendarDataService(engine, user_id)
-    creds = await get_calendar_credentials(calendar_data_service)
-
-    user_data = calendar_data_service.load_calendar_data()
-
-    if user_data is None:
-        raise RuntimeError(f"has no calendar data for {user_id.log()}")
-
-    calendar_service = CalendarService(user_id, creds, user_data.calendar_id)
-
-    return ActivityLoggerToolset(user_id, calendar_service)

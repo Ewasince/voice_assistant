@@ -1,17 +1,21 @@
 from datetime import datetime
 
-from google.oauth2.credentials import Credentials
-from googleapiclient.discovery import build
+from composio import Composio
 from loguru import logger
 
 from voice_assistant.app_utils.app_types import UserId
 
 
 class CalendarService:
-    def __init__(self, user_id: UserId, creds: Credentials, calendar_id: str) -> None:
+    def __init__(
+        self,
+        user_id: UserId,
+        calendar_id: str,
+        composio: Composio,
+    ) -> None:
         self._user_id = user_id
         self._calendar_id = calendar_id
-        self._calendar_service = build("calendar", "v3", credentials=creds)
+        self._composio = composio
 
         self._logger = logger.bind(user_id=user_id, action="calendar")
 
@@ -25,30 +29,46 @@ class CalendarService:
             f"write activity '{topic}' from {start_time.strftime('%H:%M:%S')} по {end_time.strftime('%H:%M:%S')}"
         )
 
-        # Данные мероприятия
-        event = {
+        if int(end_time.strftime("%Y%M%d")) != int(start_time.strftime("%Y%M%d")):
+            # if end activity on next day — cut
+            end_time = start_time.replace(hour=23, minute=59, second=59)
+
+        event_duration_delta = end_time - start_time
+
+        event_duration_minutes = int(event_duration_delta.total_seconds() / 60)
+        event_duration_hour = 0
+
+        if event_duration_minutes > 59:
+            event_duration_hour = int(event_duration_minutes // 60)
+            event_duration_minutes = event_duration_minutes % 60
+
+        if event_duration_minutes > 59:
+            logger.warning(f"event_duration_minutes > 59, {event_duration_minutes=}")
+            event_duration_minutes = 59
+        if event_duration_hour > 24:
+            logger.warning(f"event_duration_hour > 24, {event_duration_hour=}")
+            event_duration_hour = 24
+
+        args = {
+            "calendar_id": self._calendar_id,
             "summary": topic,
-            # 'location': 'Москва, ул. Ленина, 1',
-            # 'description': 'Обсудим проект.',
-            "start": {
-                "dateTime": start_time.isoformat(),
-                "timeZone": "Europe/Moscow",
-            },
-            "end": {
-                "dateTime": end_time.isoformat(),
-                "timeZone": "Europe/Moscow",
-            },
-            # 'attendees': [
-            #     {'email': 'example@gmail.com'},
-            # ],
+            # "description": None,
+            # "location": "Google Meet",
+            "start_datetime": start_time.isoformat(),
+            "event_duration_minutes": event_duration_minutes,
+            "event_duration_hour": event_duration_hour,
+            "timezone": "Europe/Moscow",
+            "send_updates": False,
         }
 
-        event = (
-            self._calendar_service.events()
-            .insert(
-                calendarId=self._calendar_id,
-                body=event,
-            )
-            .execute()
+        res = self._composio.tools.execute(
+            slug="GOOGLECALENDAR_CREATE_EVENT",
+            arguments=args,
+            user_id=self._user_id,
         )
-        self._logger.debug("event created: {}".format(event.get("htmlLink")))
+        print(res)
+
+        if not res["successful"]:
+            raise ValueError(res["error"])
+
+        self._logger.debug(f"event created: {res}")

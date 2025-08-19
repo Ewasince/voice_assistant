@@ -40,17 +40,21 @@ class OpenAIAgent(UserAgent):
 
         self._multi_provider._get_prefix_and_model_name = _get_prefix_and_model_name  # type: ignore[method-assign, assignment]
 
-        logger.bind(user_id=user_id).info(f"Initialized UserAgent with {len(tools)} tools")
+        self._run_config = RunConfig(
+            model=agent_settings.agent_model,
+            model_provider=self._multi_provider,
+            tracing_disabled=True,
+        )
+
+        logger.bind(user_id=user_id).info(
+            f"Initialized UserAgent llm='{agent_settings.agent_model}' with {len(tools)} tools"
+        )
 
     async def run_agent(self, input_text: str) -> str | None:
         result = await Runner.run(
             starting_agent=self._agent,
             input=input_text,
-            run_config=RunConfig(
-                model=agent_settings.agent_model,
-                model_provider=self._multi_provider,
-                tracing_disabled=True,
-            ),
+            run_config=self._run_config,
             session=self._session,
         )
         output = result.final_output

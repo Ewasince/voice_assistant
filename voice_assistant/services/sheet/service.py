@@ -16,8 +16,8 @@ from googleapiclient.discovery import build
 from loguru import logger
 
 from voice_assistant.app_utils.app_types import UserId
+from voice_assistant.database.calendar_data.calendar_data import CalendarDataService
 from voice_assistant.database.core import engine
-from voice_assistant.services.calendar.calendar_data import CalendarDataService
 from voice_assistant.services.calendar.creds import get_calendar_credentials
 from voice_assistant.services.google_settings import calendar_settings
 

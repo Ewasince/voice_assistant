@@ -5,7 +5,7 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from loguru import logger
 
-from voice_assistant.services.calendar.calendar_data import CalendarDataService
+from voice_assistant.database.calendar_data.calendar_data import CalendarDataService
 from voice_assistant.services.google_settings import calendar_settings
 
 

@@ -2,9 +2,9 @@ from agents import Agent, RunConfig, Runner, SQLiteSession, Tool
 from agents.models.multi_provider import MultiProvider
 from loguru import logger
 
-from voice_assistant.agent.settings import agent_settings
 from voice_assistant.app_interfaces.user_agent import UserAgent
 from voice_assistant.app_utils.app_types import UserId
+from voice_assistant.app_utils.settings import get_settings
 
 
 class OpenAIAgent(UserAgent):
@@ -13,6 +13,7 @@ class OpenAIAgent(UserAgent):
         user_id: UserId,
         tools: list[Tool],
     ):
+        agent_settings = get_settings(user_id).agent_settings
         self._agent = Agent(
             name="Personal AI assistant",
             instructions="You are a helpful assistant who can use tools to answer questions and perform tasks. "

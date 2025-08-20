@@ -2351,6 +2351,15 @@ wheels = [
 ]
 
 [[package]]
+name = "types-pyyaml"
+version = "6.0.12.20250809"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/36/21/52ffdbddea3c826bc2758d811ccd7f766912de009c5cf096bd5ebba44680/types_pyyaml-6.0.12.20250809.tar.gz", hash = "sha256:af4a1aca028f18e75297da2ee0da465f799627370d74073e96fee876524f61b5", size = 17385 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/35/3e/0346d09d6e338401ebf406f12eaf9d0b54b315b86f1ec29e34f1a0aedae9/types_pyyaml-6.0.12.20250809-py3-none-any.whl", hash = "sha256:032b6003b798e7de1a1ddfeefee32fac6486bdfe4845e0ae0e7fb3ee4512b52f", size = 20277 },
+]
+
+[[package]]
 name = "types-requests"
 version = "2.32.4.20250611"
 source = { registry = "https://pypi.org/simple" }
@@ -2478,6 +2487,7 @@ dev = [
     { name = "pre-commit" },
     { name = "pre-commit-hooks" },
     { name = "ruff" },
+    { name = "types-pyyaml" },
 ]
 
 [package.metadata]
@@ -2527,6 +2537,7 @@ dev = [
     { name = "pre-commit", specifier = ">=4.2.0" },
     { name = "pre-commit-hooks", specifier = ">=5.0.0" },
     { name = "ruff", specifier = ">=0.11.8" },
+    { name = "types-pyyaml", specifier = ">=6.0.12.20250809" },
 ]
 
 [[package]]

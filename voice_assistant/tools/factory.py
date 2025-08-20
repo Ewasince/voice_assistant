@@ -1,4 +1,6 @@
 import asyncio
+import sys
+import traceback
 from itertools import chain
 
 from agents import Tool
@@ -25,6 +27,7 @@ async def get_tools(user_id: UserId) -> list[Tool]:
         if not isinstance(gather_result, Exception):
             raise ValueError(f"invalid gather_result '{type(gather_result)}': {gather_result}")
         logger.bind(user_id=user_id).opt(exception=gather_result).error(f"fail to load toolset: {gather_result}")
+        traceback.print_exception(type(gather_result), gather_result, gather_result.__traceback__, file=sys.stderr)
 
     tools_lists = await asyncio.gather(*(toolset.get_tools() for toolset in toolsets))
 

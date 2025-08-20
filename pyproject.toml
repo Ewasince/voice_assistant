@@ -58,6 +58,7 @@ dev = [
     "pre-commit>=4.2.0",
     "pre-commit-hooks>=5.0.0",
     "ruff>=0.11.8",
+    "types-pyyaml>=6.0.12.20250809",
 ]
 
 [tool.pytest.ini_options]

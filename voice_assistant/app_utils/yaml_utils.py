@@ -68,11 +68,19 @@ def _find_yaml_path() -> Path | None:
         return p if p.exists() else None
 
     candidates = [
-        Path("settings.yaml"),
-        Path("settings.yml"),
-        Path("config.yaml"),
-        Path("config.yml"),
+        Path(p) / name
+        for p in (
+            "",
+            "data",
+        )
+        for name in (
+            "settings.yaml",
+            "settings.yml",
+            "config.yaml",
+            "config.yml",
+        )
     ]
+
     return _first_existing(candidates)
 
 

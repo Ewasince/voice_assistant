@@ -5,7 +5,8 @@ from typing import ClassVar
 
 from voice_assistant.agent.settings import AgentSettings
 from voice_assistant.app_utils.app_types import DEFAULT_USER_ID, UserId
-from voice_assistant.app_utils.base_settings import HierarchicalSettings, lazy_nested
+from voice_assistant.app_utils.settings_utils.common import HierarchicalSettings
+from voice_assistant.app_utils.settings_utils.lazy_nested import lazy_nested
 from voice_assistant.command_sources.enums import CommandSourcesTypes
 from voice_assistant.command_sources.telegram_source.settings import TelegramSettings
 from voice_assistant.services.calendar.settings import CalendarSettings

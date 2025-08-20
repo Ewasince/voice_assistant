@@ -4,7 +4,7 @@ from pydantic import BaseModel, field_validator
 from pytz import timezone
 from pytz.tzinfo import BaseTzInfo
 
-from voice_assistant.app_utils.base_settings import ExtendedConfigDict
+from voice_assistant.app_utils.settings_utils.common import ExtendedConfigDict
 
 
 class CalendarSettings(BaseModel):

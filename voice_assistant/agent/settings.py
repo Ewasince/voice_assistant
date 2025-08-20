@@ -4,7 +4,7 @@ from typing import ClassVar
 
 from pydantic import BaseModel, SecretStr
 
-from voice_assistant.app_utils.base_settings import ExtendedConfigDict
+from voice_assistant.app_utils.settings_utils.common import ExtendedConfigDict
 
 
 class AgentSettings(BaseModel):

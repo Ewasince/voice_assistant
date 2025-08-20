@@ -1,73 +1,46 @@
-# syntax=docker/dockerfile:1
-# Keep this syntax directive! It's used to enable Docker BuildKit
+FROM python:3.12-slim AS builder
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-################################
-# BUILDER-BASE
-# Used to build deps + create our virtual environment
-################################
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential pkg-config git \
+    portaudio19-dev libsndfile1-dev \
+ && rm -rf /var/lib/apt/lists/*
 
-# Use a Python image with uv pre-installed
-FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim AS builder
-
-# Install the project into `/app`
+# Change the working directory to the `app` directory
 WORKDIR /app
 
-# Enable bytecode compilation
-ENV UV_COMPILE_BYTECODE=1
-
-# Copy from the cache instead of linking since it's a mounted volume
-ENV UV_LINK_MODE=copy
-
-RUN apt-get update \
-    && apt-get upgrade -y \
-    && apt-get install --no-install-recommends -y \
-    # deps for building python deps
-    build-essential \
-    git \
-    # npm
-    npm \
-    # gcc
-    gcc \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-#RUN --mount=type=cache,target=/root/.cache/uv \
-#    --mount=type=bind,source=uv.lock,target=uv.lock \
-#    --mount=type=bind,source=README.md,target=README.md \
-#    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-#    uv sync --frozen --no-install-project --no-editable
-
-COPY ./voice_assistant /app/voice_assistant
-COPY ./voxmind /app/voxmind
-COPY ./pyproject.toml /app/pyproject.toml
-COPY ./uv.lock /app/uv.lock
-COPY ./README.md /app/README.md
-
+# Install dependencies
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --frozen --no-editable
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --locked --no-install-project --no-editable
 
-################################
-# RUNTIME
-# Setup user, utilities and copy the virtual environment only
-################################
-FROM python:3.12.3-slim AS runtime
+# Copy the project into the intermediate image
+ADD ./voice_assistant voice_assistant
+ADD ./pyproject.toml pyproject.toml
+ADD ./uv.lock uv.lock
 
-#RUN apt-get update \
-#    && apt-get upgrade -y \
-#    && apt-get install -y curl git libpq5 gnupg \
-#    && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
-#    && apt-get install -y nodejs \
-#    && apt-get clean \
-#    && rm -rf /var/lib/apt/lists/* \
-#    && useradd user -u 1000 -g 0 --no-create-home --home-dir /app/data
+# Sync the project
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --locked --no-editable
 
-COPY --from=builder --chown=1000 /app/.venv /app/.venv
+FROM python:3.12-slim as runtime
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libportaudio2 libsndfile1 libasound2 ffmpeg \
+ && rm -rf /var/lib/apt/lists/*
+
+RUN useradd -m -u 1000 app
+WORKDIR /app
+
+# Copy the environment, but not the source code
+COPY --from=builder --chown=app:app /app/.venv /app/.venv
+
+USER app
 
 # Place executables in the environment at the front of the path
 ENV PATH="/app/.venv/bin:$PATH"
-#
-#USER user
-WORKDIR /app
 
 
+# Run the application
 CMD ["python", "voice_assistant/main.py"]

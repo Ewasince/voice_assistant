@@ -6,7 +6,7 @@ from pydantic.fields import FieldInfo
 from pydantic_settings import EnvSettingsSource
 
 
-class ExtendedSource(EnvSettingsSource):
+class ExtendedEnvSettingsSource(EnvSettingsSource):
     def prepare_field_value(self, field_name: str, field: FieldInfo, value: Any, value_is_complex: bool) -> Any:
         try:
             if field_name.lower().endswith("_list"):

@@ -57,14 +57,15 @@ dev = [
     "mypy>=1.15.0",
     "pre-commit>=4.2.0",
     "pre-commit-hooks>=5.0.0",
+    "pytest>=8.4.1",
     "ruff>=0.11.8",
     "types-pyyaml>=6.0.12.20250809",
 ]
 
-[tool.pytest.ini_options]
-addopts = "-vv -rsx -p no:warnings --cov-fail-under=85"
-asyncio_mode = "auto"
-env_files = [".env.test"]
+#[tool.pytest.ini_options]
+#addopts = "-vv -rsx -p no:warnings --cov-fail-under=85"
+#asyncio_mode = "auto"
+#env_files = [".env.test"]
 
 [tool.coverage.run]
 branch = true

@@ -1,17 +1,17 @@
 from typing import Any, ClassVar
 
 from pydantic import BaseModel, field_validator
+from pydantic_settings import SettingsConfigDict
 from pytz import timezone
 from pytz.tzinfo import BaseTzInfo
 
-from voice_assistant.app_utils.settings_utils.common import ExtendedConfigDict
+from voice_assistant.app_utils.settings_utils.common import ExtendedConfigDict, HierarchicalSettings
 
 
-class CalendarSettings(BaseModel):
-    model_config: ClassVar[ExtendedConfigDict] = {
-        "env_prefix": "CALENDAR_",
-        "extra": "ignore",
-    }
+class CalendarSettings(HierarchicalSettings):
+    model_config = SettingsConfigDict(
+        env_prefix="CALENDAR_",
+    )
 
     tz: BaseTzInfo = timezone("Europe/Moscow")
 

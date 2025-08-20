@@ -1,15 +1,15 @@
 from typing import ClassVar
 
 from pydantic import BaseModel
+from pydantic_settings import SettingsConfigDict
 
-from voice_assistant.app_utils.settings_utils.common import ExtendedConfigDict
+from voice_assistant.app_utils.settings_utils.common import ExtendedConfigDict, HierarchicalSettings
 
 
-class TelegramSettings(BaseModel):
-    model_config: ClassVar[ExtendedConfigDict] = {
-        "env_prefix": "TELEGRAM_",
-        "extra": "ignore",
-    }
+class TelegramSettings(HierarchicalSettings):
+    model_config = SettingsConfigDict(
+        env_prefix="TELEGRAM_",
+    )
     token: str = ""
     recognize_voice: bool = True
 

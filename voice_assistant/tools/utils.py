@@ -1,12 +1,12 @@
 from datetime import datetime, timedelta
 
-from voice_assistant.services.google_settings import calendar_settings
+from pytz import BaseTzInfo
 
 
-def parse_datetime(value: str) -> datetime:
+def parse_datetime(value: str, tz: BaseTzInfo) -> datetime:
     dt = datetime.strptime(value, "%H:%M")  # noqa: DTZ007
-    dt = datetime.combine(datetime.now(tz=calendar_settings.calendar_tz), dt.time())
-    return calendar_settings.calendar_tz.localize(dt)
+    dt = datetime.combine(datetime.now(tz=tz), dt.time())
+    return tz.localize(dt)
 
 
 def parse_timedelta(value: str) -> timedelta:

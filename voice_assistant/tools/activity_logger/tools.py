@@ -4,9 +4,9 @@ from agents import Tool
 
 from voice_assistant.app_interfaces.toolset import Toolset
 from voice_assistant.app_utils.app_types import UserId
+from voice_assistant.app_utils.settings import get_settings
 from voice_assistant.database.models import Contex
 from voice_assistant.services.calendar.service import CalendarService
-from voice_assistant.services.google_settings import calendar_settings
 from voice_assistant.services.memory import ContextMemoryService
 from voice_assistant.tools.utils import parse_datetime, parse_timedelta
 
@@ -20,6 +20,7 @@ class ActivityLoggerToolset(Toolset):
         self._memory_service = ContextMemoryService(user_id)
 
         self._logger = self._logger.bind(user_id=user_id)
+        self._tz = get_settings(user_id).calendar_settings.tz
 
     async def get_tools(self) -> list[Tool]:
         return self._wrap_tools(
@@ -61,7 +62,7 @@ class ActivityLoggerToolset(Toolset):
             new_activity_delta = parse_timedelta(new_activity_offset)
 
         response_message = ""
-        current_time = datetime.now(tz=calendar_settings.calendar_tz)
+        current_time = datetime.now(tz=self._tz)
 
         end_time = current_time
 
@@ -69,7 +70,7 @@ class ActivityLoggerToolset(Toolset):
             end_time = current_time - new_activity_delta
 
         if new_activity_time is not None:
-            end_time = parse_datetime(new_activity_time)
+            end_time = parse_datetime(new_activity_time, self._tz)
 
         last_activity_topic = context.last_activity_topic
         last_activity_time = context.last_activity_time
@@ -130,7 +131,7 @@ class ActivityLoggerToolset(Toolset):
             end_activity_delta = parse_timedelta(end_activity_offset)
 
         response_message = ""
-        current_time = datetime.now(tz=calendar_settings.calendar_tz)
+        current_time = datetime.now(tz=self._tz)
 
         end_time = current_time
 
@@ -138,7 +139,7 @@ class ActivityLoggerToolset(Toolset):
             end_time = current_time - end_activity_delta
 
         if end_activity_time is not None:
-            end_time = parse_datetime(end_activity_time)
+            end_time = parse_datetime(end_activity_time, self._tz)
 
         last_activity_topic = context.last_activity_topic
         last_activity_time = context.last_activity_time
@@ -209,7 +210,7 @@ class ActivityLoggerToolset(Toolset):
         response_message = ""
 
         context = self._memory_service.load_contex()
-        current_time = datetime.now(tz=calendar_settings.calendar_tz)
+        current_time = datetime.now(tz=self._tz)
 
         new_last_activity_time = None
         if activity_relative_offset is not None and context.last_activity_time is not None:
@@ -256,7 +257,7 @@ class ActivityLoggerToolset(Toolset):
         """
         response_message = ""
 
-        current_time = datetime.now(tz=calendar_settings.calendar_tz)
+        current_time = datetime.now(tz=self._tz)
 
         context = self._memory_service.load_contex()
 

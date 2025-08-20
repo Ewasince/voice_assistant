@@ -112,7 +112,7 @@
 #     parser.add_argument(
 #         "--date",
 #         help="Дата в формате DD.MM.YYYY",
-#         default=datetime.now(tz=calendar_settings.calendar_tz).strftime("%d.%m.%Y"),
+#         default=datetime.now(tz=calendar_settings.tz).strftime("%d.%m.%Y"),
 #     )
 #     parser.add_argument("--total", type=int, help="Всего (сумма), если не передана, вычисляется автоматически")
 #     args = parser.parse_args()

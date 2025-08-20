@@ -3,13 +3,15 @@ from functools import cache
 from loguru import logger
 
 from voice_assistant.app_interfaces.audio_recognizer import AudioRecognizer
-from voice_assistant.sst_modules.settings import stt_settings
+from voice_assistant.app_utils.settings import get_settings
 
 logger = logger.bind(action="LOAD_STT")
 
 
 @cache
 def get_sst_module() -> AudioRecognizer:
+    stt_settings = get_settings().stt_settings
+
     if stt_settings.stt_mode == "api":
         return _get_api_sst_module()
     if stt_settings.stt_mode == "local":

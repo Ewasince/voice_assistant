@@ -4,16 +4,17 @@ from openai import AsyncOpenAI
 from speech_recognition import AudioData, RequestError, UnknownValueError
 
 from voice_assistant.app_interfaces.audio_recognizer import AudioRecognizer
-from voice_assistant.sst_modules.settings import stt_settings
+from voice_assistant.app_utils.settings import get_settings
 
 
 class OpenAIAPISST(AudioRecognizer):
     def __init__(self) -> None:
         super().__init__()
+        stt_settings = get_settings().stt_settings
         self.client = AsyncOpenAI(
             api_key=stt_settings.stt_api_key.get_secret_value(), base_url=stt_settings.stt_base_url
         )
-        self.model = stt_settings.stt_model.get_secret_value()
+        self.model = stt_settings.stt_model
         self.language = stt_settings.stt_language
 
         # logger.info(f"Initialized OpenAI SDK STT (model={self.model})")

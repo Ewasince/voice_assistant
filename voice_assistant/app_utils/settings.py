@@ -14,6 +14,7 @@ from voice_assistant.sst_modules.settings import SttSettings
 
 
 class Settings(HierarchicalSettings):
+    local_run: bool = True
     # database
     database_uri: str = "sqlite:///data/data.db"
 

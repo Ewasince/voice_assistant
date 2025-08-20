@@ -76,6 +76,10 @@ async def main() -> Awaitable[NoReturn]:
 
 async def setup_user_and_start_loop(user_id: UserId) -> Awaitable[NoReturn]:
     settings = get_settings(user_id)
+    logger_ = logger.bind(user_id=user_id)
+
+    logger_.info(f"init user with settings: {settings.model_dump_json(indent=2)}")
+
     try:
         sources_to_use = settings.sources_to_use_list
         command_sources = await get_sources(user_id, sources_to_use)
@@ -86,17 +90,17 @@ async def setup_user_and_start_loop(user_id: UserId) -> Awaitable[NoReturn]:
 
         return await message_loop(user_id, command_sources, command_performer)
     except ValueError:
-        logger.bind(user_id=user_id).error("exception in user loop")
+        logger_.error("exception in user loop")
         raise
     except Exception as e:
-        logger.bind(user_id=user_id).error(f"exception in user loop:\n{e}")
+        logger_.bind(user_id=user_id).error(f"exception in user loop:\n{e}")
         raise e
 
 
 def startup_completed(user_id: UserId) -> None:
     logger.bind(user_id=user_id).success("Startup completed!")
 
-    if user_id == DEFAULT_USER_ID:
+    if user_id == DEFAULT_USER_ID and get_settings(user_id).local_run:
         notification.notify(
             title="Ассистент запущен",
             message="Ассистент запущен",

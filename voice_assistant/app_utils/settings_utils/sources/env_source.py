@@ -11,11 +11,11 @@ class ExtendedEnvSettingsSource(EnvSettingsSource):
         try:
             if field_name.lower().endswith("_list"):
                 if not value:
-                    return []
+                    return None
                 return list(value.split(","))
             if field_name.lower().endswith("_map"):
                 if not value:
-                    return {}
+                    return None
                 result_map = {}
                 for entry in value.split(";"):
                     key, value_ = entry.split(":")

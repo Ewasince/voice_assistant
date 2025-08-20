@@ -61,8 +61,8 @@ class HierarchicalSettings(BaseSettings):
 
         return (
             init_settings,
-            YamlSettingsSource(settings_cls, self._yaml_cache),
             ExtendedEnvSettingsSource(settings_cls),
+            YamlSettingsSource(settings_cls, self._yaml_cache),
         )
 
     def get_yaml_section(self, section_keys: Iterable[str]) -> dict[str, Any]:

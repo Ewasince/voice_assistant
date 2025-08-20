@@ -9,7 +9,7 @@ from voice_assistant.app_utils.base_settings import ExtendedConfigDict
 
 class CalendarSettings(BaseModel):
     model_config: ClassVar[ExtendedConfigDict] = {
-        "env_prefix": "TELEGRAM_",
+        "env_prefix": "CALENDAR_",
         "extra": "ignore",
     }
 

@@ -1,11 +1,11 @@
-from typing import Any, ClassVar
+from typing import Any
 
-from pydantic import BaseModel, field_validator
+from pydantic import field_validator
 from pydantic_settings import SettingsConfigDict
 from pytz import timezone
 from pytz.tzinfo import BaseTzInfo
 
-from voice_assistant.app_utils.settings_utils.common import ExtendedConfigDict, HierarchicalSettings
+from voice_assistant.app_utils.settings_utils.common import HierarchicalSettings
 
 
 class CalendarSettings(HierarchicalSettings):

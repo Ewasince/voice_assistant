@@ -1,9 +1,6 @@
-from typing import ClassVar
-
-from pydantic import BaseModel
 from pydantic_settings import SettingsConfigDict
 
-from voice_assistant.app_utils.settings_utils.common import ExtendedConfigDict, HierarchicalSettings
+from voice_assistant.app_utils.settings_utils.common import HierarchicalSettings
 
 
 class TelegramSettings(HierarchicalSettings):

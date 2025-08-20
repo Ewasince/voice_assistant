@@ -1,13 +1,18 @@
 from __future__ import annotations
 
-import os
 from pathlib import Path
-from typing import Any, cast, ClassVar
+from typing import Any, ClassVar, cast
 
-from pydantic import BaseModel, ConfigDict, PrivateAttr
-from pydantic_core import PydanticUndefined
-from pydantic_settings import BaseSettings, PydanticBaseSettingsSource, SettingsConfigDict, InitSettingsSource, \
-    EnvSettingsSource, DotEnvSettingsSource, SecretsSettingsSource
+from pydantic import ConfigDict, PrivateAttr
+from pydantic_settings import (
+    BaseSettings,
+    DotEnvSettingsSource,
+    EnvSettingsSource,
+    InitSettingsSource,
+    PydanticBaseSettingsSource,
+    SecretsSettingsSource,
+    SettingsConfigDict,
+)
 
 from voice_assistant.app_utils.settings_utils.helpers import find_yaml_path, load_yaml_cache
 from voice_assistant.app_utils.settings_utils.sources.env_source import ExtendedEnvSettingsSource
@@ -51,14 +56,13 @@ class HierarchicalSettings(BaseSettings):
         self._init_only = init_only
         self._data = values
 
-
     # -------- настройка источников для верхних полей (YAML → ENV) --------
     def settings_customise_sources(
         self,
         settings_cls: type[BaseSettings],
         init_settings: InitSettingsSource,
-        env_settings: EnvSettingsSource,  # noqa: ARG003
-        dotenv_settings: DotEnvSettingsSource,  # noqa: ARG003
+        env_settings: EnvSettingsSource,
+        dotenv_settings: DotEnvSettingsSource,
         file_secret_settings: SecretsSettingsSource,
     ) -> tuple[PydanticBaseSettingsSource, ...]:
         # Порядок: INIT → YAML → ENV → FILE_SECRETS
@@ -97,7 +101,7 @@ class _LazyNested[T: HierarchicalSettings]:
         self._name = name
         self._yaml_keys.append(name)
 
-    def __get__(self, obj: T, objtype: type[T] = None) -> T:
+    def __get__(self, obj: T, objtype: type[T] | None = None) -> T:
         if obj is None:
             return self  # type: ignore[return-value]
         assert self._name is not None, "Descriptor name is not set"
@@ -129,12 +133,10 @@ def lazy_nested[T: HierarchicalSettings](model_cls: type[T]) -> T:
     return cast(T, _LazyNested(model_cls))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
+
     class InnerSettings(HierarchicalSettings):
-        model_config = SettingsConfigDict(
-            extra="ignore",
-            env_prefix="INNER_"
-        )
+        model_config = SettingsConfigDict(extra="ignore", env_prefix="INNER_")
         test_var_3: int = 3
         test_var_4: int
 

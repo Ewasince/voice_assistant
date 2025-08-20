@@ -1,9 +1,9 @@
-from typing import ClassVar, Literal
+from typing import Literal
 
-from pydantic import BaseModel, SecretStr
+from pydantic import SecretStr
 from pydantic_settings import SettingsConfigDict
 
-from voice_assistant.app_utils.settings_utils.common import ExtendedConfigDict, HierarchicalSettings
+from voice_assistant.app_utils.settings_utils.common import HierarchicalSettings
 
 
 class SttSettings(HierarchicalSettings):

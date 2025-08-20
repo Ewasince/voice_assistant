@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-from pathlib import Path
 from typing import Any
 
 from pydantic.fields import FieldInfo
 from pydantic_settings import BaseSettings, PydanticBaseSettingsSource
-
-from voice_assistant.app_utils.settings_utils.helpers import find_yaml_path, load_yaml_cache
 
 
 class YamlSettingsSource(PydanticBaseSettingsSource):

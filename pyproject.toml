@@ -50,6 +50,13 @@ local = [
     "openai-whisper>=20250625",
 ]
 
+[build-system]
+requires = ["hatchling>=1.20"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["voice_assistant"]
+
 #[tool.pytest.ini_options]
 #addopts = "-vv -rsx -p no:warnings --cov-fail-under=85"
 #asyncio_mode = "auto"

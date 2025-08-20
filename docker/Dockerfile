@@ -9,6 +9,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Change the working directory to the `app` directory
 WORKDIR /app
 
+# Enable bytecode compilation
+ENV UV_COMPILE_BYTECODE=1
+
+# Copy from the cache instead of linking since it's a mounted volume
+ENV UV_LINK_MODE=copy
+
 # Install dependencies
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
@@ -19,12 +25,13 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 ADD ./voice_assistant voice_assistant
 ADD ./pyproject.toml pyproject.toml
 ADD ./uv.lock uv.lock
+ADD ./README.md README.md
 
 # Sync the project
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-editable
 
-FROM python:3.12-slim as runtime
+FROM python:3.12-slim AS runtime
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libportaudio2 libsndfile1 libasound2 ffmpeg \
@@ -41,6 +48,5 @@ USER app
 # Place executables in the environment at the front of the path
 ENV PATH="/app/.venv/bin:$PATH"
 
-
 # Run the application
-CMD ["python", "voice_assistant/main.py"]
+CMD ["python", "-m", "voice_assistant.main"]

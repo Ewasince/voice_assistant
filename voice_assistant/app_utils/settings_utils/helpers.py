@@ -7,14 +7,7 @@ from typing import Any
 import yaml
 
 
-def _first_existing(paths: list[Path]) -> Path | None:
-    for p in paths:
-        if p.exists():
-            return p
-    return None
-
-
-def _find_yaml_path() -> Path | None:
+def find_yaml_path() -> Path | None:
     """
     1) Явно через ENV: SETTINGS_YAML.
     2) Иначе ищем стандартные имена в CWD.
@@ -41,7 +34,7 @@ def _find_yaml_path() -> Path | None:
     return _first_existing(candidates)
 
 
-def _load_yaml_cache(path: Path | None) -> dict[str, Any]:
+def load_yaml_cache(path: Path | None) -> dict[str, Any]:
     if not path:
         return {}
     try:
@@ -55,3 +48,10 @@ def _load_yaml_cache(path: Path | None) -> dict[str, Any]:
     except Exception:
         # без лишней драматизации: если yaml сломан — игнорим, но не валим приложение
         return {}
+
+
+def _first_existing(paths: list[Path]) -> Path | None:
+    for p in paths:
+        if p.exists():
+            return p
+    return None

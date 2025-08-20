@@ -6,7 +6,7 @@ from typing import Any
 from pydantic.fields import FieldInfo
 from pydantic_settings import BaseSettings, PydanticBaseSettingsSource
 
-from voice_assistant.app_utils.settings_utils.yaml_utils import _find_yaml_path, _load_yaml_cache
+from voice_assistant.app_utils.settings_utils.helpers import find_yaml_path, load_yaml_cache
 
 
 class YamlSettingsSource(PydanticBaseSettingsSource):
@@ -14,8 +14,8 @@ class YamlSettingsSource(PydanticBaseSettingsSource):
 
     def __init__(self, settings_cls: type[BaseSettings], *, path: Path | None = None) -> None:
         super().__init__(settings_cls)
-        self._path = path or _find_yaml_path()
-        self._data: dict[str, Any] = _load_yaml_cache(self._path)
+        self._path = path or find_yaml_path()
+        self._data: dict[str, Any] = load_yaml_cache(self._path)
 
     # Абстрактный метод — должен вернуть уже собранный dict для парсинга Settings
     def __call__(self) -> dict[str, Any]:

@@ -7,9 +7,9 @@ from typing import Any
 from pydantic import BaseModel, ConfigDict, PrivateAttr
 from pydantic_settings import BaseSettings, PydanticBaseSettingsSource, SettingsConfigDict
 
+from voice_assistant.app_utils.settings_utils.helpers import find_yaml_path, load_yaml_cache
 from voice_assistant.app_utils.settings_utils.sources.env_source import ExtendedSource
 from voice_assistant.app_utils.settings_utils.sources.yaml_source import YamlSettingsSource
-from voice_assistant.app_utils.settings_utils.yaml_utils import _find_yaml_path, _load_yaml_cache
 
 
 class ExtendedConfigDict(ConfigDict):
@@ -58,8 +58,8 @@ class HierarchicalSettings(BaseSettings):
         if yaml_cache:
             self._yaml_cache = yaml_cache
             return
-        self._yaml_path = (yaml_path and Path(yaml_path)) or _find_yaml_path()
-        self._yaml_cache = _load_yaml_cache(self._yaml_path)
+        self._yaml_path = (yaml_path and Path(yaml_path)) or find_yaml_path()
+        self._yaml_cache = load_yaml_cache(self._yaml_path)
 
     # -------- helpers для дескрипторов --------
     def _build_from_env(

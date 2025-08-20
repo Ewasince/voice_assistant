@@ -9,6 +9,7 @@ from voice_assistant.app_utils.base_settings import HierarchicalSettings, lazy_n
 from voice_assistant.command_sources.enums import CommandSourcesTypes
 from voice_assistant.command_sources.telegram_source.settings import TelegramSettings
 from voice_assistant.services.calendar.settings import CalendarSettings
+from voice_assistant.services.composio.settings import ComposioSettings
 
 
 class Settings(HierarchicalSettings):
@@ -35,6 +36,7 @@ class Settings(HierarchicalSettings):
     agent_settings: ClassVar[AgentSettings] = lazy_nested(AgentSettings, "agent_settings", "agent")
     telegram_settings: ClassVar[TelegramSettings] = lazy_nested(TelegramSettings, "telegram_settings", "telegram")
     calendar_settings: ClassVar[CalendarSettings] = lazy_nested(CalendarSettings, "calendar_settings", "calendar")
+    composio_settings: ClassVar[ComposioSettings] = lazy_nested(ComposioSettings, "composio_settings", "composio")
 
 
 @cache

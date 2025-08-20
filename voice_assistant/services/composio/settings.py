@@ -1,11 +1,13 @@
-from pydantic import SecretStr
+from typing import ClassVar
 
-from voice_assistant.app_utils.base_settings import ExtendedSettings
+from pydantic import BaseModel, SecretStr
+
+from voice_assistant.app_utils.base_settings import ExtendedConfigDict
 
 
-class Settings(ExtendedSettings):
+class ComposioSettings(BaseModel):
+    model_config: ClassVar[ExtendedConfigDict] = {
+        "env_prefix": "COMPOSIO_",
+        "extra": "ignore",
+    }
     composio_api_key: SecretStr
-
-
-# noinspection PyArgumentList
-composio_settings = Settings()

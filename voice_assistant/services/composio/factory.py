@@ -2,10 +2,12 @@ from async_lru import alru_cache
 from composio import Composio
 from loguru import logger
 
+from voice_assistant.app_utils.settings import get_settings
+
 
 @alru_cache
 async def create_composio(user_id: str) -> Composio:
-    from voice_assistant.services.composio.settings import composio_settings  # noqa: PLC0415
+    composio_settings = get_settings().composio_settings
 
     logger_ = logger.bind(user_id=user_id, activity="composio")
     composio: Composio = Composio(api_key=composio_settings.composio_api_key.get_secret_value())

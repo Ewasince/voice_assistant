@@ -31,8 +31,8 @@ class Settings(HierarchicalSettings):
     sources_to_use_list: tuple[CommandSourcesTypes, ...] = (CommandSourcesTypes.telegram,)
     active_users_list: tuple[UserId, ...] = (DEFAULT_USER_ID,)
 
-    agent_settings: ClassVar[AgentSettings] = lazy_nested(AgentSettings, "agent_settings")
-    telegram_settings: ClassVar[TelegramSettings] = lazy_nested(TelegramSettings, "telegram_settings")
+    agent_settings: ClassVar[AgentSettings] = lazy_nested(AgentSettings, "agent_settings", "agent")
+    telegram_settings: ClassVar[TelegramSettings] = lazy_nested(TelegramSettings, "telegram_settings", "telegram")
 
 
 @cache

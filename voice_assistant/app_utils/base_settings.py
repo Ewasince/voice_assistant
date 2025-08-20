@@ -5,7 +5,7 @@ from abc import ABC
 from pathlib import Path
 from typing import Any, cast
 
-from pydantic import BaseModel, PrivateAttr
+from pydantic import BaseModel, ConfigDict, PrivateAttr
 from pydantic.fields import FieldInfo
 from pydantic_settings import (
     BaseSettings,
@@ -113,6 +113,10 @@ class _LazyNested[T: BaseModel]:
 
 def lazy_nested[T: BaseModel](model_cls: type[T], *yaml_keys: str, **kwargs: Any) -> T:
     return cast(T, _LazyNested(model_cls, *yaml_keys, **kwargs))
+
+
+class ExtendedConfigDict(ConfigDict):
+    env_prefix: str
 
 
 class HierarchicalSettings(BaseSettings):

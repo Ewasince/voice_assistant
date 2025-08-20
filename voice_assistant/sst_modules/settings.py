@@ -10,9 +10,9 @@ class SttSettings(HierarchicalSettings):
     model_config = SettingsConfigDict(
         env_prefix="STT_",
     )
-    stt_base_url: str
-    stt_api_key: SecretStr
-    stt_model: str = "stt-openai/whisper-v3-turbo"
-    stt_language: str = "ru"
+    base_url: str
+    api_key: SecretStr
+    model: str = "stt-openai/whisper-v3-turbo"
+    language: str = "ru"
 
-    stt_mode: Literal["local", "api"] = "api"
+    mode: Literal["local", "api"] = "api"

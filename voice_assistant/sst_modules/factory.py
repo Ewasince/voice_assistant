@@ -12,11 +12,11 @@ logger = logger.bind(action="LOAD_STT")
 def get_sst_module() -> AudioRecognizer:
     stt_settings = get_settings().stt_settings
 
-    if stt_settings.stt_mode == "api":
+    if stt_settings.mode == "api":
         return _get_api_sst_module()
-    if stt_settings.stt_mode == "local":
+    if stt_settings.mode == "local":
         return _get_whisper_sst_module()
-    raise ValueError("stt_mode must be 'local' or 'api'")
+    raise ValueError("mode must be 'local' or 'api'")
 
 
 @cache

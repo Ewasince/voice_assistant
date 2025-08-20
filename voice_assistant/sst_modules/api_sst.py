@@ -11,11 +11,9 @@ class OpenAIAPISST(AudioRecognizer):
     def __init__(self) -> None:
         super().__init__()
         stt_settings = get_settings().stt_settings
-        self.client = AsyncOpenAI(
-            api_key=stt_settings.stt_api_key.get_secret_value(), base_url=stt_settings.stt_base_url
-        )
-        self.model = stt_settings.stt_model
-        self.language = stt_settings.stt_language
+        self.client = AsyncOpenAI(api_key=stt_settings.api_key.get_secret_value(), base_url=stt_settings.base_url)
+        self.model = stt_settings.model
+        self.language = stt_settings.language
 
         # logger.info(f"Initialized OpenAI SDK STT (model={self.model})")
 

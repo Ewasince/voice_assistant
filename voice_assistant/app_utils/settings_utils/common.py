@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, ClassVar, cast, Self
+from typing import Any, Self, cast
 
 from pydantic import ConfigDict, PrivateAttr
 from pydantic._internal._utils import deep_update
@@ -41,8 +41,8 @@ class HierarchicalSettings(BaseSettings):
         **init_kwargs: Any,
     ):
         if yaml_cache is None:
-            yaml_path = (yaml_path and Path(yaml_path)) or find_yaml_path()
-            yaml_cache = load_yaml_cache(yaml_path)
+            yaml_path_ = (yaml_path and Path(yaml_path)) or find_yaml_path()
+            yaml_cache = load_yaml_cache(yaml_path_)
 
         yaml_cache = yaml_cache or {}
 
@@ -55,10 +55,10 @@ class HierarchicalSettings(BaseSettings):
     def settings_customise_sources(
         self,
         settings_cls: type[BaseSettings],
-        init_settings: InitSettingsSource,
-        env_settings: EnvSettingsSource,
-        dotenv_settings: DotEnvSettingsSource,
-        file_secret_settings: SecretsSettingsSource,
+        init_settings: InitSettingsSource,  # type: ignore[override]
+        env_settings: EnvSettingsSource,  # type: ignore[override]  # noqa: ARG002
+        dotenv_settings: DotEnvSettingsSource,  # type: ignore[override]  # noqa: ARG002
+        file_secret_settings: SecretsSettingsSource,  # type: ignore[override]  # noqa: ARG002
     ) -> tuple[PydanticBaseSettingsSource, ...]:
         # Порядок: INIT → YAML → ENV → FILE_SECRETS
 
@@ -75,11 +75,10 @@ class HierarchicalSettings(BaseSettings):
                 return raw
         return {}
 
-    def merge(self, yaml_cache: dict[str, Any]):
+    def merge(self, yaml_cache: dict[str, Any]) -> Self:
         yaml_cache = deep_update(self._yaml_cache, yaml_cache)
         cls = type(self)
-        res = cls(yaml_cache=yaml_cache)
-        return res
+        return cls(yaml_cache=yaml_cache)
 
     def get_user_variables(self, user_id: UserId) -> dict[str, Any]:
         return self._yaml_cache.get("users", {}).get(user_id, {})
@@ -91,7 +90,7 @@ class _LazyNested[T: HierarchicalSettings]:
         model_cls: type[T],
     ) -> None:
         self.model_cls = model_cls
-        self._yaml_keys = []
+        self._yaml_keys: list[str] = []
         self._name: str | None = None
 
         self.required = True
@@ -102,7 +101,7 @@ class _LazyNested[T: HierarchicalSettings]:
 
     def __get__(self, obj: T, objtype: type[T] | None = None) -> T:
         if obj is None:
-            return self  # type: ignore[return-value]
+            return self
         assert self._name is not None, "Descriptor name is not set"
 
         if self._name in obj.__dict__:

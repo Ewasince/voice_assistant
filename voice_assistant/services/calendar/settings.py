@@ -14,6 +14,7 @@ class CalendarSettings(HierarchicalSettings):
     )
 
     tz: BaseTzInfo = timezone("Europe/Moscow")
+    calendar_id: str
 
     # noinspection PyNestedDecorators
     @field_validator("tz", mode="before")

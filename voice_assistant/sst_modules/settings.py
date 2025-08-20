@@ -1,11 +1,15 @@
-from typing import Literal
+from typing import ClassVar, Literal
 
-from pydantic import SecretStr
+from pydantic import BaseModel, SecretStr
 
-from voice_assistant.app_utils.base_settings import ExtendedSettings
+from voice_assistant.app_utils.base_settings import ExtendedConfigDict
 
 
-class SttSettings(ExtendedSettings):
+class SttSettings(BaseModel):
+    model_config: ClassVar[ExtendedConfigDict] = {
+        "env_prefix": "STT_",
+        "extra": "ignore",
+    }
     stt_base_url: str
     stt_api_key: SecretStr
     stt_model: str = "stt-openai/whisper-v3-turbo"

@@ -112,7 +112,6 @@ class _LazyNested[T: BaseModel]:
 
 
 def lazy_nested[T: BaseModel](model_cls: type[T], *yaml_keys: str, **kwargs: Any) -> T:
-    # Возвращаем LazyNested, но типизатору говорим, что это T
     return cast(T, _LazyNested(model_cls, *yaml_keys, **kwargs))
 
 

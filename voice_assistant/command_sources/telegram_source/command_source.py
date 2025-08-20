@@ -11,7 +11,7 @@ from voice_assistant.app_interfaces.audio_recognizer import AudioRecognizer
 from voice_assistant.app_interfaces.command_source import CommandSource
 from voice_assistant.app_interfaces.source_factory import SourceFactory
 from voice_assistant.app_utils.app_types import UserId
-from voice_assistant.command_sources.telegram_source.settings import telegram_settings
+from voice_assistant.app_utils.settings import get_settings
 from voice_assistant.command_sources.telegram_source.utils import get_audiodata_from_file
 
 UserResponse = namedtuple("UserResponse", ["message_text", "chat_id"])
@@ -52,7 +52,9 @@ class TelegramBot(SourceFactory):
     def __init__(self, sst_module: AudioRecognizer | None) -> None:
         self._sst_module = sst_module
 
-        self._bot = Application.builder().token(telegram_settings.telegram_token).build()
+        telegram_settings = get_settings().telegram_settings
+
+        self._bot = Application.builder().token(telegram_settings.token).build()
 
         self._message_queues_by_users: dict[int, ResponseQuery] = {}
 
@@ -65,13 +67,9 @@ class TelegramBot(SourceFactory):
     def get_source_for_user(self, user_id: UserId) -> TelegramBotCommandSource:
         message_queue: ResponseQuery = Queue()
 
-        tg_user_ids = []
+        telegram_settings = get_settings(user_id).telegram_settings
 
-        for k, v in telegram_settings.telegram_tg_users_to_ids_map.items():
-            if v == user_id:
-                tg_user_ids.append(k)
-
-        for tg_user_id in tg_user_ids:
+        for tg_user_id in telegram_settings.tg_user_ids:
             self._message_queues_by_users[tg_user_id] = message_queue
 
         return TelegramBotCommandSource(user_id, message_queue, self._bot)

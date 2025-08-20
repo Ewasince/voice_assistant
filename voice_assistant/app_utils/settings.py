@@ -7,6 +7,7 @@ from voice_assistant.agent.settings import AgentSettings
 from voice_assistant.app_utils.app_types import DEFAULT_USER_ID, UserId
 from voice_assistant.app_utils.base_settings import HierarchicalSettings, lazy_nested
 from voice_assistant.command_sources.enums import CommandSourcesTypes
+from voice_assistant.command_sources.telegram_source.settings import TelegramSettings
 
 
 class Settings(HierarchicalSettings):
@@ -31,6 +32,7 @@ class Settings(HierarchicalSettings):
     active_users_list: tuple[UserId, ...] = (DEFAULT_USER_ID,)
 
     agent_settings: ClassVar[AgentSettings] = lazy_nested(AgentSettings, "agent_settings")
+    telegram_settings: ClassVar[TelegramSettings] = lazy_nested(TelegramSettings, "telegram_settings")
 
 
 @cache

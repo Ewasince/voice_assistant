@@ -15,6 +15,7 @@ from pydantic_settings import (
     SettingsConfigDict,
 )
 
+from voice_assistant.app_utils.app_types import UserId
 from voice_assistant.app_utils.settings_utils.helpers import find_yaml_path, load_yaml_cache
 from voice_assistant.app_utils.settings_utils.sources.env_source import ExtendedEnvSettingsSource
 from voice_assistant.app_utils.settings_utils.sources.yaml_source import YamlSettingsSource
@@ -80,13 +81,14 @@ class HierarchicalSettings(BaseSettings):
         res = cls(yaml_cache=yaml_cache)
         return res
 
+    def get_user_variables(self, user_id: UserId) -> dict[str, Any]:
+        return self._yaml_cache.get("users", {}).get(user_id, {})
+
 
 class _LazyNested[T: HierarchicalSettings]:
     def __init__(
         self,
         model_cls: type[T],
-        # *yaml_keys: str,
-        # required: bool = True,
     ) -> None:
         self.model_cls = model_cls
         self._yaml_keys = []
@@ -103,11 +105,9 @@ class _LazyNested[T: HierarchicalSettings]:
             return self  # type: ignore[return-value]
         assert self._name is not None, "Descriptor name is not set"
 
-        # Уже вычисляли?
         if self._name in obj.__dict__:
             return obj.__dict__[self._name]
 
-        # 1) Достаём YAML секцию (если есть)
         yaml_cache = obj.get_yaml_section(self._yaml_keys)
 
         instance = self.model_cls(

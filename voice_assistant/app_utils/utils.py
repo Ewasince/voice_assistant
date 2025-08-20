@@ -1,8 +1,8 @@
 import re
 
-from voice_assistant.app_utils.settings import primary_settings
+from voice_assistant.app_utils.settings import get_settings
 
-p = re.compile(primary_settings.regexp)
+p = re.compile(get_settings().regexp)
 
 
 def normalize_text(input_text: str) -> str:

@@ -45,7 +45,3 @@ def get_settings(user_id: UserId | None) -> Settings:
 
     # per-user settings
     return _get_main_settings()
-
-
-# noinspection PyArgumentList
-primary_settings = Settings()

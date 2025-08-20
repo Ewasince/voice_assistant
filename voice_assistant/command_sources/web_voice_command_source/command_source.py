@@ -3,7 +3,7 @@ from loguru import logger
 
 from voice_assistant.app_interfaces.command_source import CommandSource
 from voice_assistant.app_utils.app_types import UserId
-from voice_assistant.app_utils.settings import primary_settings
+from voice_assistant.app_utils.settings import get_settings
 from voice_assistant.app_utils.utils import normalize_text
 from voice_assistant.command_sources.web_voice_command_source.simple_web import SimpleWebWrapper
 
@@ -12,6 +12,7 @@ class WebVoiceCommandSource(CommandSource):
     def __init__(self, user_id: UserId, web_app: FastAPI):
         super().__init__(user_id)
         self._web_app_wrapper = SimpleWebWrapper(web_app)
+        self._key_phase = get_settings(user_id).key_phase
 
     async def get_command(self) -> str:
         while True:
@@ -34,7 +35,7 @@ class WebVoiceCommandSource(CommandSource):
 
         text = normalize_text(input_text)
 
-        filtered_text = extract_text_after_command(text, primary_settings.key_phase)
+        filtered_text = extract_text_after_command(text, self._key_phase)
 
         if not filtered_text:
             logger.debug(f"Не услышал ключевого слова: {text}")

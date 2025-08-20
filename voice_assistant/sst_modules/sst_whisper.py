@@ -6,7 +6,7 @@ import whisper
 from speech_recognition import AudioData, RequestError, UnknownValueError
 
 from voice_assistant.app_interfaces.audio_recognizer import AudioRecognizer
-from voice_assistant.app_utils.settings import primary_settings
+from voice_assistant.app_utils.settings import get_settings
 
 
 class WhisperSST(AudioRecognizer):
@@ -15,11 +15,12 @@ class WhisperSST(AudioRecognizer):
         self._setup_whisper()
 
     def _setup_whisper(self) -> None:
-        self._whisper_model = whisper.load_model(primary_settings.whisper_model)
+        settings = get_settings()
+        self._whisper_model = whisper.load_model(settings.whisper_model)
 
         self._logger.info("Initialized whisper model")
 
-        if primary_settings.use_gpu:
+        if settings.use_gpu:
             import torch  # noqa: PLC0415
 
             self._logger.info(f"Cuda available: {torch.cuda.is_available()}")

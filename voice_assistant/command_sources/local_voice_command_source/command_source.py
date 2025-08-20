@@ -6,7 +6,7 @@ from plyer import notification
 from voice_assistant.app_interfaces.audio_recognizer import AudioRecognizer
 from voice_assistant.app_interfaces.command_source import CommandSource
 from voice_assistant.app_utils.app_types import UserId
-from voice_assistant.app_utils.settings import primary_settings
+from voice_assistant.app_utils.settings import get_settings
 from voice_assistant.app_utils.utils import normalize_text
 from voice_assistant.command_sources.local_voice_command_source.microphone_listener import MicrophoneListener
 
@@ -18,6 +18,8 @@ class LocalVoiceCommandSource(CommandSource):
         super().__init__(user_id)
         self._listener = MicrophoneListener(sst_module, do_setup_micro=setup_micro)
         self._listener.start_listen()
+
+        self._key_phase = get_settings(user_id).key_phase
 
     async def get_command(self) -> str:
         logger.bind(user_id=self.user_id).info("Listening...")
@@ -45,7 +47,7 @@ class LocalVoiceCommandSource(CommandSource):
 
         text = normalize_text(input_text)
 
-        filtered_text = extract_text_after_command(text, primary_settings.key_phase)
+        filtered_text = extract_text_after_command(text, self._key_phase)
 
         if not filtered_text:
             return None

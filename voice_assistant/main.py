@@ -10,7 +10,7 @@ from plyer import notification
 
 from voice_assistant.app_interfaces.command_source import CommandSource
 from voice_assistant.app_utils.app_types import DEFAULT_USER_ID, CommandPerformerFunction, UserId
-from voice_assistant.app_utils.settings import primary_settings
+from voice_assistant.app_utils.settings import get_settings
 from voice_assistant.command_performers.performer_factory import get_performer
 from voice_assistant.command_sources.factory import get_sources
 
@@ -49,7 +49,7 @@ async def main() -> Awaitable[NoReturn]:
 
     loops_tasks = []
 
-    for user_id in primary_settings.active_users_list:
+    for user_id in get_settings().active_users_list:
         loops_tasks.append(asyncio.create_task(setup_user_and_start_loop(user_id)))
 
     while loops_tasks:
@@ -68,8 +68,9 @@ async def main() -> Awaitable[NoReturn]:
 
 
 async def setup_user_and_start_loop(user_id: UserId) -> Awaitable[NoReturn]:
+    settings = get_settings(user_id)
     try:
-        sources_to_use = primary_settings.sources_to_use_list
+        sources_to_use = settings.sources_to_use_list
         command_sources = await get_sources(user_id, sources_to_use)
 
         command_performer = await get_performer(user_id)

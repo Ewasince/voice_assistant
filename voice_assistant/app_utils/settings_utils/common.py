@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, ClassVar, cast
+from typing import Any, ClassVar, cast, Self
 
 from pydantic import ConfigDict, PrivateAttr
+from pydantic._internal._utils import deep_update
 from pydantic_settings import (
     BaseSettings,
     DotEnvSettingsSource,
@@ -30,33 +31,26 @@ class HierarchicalSettings(BaseSettings):
 
     # -------- внутренний кэш YAML --------
     _yaml_cache: dict[str, Any] = PrivateAttr()
-    _init_only: bool = PrivateAttr()
-    _data: dict[str, Any] = PrivateAttr()
+    _init_cache: dict[str, Any] = PrivateAttr()
 
     def __init__(
         self,
         yaml_path: str | None = None,
         yaml_cache: dict[str, Any] | None = None,
-        init_only: bool = False,
-        **values: Any,
+        **init_kwargs: Any,
     ):
-        if not init_only and yaml_cache is None:
+        if yaml_cache is None:
             yaml_path = (yaml_path and Path(yaml_path)) or find_yaml_path()
             yaml_cache = load_yaml_cache(yaml_path)
 
         yaml_cache = yaml_cache or {}
 
-        self._yaml_cache = yaml_cache
-        self._init_only = init_only
-        self._data = values
-        super().__init__(**values)
+        self._yaml_cache = yaml_cache  # set for settings_customise_sources
+        super().__init__(**init_kwargs)
 
-        # duplicate after pydantic initialization
         self._yaml_cache = yaml_cache
-        self._init_only = init_only
-        self._data = values
+        self._init_cache = init_kwargs
 
-    # -------- настройка источников для верхних полей (YAML → ENV) --------
     def settings_customise_sources(
         self,
         settings_cls: type[BaseSettings],
@@ -66,9 +60,6 @@ class HierarchicalSettings(BaseSettings):
         file_secret_settings: SecretsSettingsSource,
     ) -> tuple[PydanticBaseSettingsSource, ...]:
         # Порядок: INIT → YAML → ENV → FILE_SECRETS
-
-        if self._init_only:
-            return (init_settings,)
 
         return (
             init_settings,
@@ -82,6 +73,12 @@ class HierarchicalSettings(BaseSettings):
             if isinstance(raw, dict):
                 return raw
         return {}
+
+    def merge(self, yaml_cache: dict[str, Any]):
+        yaml_cache = deep_update(self._yaml_cache, yaml_cache)
+        cls = type(self)
+        res = cls(yaml_cache=yaml_cache)
+        return res
 
 
 class _LazyNested[T: HierarchicalSettings]:
@@ -115,8 +112,7 @@ class _LazyNested[T: HierarchicalSettings]:
 
         instance = self.model_cls(
             yaml_cache=yaml_cache,
-            init_only=obj._init_only,
-            **obj._data.get(self._name, {}),
+            **obj._init_cache.get(self._name, {}),
         )
         obj.__dict__[self._name] = instance
         return instance
@@ -131,24 +127,3 @@ class _LazyNested[T: HierarchicalSettings]:
 
 def lazy_nested[T: HierarchicalSettings](model_cls: type[T]) -> T:
     return cast(T, _LazyNested(model_cls))
-
-
-if __name__ == "__main__":
-
-    class InnerSettings(HierarchicalSettings):
-        model_config = SettingsConfigDict(extra="ignore", env_prefix="INNER_")
-        test_var_3: int = 3
-        test_var_4: int
-
-    class Settings(HierarchicalSettings):
-        test_var_1: int = 1
-        test_var_2: int
-        inner_settings: ClassVar[InnerSettings] = lazy_nested(InnerSettings)
-
-    settings = Settings()
-    print(settings.test_var_1)
-    print(settings.test_var_2)
-
-    inner = settings.inner_settings  # <--- error here !!!
-    print(inner.test_var_3)
-    print(inner.test_var_4)

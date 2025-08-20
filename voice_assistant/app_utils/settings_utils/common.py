@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Self, cast
+from typing import Any, Final, Iterable, Self, cast
 
-from pydantic import ConfigDict, PrivateAttr
+from pydantic import PrivateAttr
 from pydantic._internal._utils import deep_update
 from pydantic_settings import (
     BaseSettings,
@@ -15,14 +15,11 @@ from pydantic_settings import (
     SettingsConfigDict,
 )
 
-from voice_assistant.app_utils.app_types import UserId
 from voice_assistant.app_utils.settings_utils.helpers import find_yaml_path, load_yaml_cache
 from voice_assistant.app_utils.settings_utils.sources.env_source import ExtendedEnvSettingsSource
 from voice_assistant.app_utils.settings_utils.sources.yaml_source import YamlSettingsSource
 
-
-class ExtendedConfigDict(ConfigDict):
-    env_prefix: str
+USERS_FIELD: Final[str] = "users"
 
 
 class HierarchicalSettings(BaseSettings):
@@ -68,7 +65,7 @@ class HierarchicalSettings(BaseSettings):
             ExtendedEnvSettingsSource(settings_cls),
         )
 
-    def get_yaml_section(self, section_keys: list[str]) -> dict[str, Any]:
+    def get_yaml_section(self, section_keys: Iterable[str]) -> dict[str, Any]:
         for key in section_keys:
             raw = self._yaml_cache.get(key)
             if isinstance(raw, dict):
@@ -80,8 +77,11 @@ class HierarchicalSettings(BaseSettings):
         cls = type(self)
         return cls(yaml_cache=yaml_cache)
 
-    def get_user_variables(self, user_id: UserId) -> dict[str, Any]:
-        return self._yaml_cache.get("users", {}).get(user_id, {})
+    def get_nested_variables(self, *fields: str) -> dict[str, Any]:
+        fields_dict = self._yaml_cache
+        for field in fields:
+            fields_dict = fields_dict.get(field, {})
+        return fields_dict
 
 
 class _LazyNested[T: HierarchicalSettings]:
@@ -90,14 +90,17 @@ class _LazyNested[T: HierarchicalSettings]:
         model_cls: type[T],
     ) -> None:
         self.model_cls = model_cls
-        self._yaml_keys: list[str] = []
+        self._yaml_keys: set[str] = set()
         self._name: str | None = None
 
         self.required = True
 
-    def __set_name__(self, owner: T, name: str) -> None:
-        self._name = name
-        self._yaml_keys.append(name)
+    def __set_name__(self, owner: T, field_name: str) -> None:
+        self._yaml_keys.add(field_name)
+        if field_name.endswith("_settings"):
+            field_name = field_name[:-9]
+        self._yaml_keys.add(field_name)
+        self._name = field_name
 
     def __get__(self, obj: T, objtype: type[T] | None = None) -> T:
         if obj is None:

@@ -10,7 +10,7 @@ async def create_composio(user_id: str) -> Composio:
     composio_settings = get_settings().composio_settings
 
     logger_ = logger.bind(user_id=user_id, activity="composio")
-    composio: Composio = Composio(api_key=composio_settings.composio_api_key.get_secret_value())
+    composio: Composio = Composio(api_key=composio_settings.api_key.get_secret_value())
 
     users = composio.connected_accounts.list().items
 

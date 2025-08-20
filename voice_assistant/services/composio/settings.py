@@ -8,4 +8,4 @@ class ComposioSettings(HierarchicalSettings):
     model_config = SettingsConfigDict(
         env_prefix="COMPOSIO_",
     )
-    composio_api_key: SecretStr
+    api_key: SecretStr

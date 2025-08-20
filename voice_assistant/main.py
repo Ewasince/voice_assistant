@@ -49,8 +49,15 @@ async def main() -> Awaitable[NoReturn]:
 
     loops_tasks = []
 
-    for user_id in get_settings().active_users_list:
-        loops_tasks.append(asyncio.create_task(setup_user_and_start_loop(user_id)))
+    active_users = get_settings().users
+
+    if not active_users:
+        logger.warning("no active users!")
+        # noinspection PyTypeChecker
+        return  # type: ignore[return-value]
+
+    for user_id in active_users:
+        loops_tasks.append(asyncio.create_task(setup_user_and_start_loop(user_id), name=user_id))
 
     while loops_tasks:
         done, _ = await asyncio.wait(loops_tasks, return_when=asyncio.FIRST_EXCEPTION)
@@ -61,7 +68,7 @@ async def main() -> Awaitable[NoReturn]:
             if not exc:
                 continue
 
-            logger.error(f"Task {task} ends with exception: {exc}")
+            logger.bind(user_id=task.get_name()).error("Task ends with exception:")
             traceback.print_exception(type(exc), exc, exc.__traceback__, file=sys.stderr)
 
     sys.exit(0)
@@ -78,8 +85,11 @@ async def setup_user_and_start_loop(user_id: UserId) -> Awaitable[NoReturn]:
         startup_completed(user_id)
 
         return await message_loop(user_id, command_sources, command_performer)
+    except ValueError:
+        logger.bind(user_id=user_id).error("exception in user loop")
+        raise
     except Exception as e:
-        logger.bind(user_id=user_id).exception(f"exception in user loop: {e}")
+        logger.bind(user_id=user_id).error(f"exception in user loop:\n{e}")
         raise e
 
 

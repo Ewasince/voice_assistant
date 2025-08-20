@@ -10,13 +10,17 @@ class ExtendedEnvSettingsSource(EnvSettingsSource):
     def prepare_field_value(self, field_name: str, field: FieldInfo, value: Any, value_is_complex: bool) -> Any:
         try:
             if field_name.lower().endswith("_list"):
+                if not value:
+                    return []
                 return list(value.split(","))
             if field_name.lower().endswith("_map"):
+                if not value:
+                    return {}
                 result_map = {}
                 for entry in value.split(";"):
-                    key, value = entry.split(":")
-                    result_map[key] = value
+                    key, value_ = entry.split(":")
+                    result_map[key] = value_
                 return result_map
             return super().prepare_field_value(field_name, field, value, value_is_complex)
         except Exception as e:
-            raise ValueError from e
+            raise ValueError(f"cant parse field {field_name}") from e

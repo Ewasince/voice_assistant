@@ -54,7 +54,7 @@ class TelegramBot(SourceFactory):
 
         telegram_settings = get_settings().telegram_settings
 
-        self._bot = Application.builder().token(telegram_settings.token).build()
+        self._bot = Application.builder().token(telegram_settings.token.get_secret_value()).build()
 
         self._message_queues_by_users: dict[int, ResponseQuery] = {}
 
@@ -69,7 +69,7 @@ class TelegramBot(SourceFactory):
 
         telegram_settings = get_settings(user_id).telegram_settings
 
-        for tg_user_id in telegram_settings.tg_user_ids:
+        for tg_user_id in telegram_settings.user_ids:
             self._message_queues_by_users[tg_user_id] = message_queue
 
         return TelegramBotCommandSource(user_id, message_queue, self._bot)

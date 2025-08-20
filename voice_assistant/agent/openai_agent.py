@@ -34,22 +34,20 @@ class OpenAIAgent(UserAgent):
 
         # TODO: per-user models
         self._multi_provider = MultiProvider(
-            openai_base_url=agent_settings.agent_api_base_url,
-            openai_api_key=agent_settings.agent_api_key.get_secret_value(),
+            openai_base_url=agent_settings.api_base_url,
+            openai_api_key=agent_settings.api_key.get_secret_value(),
             openai_use_responses=False,
         )
 
         self._multi_provider._get_prefix_and_model_name = _get_prefix_and_model_name  # type: ignore[method-assign, assignment]
 
         self._run_config = RunConfig(
-            model=agent_settings.agent_model,
+            model=agent_settings.model,
             model_provider=self._multi_provider,
             tracing_disabled=True,
         )
 
-        logger.bind(user_id=user_id).info(
-            f"Initialized UserAgent llm='{agent_settings.agent_model}' with {len(tools)} tools"
-        )
+        logger.bind(user_id=user_id).info(f"Initialized UserAgent llm='{agent_settings.model}' with {len(tools)} tools")
 
     async def run_agent(self, input_text: str) -> str | None:
         result = await Runner.run(

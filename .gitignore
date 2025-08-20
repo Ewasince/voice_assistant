@@ -164,7 +164,7 @@ cython_debug/
 poetry.lock
 
 # data and env files
-*.env
+#*.env
 models/*
 .cache/
 **/node_modules

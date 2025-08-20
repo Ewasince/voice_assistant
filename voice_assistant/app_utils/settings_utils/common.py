@@ -31,6 +31,14 @@ class HierarchicalSettings(BaseSettings):
     _yaml_path: Path | None = PrivateAttr(default=None)
     _yaml_cache: dict[str, Any] = PrivateAttr(default_factory=dict)
 
+    def __init__(self, yaml_path: str | None = None, yaml_cache: dict[str, Any] | None = None, **values: Any):
+        super().__init__(**values)
+        if yaml_cache:
+            self._yaml_cache = yaml_cache
+            return
+        self._yaml_path = (yaml_path and Path(yaml_path)) or find_yaml_path()
+        self._yaml_cache = load_yaml_cache(self._yaml_path)
+
     # -------- настройка источников для верхних полей (YAML → ENV) --------
     @classmethod
     def settings_customise_sources(
@@ -51,15 +59,6 @@ class HierarchicalSettings(BaseSettings):
             # env_settings,
             file_secret_settings,
         )
-
-    # -------- lifecycle --------
-    def __init__(self, yaml_path: str | None = None, yaml_cache: dict[str, Any] | None = None, **values: Any):
-        super().__init__(**values)
-        if yaml_cache:
-            self._yaml_cache = yaml_cache
-            return
-        self._yaml_path = (yaml_path and Path(yaml_path)) or find_yaml_path()
-        self._yaml_cache = load_yaml_cache(self._yaml_path)
 
     # -------- helpers для дескрипторов --------
     def _build_from_env(

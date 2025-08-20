@@ -10,12 +10,15 @@ from voice_assistant.app_utils.settings_utils.helpers import find_yaml_path, loa
 
 
 class YamlSettingsSource(PydanticBaseSettingsSource):
-    """Источник верхнеуровневых настроек из YAML (для Settings)."""
-
-    def __init__(self, settings_cls: type[BaseSettings], *, path: Path | None = None) -> None:
+    def __init__(
+        self, settings_cls: type[BaseSettings], yaml_path: str | None = None, yaml_cache: dict[str, Any] | None = None
+    ):
         super().__init__(settings_cls)
-        self._path = path or find_yaml_path()
-        self._data: dict[str, Any] = load_yaml_cache(self._path)
+        if yaml_cache:
+            self._yaml_cache = yaml_cache
+            return
+        self._yaml_path = (yaml_path and Path(yaml_path)) or find_yaml_path()
+        self._yaml_cache = load_yaml_cache(self._yaml_path)
 
     # Абстрактный метод — должен вернуть уже собранный dict для парсинга Settings
     def __call__(self) -> dict[str, Any]:
@@ -41,8 +44,8 @@ class YamlSettingsSource(PydanticBaseSettingsSource):
         """
         key = field.alias or field_name
 
-        if isinstance(self._data, dict) and key in self._data:
-            return self._data[key], key, False
+        if isinstance(self._yaml_cache, dict) and key in self._yaml_cache:
+            return self._yaml_cache[key], key, False
 
         # Ничего не нашли — следующий источник (ENV) получит шанс
         return None, key, False

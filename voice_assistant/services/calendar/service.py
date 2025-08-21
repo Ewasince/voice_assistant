@@ -33,6 +33,8 @@ class CalendarService:
             # if end activity on next day — cut
             end_time = start_time.replace(hour=23, minute=59, second=59)
 
+            self._logger.debug(f"activity dates doesn't match, cut end time {end_time.strftime('%H:%M:%S')}")
+
         event_duration_delta = end_time - start_time
 
         event_duration_minutes = int(event_duration_delta.total_seconds() / 60)

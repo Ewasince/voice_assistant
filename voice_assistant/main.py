@@ -14,6 +14,9 @@ from voice_assistant.app_utils.settings import get_settings
 from voice_assistant.command_performers.performer_factory import get_performer
 from voice_assistant.command_sources.factory import get_sources
 
+settings = get_settings()
+logs_settings = settings.logs_settings
+
 logger.remove()  # Удаляем стандартный вывод в stderr
 
 
@@ -37,8 +40,18 @@ def fmt(record: Any) -> str:
 
 logger.add(
     sys.stdout,
-    level="DEBUG",
+    level=logs_settings.level,
     format=fmt,
+)
+
+logger.add(
+    logs_settings.file,
+    level=logs_settings.level,
+    format=fmt,
+    rotation=logs_settings.rotation,
+    retention=logs_settings.retention,
+    compression=logs_settings.compression,
+    enqueue=True,
 )
 
 
@@ -49,7 +62,7 @@ async def main() -> Awaitable[NoReturn]:
 
     loops_tasks = []
 
-    active_users = get_settings().users
+    active_users = settings.users
 
     if not active_users:
         logger.warning("no active users!")

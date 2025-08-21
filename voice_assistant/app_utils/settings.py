@@ -5,6 +5,7 @@ from typing import ClassVar, Iterable
 
 from voice_assistant.agent.settings import AgentSettings
 from voice_assistant.app_utils.app_types import DEFAULT_USER_ID, UserId
+from voice_assistant.app_utils.logs_settings import LogsSettings
 from voice_assistant.app_utils.settings_utils.common import USERS_FIELD, HierarchicalSettings, lazy_nested
 from voice_assistant.command_sources.enums import CommandSourcesTypes
 from voice_assistant.command_sources.telegram_source.settings import TelegramSettings
@@ -35,6 +36,7 @@ class Settings(HierarchicalSettings):
     calendar_settings: ClassVar[CalendarSettings] = lazy_nested(CalendarSettings)
     composio_settings: ClassVar[ComposioSettings] = lazy_nested(ComposioSettings)
     stt_settings: ClassVar[SttSettings] = lazy_nested(SttSettings)
+    logs_settings: ClassVar[LogsSettings] = lazy_nested(LogsSettings)
 
     @property
     def users(self) -> Iterable[UserId]:

@@ -43,4 +43,4 @@ pin_tag_and_push_docker:
 _build_with_tag:
 	IMAGE_TAG=$(IMAGE_NAME):$(ARG1)
 	docker compose -f $(DOCKER_DIR)/docker-compose.yml build $(1) --build-arg TAG=$$IMAGE_TAG
-	$(call SUCCESS,"$$IMAGE_TAG built")
+	$(call SUCCESS,"Tag $$IMAGE_TAG built")

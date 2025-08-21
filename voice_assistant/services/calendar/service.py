@@ -26,7 +26,8 @@ class CalendarService:
         end_time: datetime,
     ) -> None:
         self._logger.info(
-            f"write activity '{topic}' from {start_time.strftime('%H:%M:%S')} по {end_time.strftime('%H:%M:%S')}"
+            f"write activity '{topic}' from {start_time.strftime('%H:%M:%S %Z %z')} "
+            f"to {end_time.strftime('%H:%M:%S %Z %z')}"
         )
 
         if int(end_time.strftime("%Y%M%d")) != int(start_time.strftime("%Y%M%d")):

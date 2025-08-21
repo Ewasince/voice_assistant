@@ -29,7 +29,7 @@ pin_tag_and_push_docker:
 	CURRENT_TAG=$(DOCKER_REPO)/$$IMAGE_TAG-$(ARG2)
 	if docker images --format "{{.Repository}}:{{.Tag}}" | grep -q "^$$CURRENT_TAG$$" ; \
 	then \
-		$(call ERROR,"Forbidden to re-upload version tags '$$CURRENT_TAG'"); \
+		$(call ERROR,"Forbidden to re-upload version tags '$$CURRENT_TAG'");\
 	fi
 	docker tag $$IMAGE_TAG $$LATEST_TAG
 	docker tag $$IMAGE_TAG $$CURRENT_TAG

@@ -1,7 +1,7 @@
 .ONESHELL:
 SHELL := /bin/bash
 .SHELLFLAGS := -e -u -o pipefail -c
-#.SILENT:
+.SILENT:
 
 apostrophe := \'
 c := ,

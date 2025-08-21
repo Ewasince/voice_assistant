@@ -10,8 +10,8 @@ bump_tag:
 .PHONY: _ensure_main_branch
 _ensure_main_branch:
 	make _check_branch $(GIT_MAIN_BRANCH) && \
-	$(call SUCCESS,"Allow prod build$(c) because branches matches") || \
-	echo adfsdf
+	$(call SUCCESS,"Allow prod build, because branches matches") || \
+	$(call ERROR,"Forbid prod build because branches doesn't match!")
 
 
 .PHONY: _ensure_clean_worktree
@@ -35,11 +35,11 @@ _print_current_prod_tag:
 
 .PHONY: _check_branch
 _check_branch:
-	@CURRENT_BRANCH=$$(git rev-parse --abbrev-ref HEAD)
-	@CHOOSED_BRANCH=$(ARG1)
-	@if [ "$$CURRENT_BRANCH" != "$$CHOOSED_BRANCH" ]; then \
-		$(call ERROR,"Branches doesnt match") \
+	CURRENT_BRANCH=$$(git rev-parse --abbrev-ref HEAD)
+	CHOOSED_BRANCH=$(ARG1)
+	if [ "$$CURRENT_BRANCH" != "$$CHOOSED_BRANCH" ]; then \
+		$(call ERROR,"Branches doesnt match"); \
 	else \
-		$(call SUCCESS,"Branches matches$(c) current branch $$CHOOSED_BRANCH") \
+		$(call SUCCESS,"Branches matches, current branch $$CHOOSED_BRANCH"); \
 	fi
 

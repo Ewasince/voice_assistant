@@ -172,3 +172,5 @@ models/*
 .cache/
 **/node_modules
 **/data.db
+
+deploy_files/*

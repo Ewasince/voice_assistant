@@ -1,6 +1,6 @@
 REMOTE_HOST := cloud
-REMOTE_INSTALL_LOCATION := ~/psychoapp_docker
-REMOTE_SCREEN_SESSION_NAME := psychoapp_docker
+REMOTE_INSTALL_LOCATION := ~/$(APP_NAME)
+REMOTE_SCREEN_SESSION_NAME := $(APP_NAME)
 
 AGREGATOR_TAG := agregator
 
@@ -8,7 +8,8 @@ AGREGATOR_TAG := agregator
 #CONTAINER_NAME_BACKEND := psychoapp_backend
 #CONTAINER_NAME_BOT := psychoapp_bot
 #
-#DATA_PATH := images
+DATA_PATH := host.data
+REMOTE_DATA_PATH := data
 
 .PHONY: deploy
 deploy: prod_build push remote_install
@@ -31,16 +32,21 @@ push: ensure_all_stable
 
 .PHONY: remote_install
 remote_install:
-	@ssh -t $(REMOTE_HOST) '\
+	ssh -t $(REMOTE_HOST) '\
+		CONTAINERS=$(call CONTAINER_NAME,$(AGREGATOR_TAG)) && \
 		cd $(REMOTE_INSTALL_LOCATION) && \
 		touch .env && \
-		docker compose down $(CONTAINER_NAME_BACKEND) $(CONTAINER_NAME_BOT) && \
+		docker compose down $$CONTAINERS && \
 		screen -S $(REMOTE_SCREEN_SESSION_NAME) -X quit || echo no screen && \
 		docker compose pull && \
-		docker compose up -d $(CONTAINER_NAME_BACKEND) $(CONTAINER_NAME_BOT) && \
+		docker compose up -d $$CONTAINERS && \
 		screen -S $(REMOTE_SCREEN_SESSION_NAME) -c .screenrc'
 
 .PHONY: upload_data
 upload_data:
-	@scp $(DATA_PATH)/* $(REMOTE_HOST):$(REMOTE_INSTALL_LOCATION)/$(DATA_PATH)
+	@scp $(DATA_PATH)/* $(REMOTE_HOST):$(REMOTE_INSTALL_LOCATION)/$(REMOTE_DATA_PATH)
+
+define CONTAINER_NAME
+$(APP_NAME)_$(1)
+endef
 

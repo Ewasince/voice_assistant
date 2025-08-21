@@ -1,5 +1,5 @@
 
-IMAGE_NAME := voice_assistant
+IMAGE_NAME := $(APP_NAME)
 
 DOCKER_DIR := docker
 DOCKER_REPO := ewasince

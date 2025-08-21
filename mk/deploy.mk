@@ -24,7 +24,7 @@ prod_build:
 push:
 	$(call ENSURE_CLEAN_WORKTREE)
 	$(call PIN_TAG_AND_PUSH_DOCKER,$(AGREGATOR_TAG),$(call PRINT_CURRENT_PROD_TAG))
-	@git push
+	@git push --tags
 
 .PHONY: remote_install
 remote_install:

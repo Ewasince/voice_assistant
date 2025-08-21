@@ -24,7 +24,7 @@ prod_build: ensure_all_stable
 
 .PHONY: push
 push: ensure_all_stable
-	CURRENT_PROD_TAG=$(make _print_current_prod_tag)
+	CURRENT_PROD_TAG=$$(make _print_current_prod_tag)
 	make pin_tag_and_push_docker $(AGREGATOR_TAG) $$CURRENT_PROD_TAG
 	git push --tags
 	$(call SUCCESS,"Pushed!")

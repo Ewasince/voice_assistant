@@ -19,13 +19,15 @@ ensure_all_stable: _ensure_clean_worktree _ensure_main_branch
 
 .PHONY: prod_build
 prod_build: ensure_all_stable
-	$(call BUILD,$(AGREGATOR_TAG))
+	make _build_with_tag $(AGREGATOR_TAG)
+	make all services was built!
 
 .PHONY: push
 push: ensure_all_stable
 	CURRENT_PROD_TAG=$(make _print_current_prod_tag)
 	make pin_tag_and_push_docker $(AGREGATOR_TAG) $$CURRENT_PROD_TAG
 	git push --tags
+	make success Pushed!
 
 .PHONY: remote_install
 remote_install:

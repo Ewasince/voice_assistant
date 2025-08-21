@@ -22,7 +22,7 @@ DOCKER_REPO := ewasince
 #	echo "$$CURRENT_TAG pushed"
 #endef
 
-.PHONY:
+.PHONY: pin_tag_and_push_docker
 pin_tag_and_push_docker:
 	IMAGE_TAG=$(IMAGE_NAME):$(ARG1)
 	LATEST_TAG=$(DOCKER_REPO)/$$IMAGE_TAG-latest
@@ -39,8 +39,8 @@ pin_tag_and_push_docker:
 	make success "$$CURRENT_TAG pushed"
 
 
-define BUILD
-	@IMAGE_TAG=$(IMAGE_NAME):$(1) && \
-	docker compose -f $(DOCKER_DIR)/docker-compose.yml build $(1) --build-arg TAG=$$IMAGE_TAG && \
-	echo "$$IMAGE_TAG builded"
-endef
+.PHONY: _build_with_tag
+_build_with_tag:
+	IMAGE_TAG=$(IMAGE_NAME):$(ARG1)
+	docker compose -f $(DOCKER_DIR)/docker-compose.yml build $(1) --build-arg TAG=$$IMAGE_TAG
+	make success $$IMAGE_TAG builded

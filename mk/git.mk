@@ -4,7 +4,7 @@ GIT_MAIN_BRANCH := master
 
 .PHONY: bump_tag
 bump_tag:
-	@TAG_PREFIX=$(TAG_PREFIX) BUMP=$(BUMP) PUSH=$(PUSH) DRY_RUN=$(DRY_RUN) scripts/bump_version.sh
+	@TAG_PREFIX=$(TAG_PREFIX) BUMP=$(ARG1) PUSH=$(PUSH) DRY_RUN=$(DRY_RUN) scripts/bump_version.sh
 
 
 .PHONY: _ensure_main_branch

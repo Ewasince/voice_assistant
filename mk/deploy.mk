@@ -57,6 +57,9 @@ remote_restart:
 upload_data:
 	@scp $(DATA_PATH)/* $(REMOTE_HOST):$(REMOTE_INSTALL_LOCATION)/$(REMOTE_DATA_PATH)
 
+.PHONY: upload_and_restart
+upload_and_restart: upload_data remote_restart
+
 define CONTAINER_NAME
 $(APP_NAME)_$(1)
 endef

@@ -42,6 +42,17 @@ remote_install:
 		docker compose up -d $$CONTAINERS && \
 		screen -S $(REMOTE_SCREEN_SESSION_NAME) -c .screenrc'
 
+.PHONY: remote_restart
+remote_restart:
+	ssh -t $(REMOTE_HOST) '\
+		CONTAINERS=$(call CONTAINER_NAME,$(AGREGATOR_TAG)) && \
+		cd $(REMOTE_INSTALL_LOCATION) && \
+		touch .env && \
+		docker compose down $$CONTAINERS && \
+		screen -S $(REMOTE_SCREEN_SESSION_NAME) -X quit || echo no screen && \
+		docker compose up -d $$CONTAINERS && \
+		screen -S $(REMOTE_SCREEN_SESSION_NAME) -c .screenrc'
+
 .PHONY: upload_data
 upload_data:
 	@scp $(DATA_PATH)/* $(REMOTE_HOST):$(REMOTE_INSTALL_LOCATION)/$(REMOTE_DATA_PATH)

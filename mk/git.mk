@@ -15,10 +15,14 @@ define CHECK_BRANCH
 endef
 
 define PRINT_CURRENT_PROD_TAG
-	t=$$(git tag --points-at HEAD | grep -E '$(TAG_REGEXP)' | head -n1); \
+	@t=$$(git tag --points-at HEAD | grep -E '$(TAG_REGEXP)' | head -n1); \
 	[ -n "$$t" ] || { echo "HEAD not marked with tag like vMAJOR.MINOR.PATCH" >&2; exit 1; }; \
 	printf '%s\n' "$$t"
 endef
+
+.PHONY: error
+error/%:
+	@echo "$*"
 
 .PHONY: ensure_main_branch
 ensure_main_branch:

@@ -41,6 +41,6 @@ pin_tag_and_push_docker:
 
 .PHONY: _build_with_tag
 _build_with_tag:
-	IMAGE_TAG=$(IMAGE_NAME):$(ARG1)
+	IMAGE_TAG=$(IMAGE_NAME)$(colon)$(ARG1)
 	docker compose -f $(DOCKER_DIR)/docker-compose.yml build $(1) --build-arg TAG=$$IMAGE_TAG
 	make success $$IMAGE_TAG builded

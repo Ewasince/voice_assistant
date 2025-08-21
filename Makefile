@@ -1,4 +1,4 @@
-include mk/deploy.mk
+include mk/*.mk
 
 PYTHON_VERSION := python3.12
 DEPLOY_DIR := .deploy

@@ -64,6 +64,8 @@ class CalendarService:
             "send_updates": False,
         }
 
+        self._logger.debug(f"create calendar event with args {args}")
+
         res = self._composio.tools.execute(
             slug="GOOGLECALENDAR_CREATE_EVENT",
             arguments=args,

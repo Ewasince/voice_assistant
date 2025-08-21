@@ -13,14 +13,19 @@ AGREGATOR_TAG := agregator
 .PHONY: deploy
 deploy: prod_build push remote_install
 
+
+.PHONY: ensure_all_stable
+ensure_all_stable: _ensure_clean_worktree _ensure_main_branch
+
 .PHONY: prod_build
-prod_build: ensure_main_branch
+prod_build: ensure_all_stable
 	$(call BUILD,$(AGREGATOR_TAG))
 
 .PHONY: push
-push: ensure_clean_worktree
-	$(call PIN_TAG_AND_PUSH_DOCKER,$(AGREGATOR_TAG),$(call PRINT_CURRENT_PROD_TAG))
-	@git push --tags
+push: ensure_all_stable
+	CURRENT_PROD_TAG=$(make _print_current_prod_tag)
+	make pin_tag_and_push_docker $(AGREGATOR_TAG) $$CURRENT_PROD_TAG
+	git push --tags
 
 .PHONY: remote_install
 remote_install:

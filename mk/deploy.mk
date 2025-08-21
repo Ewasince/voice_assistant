@@ -20,7 +20,7 @@ ensure_all_stable: _ensure_clean_worktree _ensure_main_branch
 .PHONY: prod_build
 prod_build: ensure_all_stable
 	make _build_with_tag $(AGREGATOR_TAG)
-	make all services was built!
+	make success all services was built!
 
 .PHONY: push
 push: ensure_all_stable

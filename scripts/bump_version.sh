@@ -45,8 +45,11 @@ printf '%s\n' "$last_tag" | grep -Eq "$tag_re" || { echo "Текущий тег 
 
 # Split MAJOR.MINOR.PATCH
 ver="${last_tag#${prefix}}"
-IFS=. set -- $ver
-maj="$1"; min="$2"; pat="$3"
+
+maj=${ver%%.*}
+rest=${ver#*.}
+min=${rest%%.*}
+pat=${rest#*.}
 
 # Bump
 case "$bump" in

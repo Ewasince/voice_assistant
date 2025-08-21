@@ -4,8 +4,6 @@ REMOTE_SCREEN_SESSION_NAME := psychoapp_docker
 
 AGREGATOR_TAG := agregator
 
-GIT_MAIN_BRANCH := master
-
 
 #CONTAINER_NAME_BACKEND := psychoapp_backend
 #CONTAINER_NAME_BOT := psychoapp_bot
@@ -16,13 +14,11 @@ GIT_MAIN_BRANCH := master
 deploy: prod_build push remote_install
 
 .PHONY: prod_build
-prod_build:
-	$(call CHECK_BRANCH,$(GIT_MAIN_BRANCH))
+prod_build: ensure_main_branch
 	$(call BUILD,$(AGREGATOR_TAG))
 
 .PHONY: push
-push:
-	$(call ENSURE_CLEAN_WORKTREE)
+push: ensure_clean_worktree
 	$(call PIN_TAG_AND_PUSH_DOCKER,$(AGREGATOR_TAG),$(call PRINT_CURRENT_PROD_TAG))
 	@git push --tags
 

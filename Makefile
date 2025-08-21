@@ -1,3 +1,5 @@
+include mk/deploy.mk
+
 PYTHON_VERSION := python3.12
 DEPLOY_DIR := .deploy
 CHECKED_FILES := $(shell git ls-files "*.py")

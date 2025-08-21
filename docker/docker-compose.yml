@@ -1,5 +1,5 @@
 services:
-  voice_assistant:
+  agregator:
     build:
       dockerfile: docker/Dockerfile
       context: ../

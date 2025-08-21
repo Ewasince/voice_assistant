@@ -61,7 +61,7 @@ ensure_clean_worktree: ensure_main_branch
 	  make error "There is changes in index (staged), not commited"
 	test -z "$$(git ls-files --others --exclude-standard)" || \
 	  make error "There is untracked-files"
-	make success "Git ready to push!"
+	make success Git ready to push!
 
 
 

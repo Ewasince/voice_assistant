@@ -29,18 +29,18 @@ pin_tag_and_push_docker:
 	CURRENT_TAG=$(DOCKER_REPO)/$$IMAGE_TAG-$(ARG2)
 	if docker images --format "{{.Repository}}:{{.Tag}}" | grep -q "^$$CURRENT_TAG$$" ; \
 	then \
-	  	make error "Forbidden to re-upload version tags '$$CURRENT_TAG'"; \
+		$(call ERROR,"Forbidden to re-upload version tags '$$CURRENT_TAG'"); \
 	fi
 	docker tag $$IMAGE_TAG $$LATEST_TAG
 	docker tag $$IMAGE_TAG $$CURRENT_TAG
 	docker push $$LATEST_TAG
 	docker push $$CURRENT_TAG
-	make success "$$LATEST_TAG pushed"
-	make success "$$CURRENT_TAG pushed"
+	$(call SUCCESS,"$$LATEST_TAG pushed")
+	$(call SUCCESS,"$$CURRENT_TAG pushed")
 
 
 .PHONY: _build_with_tag
 _build_with_tag:
-	IMAGE_TAG=$(IMAGE_NAME)$(colon)$(ARG1)
+	IMAGE_TAG=$(IMAGE_NAME):$(ARG1)
 	docker compose -f $(DOCKER_DIR)/docker-compose.yml build $(1) --build-arg TAG=$$IMAGE_TAG
-	make success $$IMAGE_TAG builded
+	$(call SUCCESS,"$$IMAGE_TAG built")

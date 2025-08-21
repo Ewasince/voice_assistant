@@ -4,6 +4,7 @@ SHELL := /bin/bash
 .SILENT:
 
 apostrophe := \'
+, := ,
 
 MAKEFLAGS += --no-print-directory
 

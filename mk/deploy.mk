@@ -36,32 +36,36 @@ push: ensure_all_stable
 .PHONY: remote_install
 remote_install:
 	ssh -t $(REMOTE_HOST) '\
-		CONTAINERS=$(call CONTAINER_NAME,$(AGREGATOR_TAG)) && \
-		cd $(REMOTE_INSTALL_LOCATION) && \
-		touch .env && \
-		docker compose down $$CONTAINERS && \
-		screen -S $(REMOTE_SCREEN_SESSION_NAME) -X quit || echo no screen && \
+		$(call STOP_SERVICE) && \
 		docker compose pull && \
-		docker compose up -d $$CONTAINERS && \
-		screen -S $(REMOTE_SCREEN_SESSION_NAME) -c .screenrc'
+		$(call START_SERVICE)'
 
 .PHONY: remote_restart
 remote_restart:
 	ssh -t $(REMOTE_HOST) '\
-		CONTAINERS=$(call CONTAINER_NAME,$(AGREGATOR_TAG)) && \
-		cd $(REMOTE_INSTALL_LOCATION) && \
-		touch .env && \
-		docker compose down $$CONTAINERS && \
-		screen -S $(REMOTE_SCREEN_SESSION_NAME) -X quit || echo no screen && \
-		docker compose up -d $$CONTAINERS && \
-		screen -S $(REMOTE_SCREEN_SESSION_NAME) -c .screenrc'
+		$(call STOP_SERVICE) && \
+		$(call START_SERVICE)'
+
+.PHONY: upload_and_restart
+upload_and_restart: upload_data remote_restart
+
+define STOP_SERVICE
+	CONTAINERS=$(call CONTAINER_NAME,$(AGREGATOR_TAG)) && \
+	cd $(REMOTE_INSTALL_LOCATION) && \
+	touch .env && \
+	docker compose down $$CONTAINERS && \
+	screen -ls | awk '\''/\.$(REMOTE_SCREEN_SESSION_NAME)/{print $$1}'\'' | xargs -r -I{} screen -S {} -X quit || echo no screen
+endef
+
+define START_SERVICE
+	docker compose up -d $$CONTAINERS && \
+	screen -S $(REMOTE_SCREEN_SESSION_NAME) -c .screenrc
+endef
+
 
 .PHONY: upload_data
 upload_data:
 	@scp $(DATA_PATH)/* $(REMOTE_HOST):$(REMOTE_INSTALL_LOCATION)/$(REMOTE_DATA_PATH)
-
-.PHONY: upload_and_restart
-upload_and_restart: upload_data remote_restart
 
 define CONTAINER_NAME
 $(APP_NAME)_$(1)

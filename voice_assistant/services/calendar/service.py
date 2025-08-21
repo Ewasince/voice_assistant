@@ -71,7 +71,6 @@ class CalendarService:
             arguments=args,
             user_id=self._user_id,
         )
-        print(res)
 
         if not res["successful"]:
             raise ValueError(res["error"])

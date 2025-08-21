@@ -44,6 +44,8 @@ logger.add(
     format=fmt,
 )
 
+logger.info(f"Logs settings: {logs_settings}")
+
 logger.add(
     logs_settings.file,
     level=logs_settings.level,

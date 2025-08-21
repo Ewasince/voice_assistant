@@ -1,9 +1,9 @@
 define ERROR
-	echo "❌ $(1)" >&2; exit 1
+	{ echo "❌ $(subst ",,$(1))" >&2 && exit 1 }
 endef
 
 define SUCCESS
-	echo "✅ $(1)"
+	echo "✅ $(subst ",,$(1))"
 endef
 
 

@@ -15,7 +15,7 @@ deploy: prod_build push remote_install
 
 
 .PHONY: ensure_all_stable
-ensure_all_stable: _ensure_clean_worktree _ensure_main_branch
+ensure_all_stable: _ensure_main_branch _ensure_clean_worktree
 
 .PHONY: prod_build
 prod_build: ensure_all_stable

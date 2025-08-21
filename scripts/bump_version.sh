@@ -14,7 +14,7 @@ EOF
 }
 
 # Defaults
-bump="patch"
+bump="minor"
 push=0
 dry=0
 prefix="v"

@@ -22,7 +22,7 @@ define ENSURE_CLEAN_WORKTREE
 	@git update-index -q --refresh && \
 	git diff --quiet --ignore-submodules -- 2> /dev/null || { \
 	  echo "Есть незакоммиченные (unstaged) изменения" >&2; exit 1; }; \
-	git diff --cached --quiet --ignore-submodules -- > 2> /dev/null  || { \
+	git diff --cached --quiet --ignore-submodules -- 2> /dev/null  || { \
 	  echo "Есть изменения в индексе (staged), не закоммиченные" >&2; exit 1; }; \
 	test -z "$$(git ls-files --others --exclude-standard)" || { \
 	  echo "Есть untracked-файлы" >&2; exit 1; }

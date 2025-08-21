@@ -11,6 +11,9 @@ AGREGATOR_TAG := agregator
 DATA_PATH := host.data
 REMOTE_DATA_PATH := data
 
+.PHONY: new_release
+new_release: bump_tag deploy
+
 .PHONY: deploy
 deploy: prod_build push remote_install
 

@@ -21,16 +21,6 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     uv sync --locked --no-install-project --no-editable
 
-# Copy the project into the intermediate image
-ADD ./voice_assistant voice_assistant
-ADD ./pyproject.toml pyproject.toml
-ADD ./uv.lock uv.lock
-ADD ./README.md README.md
-
-# Sync the project
-RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --locked --no-editable
-
 FROM python:3.12-slim AS runtime
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -42,6 +32,9 @@ WORKDIR /app
 
 # Copy the environment, but not the source code
 COPY --from=builder --chown=app:app /app/.venv /app/.venv
+
+# Copy the source code separately
+ADD ./voice_assistant voice_assistant
 
 USER app
 

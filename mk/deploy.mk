@@ -14,10 +14,9 @@ REMOTE_DATA_PATH := data
 .PHONY: new_release
 new_release:
 	make bump_tag $(ARG1)
-	make deploy
-
-.PHONY: deploy
-deploy: prod_build push remote_install
+	make push
+	make prod_build
+	make remote_install
 
 
 .PHONY: ensure_all_stable

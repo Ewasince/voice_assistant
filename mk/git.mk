@@ -28,7 +28,7 @@ _ensure_clean_worktree:
 
 .PHONY: _print_current_prod_tag
 _print_current_prod_tag:
-	tag=$$(git tag --points-at HEAD | grep -E '$(TAG_REGEXP)' | head -n1)
+	tag=$$(git tag --points-at HEAD | grep -E '$(TAG_REGEXP)' | tail -n1)
 	[ -n "$$tag" ] || $(call ERROR,"HEAD not marked with tag like vMAJOR.MINOR.PATCH")
 	printf '%s\n' "$$tag"
 

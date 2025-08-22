@@ -2,11 +2,13 @@ services:
   agregator:
     build:
       dockerfile: docker/Dockerfile
-      context: ../
+      context: ..
+    image: voice_assistant:agregator
     env_file:
       - .docker.env
     volumes:
       - ../data:/data
+      - ../data:/logs
 
 #  postgres:
 #    image: postgres:16

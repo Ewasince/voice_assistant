@@ -28,7 +28,7 @@ class OpenAIAgent(UserAgent):
             "\n"
             "Respond in moderation: by default—brief, friendly, and to the point. "
             "Provide detailed answers only when truly necessary. "
-            "Do not ask the user what they want unless it is explicitly required to complete the task.",
+            "DO NOT ASK THE USER WHAT THEY WANT UNLESS IT IS EXPLICITLY REQUIRED TO COMPLETE THE TASK.",
             tools=tools,
         )
 

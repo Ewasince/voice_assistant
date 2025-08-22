@@ -1,4 +1,6 @@
-from agents import Agent, RunConfig, Runner, SQLiteSession, Tool
+from typing import Any
+
+from agents import Agent, RunConfig, Runner, SQLiteSession, Tool, TResponseInputItem
 from agents.models.multi_provider import MultiProvider
 from loguru import logger
 
@@ -30,16 +32,17 @@ class OpenAIAgent(UserAgent):
             tools=tools,
         )
 
-        self._session = SQLiteSession(OpenAIAgent.get_session_name(user_id))
+        self._session = LimitedSQLiteSession(
+            OpenAIAgent.get_session_name(user_id),
+            limit=agent_settings.context_limit,
+        )
 
         # TODO: per-user models
-        self._multi_provider = MultiProvider(
+        self._multi_provider = UniversalMultiProvider(
             openai_base_url=agent_settings.api_base_url,
             openai_api_key=agent_settings.api_key.get_secret_value(),
             openai_use_responses=False,
         )
-
-        self._multi_provider._get_prefix_and_model_name = _get_prefix_and_model_name  # type: ignore[method-assign, assignment]
 
         self._run_config = RunConfig(
             model=agent_settings.model,
@@ -66,6 +69,16 @@ class OpenAIAgent(UserAgent):
         return str(user_id)
 
 
-# need to compatibility with vsegpt
-def _get_prefix_and_model_name(full_model_name: str | None) -> tuple[str | None, str | None]:
-    return None, full_model_name
+class LimitedSQLiteSession(SQLiteSession):
+    def __init__(self, *args: Any, limit: int | None = None, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+        self._limit = limit
+
+    async def get_items(self, _: int | None = None) -> list[TResponseInputItem]:
+        return await super().get_items(self._limit)
+
+
+class UniversalMultiProvider(MultiProvider):
+    # need to compatibility with vsegpt
+    def _get_prefix_and_model_name(self, full_model_name: str | None) -> tuple[str | None, str | None]:
+        return None, full_model_name

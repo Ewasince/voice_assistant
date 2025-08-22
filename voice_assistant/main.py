@@ -44,6 +44,7 @@ logger.add(
     format=fmt,
 )
 logger.info(f"Logs settings: {logs_settings.model_dump_json(indent=4)}")
+
 logger.add(
     logs_settings.file,
     level=logs_settings.level,

@@ -8,15 +8,10 @@ VERSION_PYFILE := voice_assistant/__init__.py
 bump_tag:
 	TAG=$$(scripts/bump_version.sh $(ARG1) --dry-run)
 	sed -i "s/^__version__ = \".*\"/__version__ = \"$$TAG\"/" $(VERSION_PYFILE)
-	echo 1
 	git add $(VERSION_PYFILE)
-	echo 2
 	COMMIT_MESSAGE="Release $$TAG"
-	echo 3
 	git commit -m "$$COMMIT_MESSAGE" --no-verify
-	echo 4
 	git tag -a "$$TAG" -m "$$COMMIT_MESSAGE"
-	echo 5
 	$(call SUCCESS,"Released new tag $$TAG")
 
 

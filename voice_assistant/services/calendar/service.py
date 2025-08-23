@@ -56,13 +56,14 @@ class CalendarService:
         args = {
             "calendar_id": self._calendar_id,
             "summary": topic,
-            # "description": None,
-            # "location": "Google Meet",
+            "exclude_organizer": True,
             "start_datetime": start_time.isoformat(),
             "event_duration_minutes": event_duration_minutes,
             "event_duration_hour": event_duration_hour,
             "timezone": "Europe/Moscow",
             "send_updates": False,
+            "transparency": "transparent",
+            "visibility": "private",
         }
 
         self._logger.debug(f"create calendar event with args {args}")

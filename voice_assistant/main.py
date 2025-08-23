@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from loguru import logger
 from plyer import notification
 
+from voice_assistant import __version__
 from voice_assistant.app_interfaces.command_source import CommandSource
 from voice_assistant.app_utils.app_types import DEFAULT_USER_ID, CommandPerformerFunction, UserId
 from voice_assistant.app_utils.settings import get_settings
@@ -59,7 +60,7 @@ logger.add(
 async def main() -> Awaitable[NoReturn]:
     load_dotenv()
 
-    logger.info("Starting voice assistant")
+    logger.info(f"Starting voice assistant {__version__}")
 
     loops_tasks = []
 

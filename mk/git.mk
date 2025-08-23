@@ -2,9 +2,17 @@ TAG_REGEXP := ^v[0-9]+\.[0-9]+\.[0-9]+$$
 GIT_MAIN_BRANCH := master
 
 
+VERSION_PYFILE := voice_assistant/__init__.py
+
 .PHONY: bump_tag
 bump_tag:
-	scripts/bump_version.sh $(ARG1)
+	TAG=scripts/bump_version.sh $(ARG1) --dry-run
+	sed -i "s/^__version__ = \".*\"/__version__ = \"$$TAG\"/" $(PYFILE)
+	git add $(PYPROJECT)
+	COMMIT_MESSAGE="Release $$TAG"
+	git commit -m $$COMMIT_MESSAGE
+	git tag -a "${new_tag}" -m $$COMMIT_MESSAGE
+	$(call SUCCESS,"Released new tag ")
 
 
 .PHONY: _ensure_main_branch

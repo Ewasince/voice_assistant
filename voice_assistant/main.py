@@ -4,7 +4,6 @@ import sys
 import traceback
 from typing import Any, AsyncGenerator, Awaitable, NoReturn
 
-from dotenv import load_dotenv
 from loguru import logger
 from plyer import notification
 
@@ -58,8 +57,6 @@ logger.add(
 
 
 async def main() -> Awaitable[NoReturn]:
-    load_dotenv()
-
     logger.info(f"Starting voice assistant {__version__}")
 
     loops_tasks = []

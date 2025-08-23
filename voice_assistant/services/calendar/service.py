@@ -26,11 +26,12 @@ class CalendarService:
         end_time: datetime,
     ) -> None:
         self._logger.info(
-            f"write activity '{topic}' from {start_time.strftime('%H:%M:%S %Z %z')} "
+            f"write activity '{topic}' "
+            f"from {start_time.strftime('%d.$m.%y %H:%M:%S %Z %z')} "
             f"to {end_time.strftime('%H:%M:%S %Z %z')}"
         )
 
-        if int(end_time.strftime("%Y%M%d")) != int(start_time.strftime("%Y%M%d")):
+        if int(end_time.strftime("%y%m%d")) != int(start_time.strftime("%y%m%d")):
             # if end activity on next day — cut
             end_time = start_time.replace(hour=23, minute=59, second=59)
 

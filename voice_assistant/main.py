@@ -63,9 +63,7 @@ async def main() -> Awaitable[NoReturn]:
     logger.info(f"Starting voice assistant {__version__}")
 
     loops_tasks = []
-
     active_users = settings.users
-
     if not active_users:
         logger.warning("no active users!")
         # noinspection PyTypeChecker

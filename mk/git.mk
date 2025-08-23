@@ -6,7 +6,7 @@ VERSION_PYFILE := voice_assistant/__init__.py
 
 .PHONY: bump_tag
 bump_tag:
-	TAG=scripts/bump_version.sh $(ARG1) --dry-run
+	TAG=$$(scripts/bump_version.sh $(ARG1) --dry-run)
 	sed -i "s/^__version__ = \".*\"/__version__ = \"$$TAG\"/" $(PYFILE)
 	git add $(PYPROJECT)
 	COMMIT_MESSAGE="Release $$TAG"

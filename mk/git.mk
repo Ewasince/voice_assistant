@@ -13,9 +13,9 @@ bump_tag:
 	echo 2
 	COMMIT_MESSAGE="Release $$TAG"
 	echo 3
-	git commit -m $$COMMIT_MESSAGE --no-verify
+	git commit -m "$$COMMIT_MESSAGE" --no-verify
 	echo 4
-	git tag -a "$$TAG" -m $$COMMIT_MESSAGE
+	git tag -a "$$TAG" -m "$$COMMIT_MESSAGE"
 	echo 5
 	$(call SUCCESS,"Released new tag $$TAG")
 

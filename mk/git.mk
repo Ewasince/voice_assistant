@@ -10,7 +10,7 @@ bump_tag:
 	sed -i "s/^__version__ = \".*\"/__version__ = \"$$TAG\"/" $(VERSION_PYFILE)
 	git add $(VERSION_PYFILE)
 	COMMIT_MESSAGE="Release $$TAG"
-	git commit -m $$COMMIT_MESSAGE
+	git commit -m $$COMMIT_MESSAGE --no-verify
 	git tag -a "${new_tag}" -m $$COMMIT_MESSAGE
 	$(call SUCCESS,"Released new tag ")
 

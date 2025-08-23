@@ -68,7 +68,6 @@ fi
 
 # Create or dry-run
 if [ "$dry" -eq 1 ]; then
-  echo "[DRY] Создал бы тег: ${new_tag}"
 else
   git tag -a "${new_tag}" -m "Release ${new_tag}"
   [ "$push" -eq 1 ] && git push origin "${new_tag}"

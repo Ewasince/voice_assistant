@@ -34,7 +34,7 @@ while [ $# -gt 0 ]; do
 done
 
 # Require clean worktree (tracked + staged + untracked)
-make --no-print-directory ensure_all_stable
+make --no-print-directory ensure_all_stable 1> /dev/null
 
 # Get last semver-like tag reachable from HEAD (or PREFIX0.0.0)
 last_tag="$(git describe --tags --abbrev=0 --match "${prefix}[0-9]*" 2>/dev/null || echo "${prefix}0.0.0")"

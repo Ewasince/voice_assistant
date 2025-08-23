@@ -67,8 +67,7 @@ if git rev-parse -q --verify "refs/tags/${new_tag}" >/dev/null 2>&1; then
 fi
 
 # Create or dry-run
-if [ "$dry" -eq 1 ]; then
-else
+if ! [ "$dry" -eq 1 ]; then
   git tag -a "${new_tag}" -m "Release ${new_tag}"
   [ "$push" -eq 1 ] && git push origin "${new_tag}"
   echo "Создан тег: ${new_tag}"

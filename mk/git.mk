@@ -11,8 +11,8 @@ bump_tag:
 	git add $(VERSION_PYFILE)
 	COMMIT_MESSAGE="Release $$TAG"
 	git commit -m $$COMMIT_MESSAGE --no-verify
-	git tag -a "${new_tag}" -m $$COMMIT_MESSAGE
-	$(call SUCCESS,"Released new tag ")
+	git tag -a "$$TAG" -m $$COMMIT_MESSAGE
+	$(call SUCCESS,"Released new tag $$TAG")
 
 
 .PHONY: _ensure_main_branch

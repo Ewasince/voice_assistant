@@ -94,7 +94,7 @@ class ActivityLoggerToolset(Toolset):
                     f"но сейчас уже записана активность {last_activity_topic}. "
                     "Пользователю надо либо завершить/отменить текущую активность, "
                     "либо явно указать что нужно отменить предыдущую активность. "
-                    f"Новая активность {new_activity_topic} не сохранена! "
+                    f'Новая активность "{new_activity_topic}" не сохранена! '
                 )
                 return response_message
 

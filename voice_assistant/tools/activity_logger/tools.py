@@ -305,16 +305,12 @@ class ActivityLoggerToolset(Toolset):
             response_message += f"Сейчас запомнена активность с темой '{last_activity_topic}'. "
         elif last_activity_topic is None:
             activity_delta = current_time - last_activity_time
-            delta_minutes = activity_delta.total_seconds() / 60
-
-            response_message += f"Сейчас запомнена активность которая началась {delta_minutes:.2f} минут назад."
+            response_message += f"Сейчас запомнена активность которая началась {_str_delta_if_need(activity_delta)}. "
         else:
             activity_delta = current_time - last_activity_time
-            delta_minutes = activity_delta.total_seconds() / 60
-
             response_message += (
                 f"Сейчас запомнена активность с темой '{context.last_activity_topic}', "
-                f"которая началась {delta_minutes:.2f} минут назад."
+                f"которая началась {_str_delta_if_need(activity_delta)}. "
             )
 
         return response_message

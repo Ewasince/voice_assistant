@@ -1,4 +1,4 @@
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 
 from composio import Composio
 from loguru import logger
@@ -38,13 +38,10 @@ class CalendarService:
             self._logger.debug(f"activity dates doesn't match, cut end time {end_time.strftime('%H:%M:%S')}")
 
         event_duration_delta = end_time - start_time
+        duration = get_duration(event_duration_delta)
 
-        event_duration_minutes = int(event_duration_delta.total_seconds() / 60)
-        event_duration_hour = 0
-
-        if event_duration_minutes > 59:
-            event_duration_hour = int(event_duration_minutes // 60)
-            event_duration_minutes = event_duration_minutes % 60
+        event_duration_minutes = duration.minute
+        event_duration_hour = duration.hour
 
         if event_duration_minutes > 59:
             logger.warning(f"event_duration_minutes > 59, {event_duration_minutes=}")
@@ -80,3 +77,14 @@ class CalendarService:
         self._logger.debug(f"event created: {res}")
 
         return time(hour=event_duration_hour, minute=event_duration_minutes)
+
+
+def get_duration(event_duration_delta: timedelta) -> time:
+    event_duration_minutes = int(event_duration_delta.total_seconds() / 60)
+    event_duration_hour = 0
+
+    if event_duration_minutes > 59:
+        event_duration_hour = int(event_duration_minutes // 60)
+        event_duration_minutes = event_duration_minutes % 60
+
+    return time(hour=event_duration_hour, minute=event_duration_minutes)

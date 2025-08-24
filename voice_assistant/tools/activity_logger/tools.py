@@ -106,7 +106,7 @@ class ActivityLoggerToolset(Toolset):
             )
             response_message += (
                 f'Зафиксировал активность "{last_activity_topic}" '
-                f"{_get_str_time_range(new_activity_start_time, new_activity_end_time_dt)}"
+                f"{_get_str_time_range(new_activity_start_time, new_activity_end_time_dt)} "
                 f"продолжительностью {_get_str_time_duration(duration)}. "
             )
             return response_message
@@ -349,8 +349,8 @@ def _get_str_time_duration(duration: time, accusative: bool = False) -> str:
 
 
 def _get_str_time_range(start_datetime: datetime, end_datetime: datetime) -> str:
-    start_datetime_str = start_datetime.strftime("%H:%M:%S")
-    end_datetime_str = end_datetime.strftime("%H:%M:%S")
+    start_datetime_str = start_datetime.strftime("%H:%M")
+    end_datetime_str = end_datetime.strftime("%H:%M")
     return f"с {start_datetime_str} по {end_datetime_str}"
 
 

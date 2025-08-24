@@ -1,11 +1,11 @@
 import asyncio
 import contextlib
 import sys
-import traceback
 from typing import Any, AsyncGenerator, Awaitable, NoReturn
 
 from loguru import logger
 from plyer import notification
+from pydantic import ValidationError
 
 from voice_assistant import __version__
 from voice_assistant.app_interfaces.command_source import CommandSource
@@ -78,8 +78,7 @@ async def main() -> Awaitable[NoReturn]:
             if not exc:
                 continue
 
-            logger.bind(user_id=task.get_name()).error("Task ends with exception:")
-            traceback.print_exception(type(exc), exc, exc.__traceback__, file=sys.stderr)
+            logger.bind(user_id=task.get_name()).opt(exception=exc).error("User message loop ends with exception:")
 
     sys.exit(0)
 
@@ -99,7 +98,7 @@ async def setup_user_and_start_loop(user_id: UserId) -> Awaitable[NoReturn]:
         startup_completed(user_id)
 
         return await message_loop(user_id, command_sources, command_performer)
-    except ValueError:
+    except ValidationError:
         logger_.error("exception in user loop")
         raise
     except Exception as e:

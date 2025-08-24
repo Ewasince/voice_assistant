@@ -1,7 +1,5 @@
 import functools
 import inspect
-import sys
-import traceback
 from typing import Any, Awaitable, Callable, ParamSpec
 
 P = ParamSpec("P")
@@ -25,8 +23,7 @@ def log_tool_decorator[**P](func: Callable[P, Awaitable[str]], logger: Any) -> C
         try:
             res = await func(*args, **kwargs)
         except Exception as exc:
-            logger.exception(f"FAIL call tool: {exc}")
-            traceback.print_exception(type(exc), exc, exc.__traceback__, file=sys.stderr)
+            logger.opt(exception=exc).error(f"FAIL call tool: {exc}")
             raise exc
 
         res = f"Сообщи пользователю что ты — {res}"

@@ -27,11 +27,10 @@ class CommandPerformer:
         self._user_agent = agent
 
     async def perform_command(self, command_text: str) -> str | None:
-        command_result = await self._user_agent.run_agent(command_text)
-
-        if command_result is not None:
-            print(f"Ответ ассистента > {command_result}")
-        else:
-            print()
+        try:
+            command_result = await self._user_agent.run_agent(command_text)
+        except Exception as e:
+            logger.opt(exception=e).error("Exception while performing command")
+            return f"error executing command: {e}"
 
         return command_result

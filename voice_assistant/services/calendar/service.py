@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, time
 
 from composio import Composio
 from loguru import logger
@@ -24,7 +24,7 @@ class CalendarService:
         topic: str,
         start_time: datetime,
         end_time: datetime,
-    ) -> None:
+    ) -> time:
         self._logger.info(
             f"write activity '{topic}' "
             f"from {start_time.strftime('%d.%m.%y %H:%M:%S %Z %z')} "
@@ -78,3 +78,5 @@ class CalendarService:
             raise ValueError(res["error"])
 
         self._logger.debug(f"event created: {res}")
+
+        return time(hour=event_duration_hour, minute=event_duration_minutes)

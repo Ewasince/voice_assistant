@@ -61,7 +61,7 @@ class ActivityLoggerToolset(Toolset):
                 mentioned the specific time the activity ends.
                 The value must be in the "%H:%M" format (e.g., "14:35").
 
-            reject_old_activity: End the previous activity (optional). Provide this only if the user explicitly
+            reject_old_activity: Forget the previous activity (optional). Provide this only if the user explicitly
                 mentioned the specific time the activity ends.
                 The value must be in the "%H:%M" format (e.g., "14:35").
         """

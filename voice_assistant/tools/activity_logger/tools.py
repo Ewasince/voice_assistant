@@ -179,15 +179,22 @@ class ActivityLoggerToolset(Toolset):
         last_activity_start_time = context.last_activity_time
 
         if last_activity_topic and last_activity_start_time:
-            if end_time < last_activity_start_time:
-                end_time = last_activity_start_time + timedelta(minutes=1)
-                response_message += (
-                    "Время окончания оказалось меньше времени начала! Поставил время на своё усмотрение. "
-                )
-            await self._calendar_service.jot_down_activity(
+            end_time, response_update = _change_end_time_if_need(
+                last_activity_start_time,
+                end_time,
+            )
+            response_message += response_update
+
+            duration = await self._calendar_service.jot_down_activity(
                 last_activity_topic,
                 last_activity_start_time,
                 end_time,
+            )
+
+            response_message = (
+                f'Зафиксировал конец активности "{last_activity_topic}" '
+                f"продолжительностью {_get_str_time_duration(duration)}"
+                f"{_str_delta_if_need(end_activity_delta)}. "
             )
         else:
             self._logger.warning(f"commit end activity called without last activity {context}")
@@ -195,19 +202,6 @@ class ActivityLoggerToolset(Toolset):
 
         context.last_activity_topic = None
         context.last_activity_time = None
-
-        if last_activity_topic:
-            new_activity_message = f'Зафиксировал конец активности "{last_activity_topic}"'
-
-            if end_activity_delta:
-                delta_minutes = end_activity_delta.total_seconds() / 60
-                new_activity_message += f" {delta_minutes:.2f} минут назад. "
-            else:
-                new_activity_message += ". "
-
-            response_message += new_activity_message
-        else:
-            response_message += "Не было информации о последней активности"
 
         self._memory_service.save_contex(context)
 

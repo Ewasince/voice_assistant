@@ -132,7 +132,7 @@ class ActivityLoggerToolset(Toolset):
         context.last_activity_topic = new_activity_topic
         context.last_activity_time = new_activity_start_time
 
-        response_message = f'Запомнил активность "{new_activity_topic}"'
+        response_message += f'Запомнил активность "{new_activity_topic}"'
         response_message += f"{_str_delta_if_need(new_activity_delta)}. "
 
         self._memory_service.save_contex(context)
@@ -223,9 +223,10 @@ class ActivityLoggerToolset(Toolset):
                 uncommon phrasings.
                 Provide only if the user wants to rename the remembered activity.
 
-            activity_relative_offset: (Optional) Relative shift to adjust the original
-                start time. Format must be "%H:%M".
-                Use this only if the user wants to move the start time by a specific amount.
+            activity_relative_offset: (Optional) Relative offset to adjust the original start time relative to the
+                activity’s beginning
+                Format must be "%H:%M".
+                Use this only if the user wants to move the start time of activity .
 
             activity_offset_from_now: (Optional) Sets the start time to a point relative to the current time.
                 Format must be "%H:%M".

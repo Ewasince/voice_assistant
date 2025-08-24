@@ -91,7 +91,7 @@ class ActivityLoggerToolset(Toolset):
             if is_last_activity_present and not reject_old_activity:
                 response_message += (
                     f"Ты указал конец только что переданной активности, "
-                    f"но сейчас уже записана активность {last_activity_topic}"
+                    f"но сейчас уже записана активность {last_activity_topic}. "
                     "Либо заверши/отмени текущую активность, либо явно укажи что нужно отменить предыдущую активность"
                 )
                 return response_message

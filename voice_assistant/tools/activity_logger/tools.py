@@ -49,10 +49,11 @@ class ActivityLoggerToolset(Toolset):
 
             new_activity_offset: Time since activity started (optional). Provide this only if the user explicitly
                 mentioned how long ago the activity began.
-
                 Format must be "%H:%M".
-            new_activity_time: Exact start time of the activity (optional). Provide this only if the user explicitly
-                mentioned the specific time the activity began. The value must be in the "%H:%M" format (e.g., "14:35").
+
+            new_activity_time: Exact start time of the activity (optional). Provide this only if the user
+                explicitly mentioned the specific time the activity began.
+                The value must be in the "%H:%M" format (e.g., "14:35").
         """
 
         context = self._memory_service.load_contex()
@@ -64,26 +65,28 @@ class ActivityLoggerToolset(Toolset):
         response_message = ""
         current_time = datetime.now(tz=self._tz)
 
-        end_time = current_time
+        new_activity_start_time = current_time
 
         if new_activity_delta is not None:
-            end_time = current_time - new_activity_delta
+            new_activity_start_time = current_time - new_activity_delta
 
         if new_activity_time is not None:
-            end_time = parse_datetime(new_activity_time, self._tz)
+            new_activity_start_time = parse_datetime(new_activity_time, self._tz)
 
         last_activity_topic = context.last_activity_topic
-        last_activity_time = context.last_activity_time
-        if last_activity_topic and last_activity_time:
-            if end_time < last_activity_time:
-                end_time = last_activity_time + timedelta(minutes=1)
+        last_activity_start_time = context.last_activity_time
+
+        if last_activity_topic and last_activity_start_time:
+            last_activity_end_time = new_activity_start_time
+            if last_activity_end_time < last_activity_start_time:
+                last_activity_end_time = last_activity_start_time + timedelta(minutes=1)
                 response_message += (
                     "Время окончания оказалось меньше времени начала! Поставил время на своё усмотрение. "
                 )
             await self._calendar_service.jot_down_activity(
                 last_activity_topic,
-                last_activity_time,
-                end_time,
+                last_activity_start_time,
+                last_activity_end_time,
             )
 
             new_activity_message = f'Зафиксировал конец активности "{last_activity_topic}". '
@@ -91,7 +94,7 @@ class ActivityLoggerToolset(Toolset):
             response_message += new_activity_message
 
         context.last_activity_topic = new_activity_topic
-        context.last_activity_time = end_time
+        context.last_activity_time = new_activity_start_time
 
         response_message += f'Запомнил активность "{new_activity_topic}"'
 

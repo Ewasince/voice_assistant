@@ -31,6 +31,6 @@ class CommandPerformer:
             command_result = await self._user_agent.run_agent(command_text)
         except Exception as e:
             logger.opt(exception=e).error("Exception while performing command")
-            return f"error executing command: {e}"
+            return f"Ошибка выполнения команды: {e}"
 
         return command_result

@@ -176,17 +176,17 @@ class ActivityLoggerToolset(Toolset):
             end_time = parse_datetime(end_activity_time, self._tz)
 
         last_activity_topic = context.last_activity_topic
-        last_activity_time = context.last_activity_time
+        last_activity_start_time = context.last_activity_time
 
-        if last_activity_topic and last_activity_time:
-            if end_time < last_activity_time:
-                end_time = last_activity_time + timedelta(minutes=1)
+        if last_activity_topic and last_activity_start_time:
+            if end_time < last_activity_start_time:
+                end_time = last_activity_start_time + timedelta(minutes=1)
                 response_message += (
                     "Время окончания оказалось меньше времени начала! Поставил время на своё усмотрение. "
                 )
             await self._calendar_service.jot_down_activity(
                 last_activity_topic,
-                last_activity_time,
+                last_activity_start_time,
                 end_time,
             )
         else:

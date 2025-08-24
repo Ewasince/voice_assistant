@@ -26,7 +26,7 @@ def log_tool_decorator[**P](func: Callable[P, Awaitable[str]], logger: Any) -> C
             logger.opt(exception=exc).error(f"FAIL call tool: {exc}")
             raise exc
 
-        res = f"Сообщи пользователю что ты — {res}"
+        res = f"Сообщи пользователю — {res}"
 
         logger.info(f"DONE '{func.__name__}' with result: '{res}'")
 

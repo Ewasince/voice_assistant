@@ -36,6 +36,8 @@ class ActivityLoggerToolset(Toolset):
         new_activity_topic: str,
         new_activity_offset: str | None = None,
         new_activity_time: str | None = None,
+        new_activity_end_time: str | None = None,
+        reject_old_activity: bool = False,
     ) -> str:
         """Log a new activity event.
         Trigger this tool when the user indicates they are currently engaged in an activity, have just started one,
@@ -53,6 +55,14 @@ class ActivityLoggerToolset(Toolset):
 
             new_activity_time: Exact start time of the activity (optional). Provide this only if the user
                 explicitly mentioned the specific time the activity began.
+                The value must be in the "%H:%M" format (e.g., "14:35").
+
+            new_activity_end_time: Exact end time of the activity (optional). Provide this only if the user explicitly
+                mentioned the specific time the activity ends.
+                The value must be in the "%H:%M" format (e.g., "14:35").
+
+            reject_old_activity: End the previous activity (optional). Provide this only if the user explicitly
+                mentioned the specific time the activity ends.
                 The value must be in the "%H:%M" format (e.g., "14:35").
         """
 
@@ -75,6 +85,29 @@ class ActivityLoggerToolset(Toolset):
 
         last_activity_topic = context.last_activity_topic
         last_activity_start_time = context.last_activity_time
+
+        if new_activity_end_time is not None:
+            is_last_activity_present = last_activity_topic and last_activity_start_time
+            if is_last_activity_present and not reject_old_activity:
+                response_message += (
+                    f"Ты указал конец только что переданной активности, "
+                    f"но сейчас уже записана активность {last_activity_topic}"
+                    "Либо заверши/отмени текущую активность, либо явно укажи что нужно отменить предыдущую активность"
+                )
+                return response_message
+
+            new_activity_end_time_dt = parse_datetime(new_activity_end_time, self._tz)
+            duration = await self._calendar_service.jot_down_activity(
+                new_activity_topic,
+                new_activity_start_time,
+                new_activity_end_time_dt,
+            )
+            response_message += (
+                f'Зафиксировал активность "{last_activity_topic}" '
+                f"{_get_str_time_range(new_activity_start_time, new_activity_end_time_dt)}"
+                f"продолжительностью {_get_str_time_duration(duration)}. "
+            )
+            return response_message
 
         if last_activity_topic and last_activity_start_time:
             last_activity_end_time = new_activity_start_time
@@ -320,6 +353,12 @@ def _get_str_time_duration(duration: time, accusative: bool = False) -> str:
         )
         message += f"{duration.minute} {minutes_plural}"
     return message
+
+
+def _get_str_time_range(start_datetime: datetime, end_datetime: datetime) -> str:
+    start_datetime_str = start_datetime.strftime("%H:%M:%S")
+    end_datetime_str = end_datetime.strftime("%H:%M:%S")
+    return f"с {start_datetime_str} по {end_datetime_str}"
 
 
 def _change_end_time_if_need(start_time: datetime, end_time: datetime) -> tuple[datetime, str]:

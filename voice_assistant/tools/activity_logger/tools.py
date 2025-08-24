@@ -157,7 +157,8 @@ class ActivityLoggerToolset(Toolset):
                 end_time,
             )
         else:
-            self._logger.error(f"commit end activity called without last activity {context}")
+            self._logger.warning(f"commit end activity called without last activity {context}")
+            response_message += "Нет активности чтобы её завершить!"
 
         context.last_activity_topic = None
         context.last_activity_time = None

@@ -132,8 +132,8 @@ class ActivityLoggerToolset(Toolset):
         context.last_activity_topic = new_activity_topic
         context.last_activity_time = new_activity_start_time
 
-        response_message = f'Запомнил активность "{new_activity_topic}" '
-        response_message += _add_str_delta_if_need(new_activity_delta)
+        response_message = f'Запомнил активность "{new_activity_topic}"'
+        response_message += f"{_str_delta_if_need(new_activity_delta)}. "
 
         self._memory_service.save_contex(context)
 
@@ -370,8 +370,8 @@ def _change_end_time_if_need(start_time: datetime, end_time: datetime) -> tuple[
     return changed_end_time, response_message
 
 
-def _add_str_delta_if_need(new_activity_delta: timedelta | None) -> str:
+def _str_delta_if_need(new_activity_delta: timedelta | None) -> str:
     if new_activity_delta:
         new_activity_duration = get_duration(new_activity_delta)
-        return f"начатую {_get_str_time_duration(new_activity_duration, accusative=True)} назад. "
-    return ". "
+        return f" {_get_str_time_duration(new_activity_duration, accusative=True)} назад"
+    return ""

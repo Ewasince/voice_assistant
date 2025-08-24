@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, time, timedelta
 
 from agents import Tool
 
@@ -6,7 +6,7 @@ from voice_assistant.app_interfaces.toolset import Toolset
 from voice_assistant.app_utils.app_types import UserId
 from voice_assistant.app_utils.settings import get_settings
 from voice_assistant.database.models import Contex
-from voice_assistant.services.calendar.service import CalendarService
+from voice_assistant.services.calendar.service import CalendarService, get_duration
 from voice_assistant.services.memory import ContextMemoryService
 from voice_assistant.tools.utils import parse_datetime, parse_timedelta
 
@@ -78,31 +78,29 @@ class ActivityLoggerToolset(Toolset):
 
         if last_activity_topic and last_activity_start_time:
             last_activity_end_time = new_activity_start_time
-            if last_activity_end_time < last_activity_start_time:
-                last_activity_end_time = last_activity_start_time + timedelta(minutes=1)
-                response_message += (
-                    "Время окончания оказалось меньше времени начала! Поставил время на своё усмотрение. "
-                )
-            await self._calendar_service.jot_down_activity(
+
+            last_activity_end_time, response_update = _change_end_time_if_need(
+                last_activity_start_time,
+                last_activity_end_time,
+            )
+            response_message += response_update
+
+            duration = await self._calendar_service.jot_down_activity(
                 last_activity_topic,
                 last_activity_start_time,
                 last_activity_end_time,
             )
 
-            new_activity_message = f'Зафиксировал конец активности "{last_activity_topic}". '
-
-            response_message += new_activity_message
+            response_message += (
+                f'Зафиксировал конец активности "{last_activity_topic}" '
+                f"продолжительностью {_get_str_time_duration(duration)}. "
+            )
 
         context.last_activity_topic = new_activity_topic
         context.last_activity_time = new_activity_start_time
 
-        response_message += f'Запомнил активность "{new_activity_topic}"'
-
-        if new_activity_delta:
-            delta_minutes = new_activity_delta.total_seconds() / 60
-            response_message += f" {delta_minutes:.2f} минут назад. "
-        else:
-            response_message += ". "
+        response_message = f'Запомнил активность "{new_activity_topic}" '
+        response_message += _add_str_delta_if_need(new_activity_delta)
 
         self._memory_service.save_contex(context)
 
@@ -286,3 +284,54 @@ class ActivityLoggerToolset(Toolset):
             )
 
         return response_message
+
+
+def _russian_plural(n: int, one: str, few: str, many: str) -> str:
+    n_abs = abs(n)
+    last_two = n_abs % 100
+    last = n_abs % 10
+
+    if 11 <= last_two <= 14:
+        return many
+    if last == 1:
+        return one
+    if 2 <= last <= 4:
+        return few
+    return many
+
+
+def _get_str_time_duration(duration: time, accusative: bool = False) -> str:
+    message = ""
+    if duration.hour:
+        hour_plural = _russian_plural(
+            duration.hour,
+            "час",
+            "часа",
+            "часов",
+        )
+        message += f"{duration.hour} {hour_plural}"
+    if duration.minute:
+        minutes_plural = _russian_plural(
+            duration.minute,
+            "минуту" if accusative else "минута",
+            "минуты",
+            "минут",
+        )
+        message += f"{duration.minute} {minutes_plural}"
+    return message
+
+
+def _change_end_time_if_need(start_time: datetime, end_time: datetime) -> tuple[datetime, str]:
+    response_message = ""
+    changed_end_time = end_time
+    if changed_end_time < start_time:
+        changed_end_time = start_time + timedelta(minutes=1)
+        response_message = "Время окончания оказалось меньше времени начала! Поставил время на своё усмотрение. "
+    return changed_end_time, response_message
+
+
+def _add_str_delta_if_need(new_activity_delta: timedelta | None) -> str:
+    if new_activity_delta:
+        new_activity_duration = get_duration(new_activity_delta)
+        return f"начатую {_get_str_time_duration(new_activity_duration, accusative=True)} назад. "
+    return ". "

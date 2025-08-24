@@ -105,7 +105,7 @@ class ActivityLoggerToolset(Toolset):
                 new_activity_end_time_dt,
             )
             response_message += (
-                f'Зафиксировал активность "{last_activity_topic}" '
+                f'Зафиксировал активность "{new_activity_topic}" '
                 f"{_get_str_time_range(new_activity_start_time, new_activity_end_time_dt)} "
                 f"продолжительностью {_get_str_time_duration(duration)}. "
             )
